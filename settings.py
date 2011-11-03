@@ -4,19 +4,20 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    #('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'inventordb',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': 'c0c0nuts',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        #'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'inventordb',
+        'USER': '',#'root',
+        'PASSWORD': '',#'c0c0nuts',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
@@ -37,7 +38,6 @@ STATIC_URL = STATIC_FILE_PATH
 
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-# Additional locations of static files
 STATICFILES_DIRS = (
 
 )
@@ -67,7 +67,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'inventor.urls'
 
-TEMPLATE_DIRS = ('C:/Python27/Scripts/inventor/templates',)
+#TEMPLATE_DIRS = ('C:/Python27/Scripts/inventor/templates',)
+TEMPLATE_DIRS = (os.path.join(os.getcwd(), "templates"),)
 
 INSTALLED_APPS = (
     #'django.contrib.auth',
@@ -76,20 +77,12 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
-    'reversion',
+    #'reversion',
     'inventor.products',
-    'wadofstuff'
+    'inventor.company',
+    'wadofstuff',
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

@@ -48,7 +48,7 @@ def products_list(request):
     return HttpResponse(data, mimetype="application/json")
 
 def index(request):
-
+    
     return render_to_response(
         'index.html',
         {
