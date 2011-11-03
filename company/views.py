@@ -2,7 +2,6 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
-from django.core import serializers
 import json
 from django.views.decorators.csrf import csrf_exempt
 from company.models import *
@@ -22,7 +21,8 @@ def handler(request):
 
 def _read(request):
     
-    print json.dumps(Company.objects.asDict(), indent = 4)
+    response = Company.objects.asDict()
+    response['success'] = True
 
     """a = Company.objects.create(name="2nd Company",
                            vat="111111111",
@@ -40,8 +40,8 @@ def _read(request):
                                        company=Company.objects.get(pk=2))"""
     
     
-    
-    return HttpResponse()
+    print json.dumps(response, indent=4)
+    return HttpResponse(simplejson.dumps(response))
     
 
 def _create(request):

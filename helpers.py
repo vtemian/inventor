@@ -20,9 +20,7 @@ def dictFromModel(object):
                         except:
                             pass
                         for f in modelsList:
-                            val = getattr(obj, f)
-                            if not isinstance(val, models.Manager):
-                                _tempDict[f] = unicode(val)
+                            _tempDict[f] = unicode(getattr(obj, f))
                         _dict[field].append(_tempDict)
             elif isinstance(value, models.Model):
                 _dict[field] = dictFromModel(value)
