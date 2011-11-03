@@ -30,10 +30,10 @@ Ext.define('INV.controller.Companies', {
                 click: this.onAddCompanyClick
             },
             'inlinegrid button[action=add]': {
-                click: this.onAddAddressClick
+                click: this.onAddInlineItemClick
             },
             'inlinegrid actioncolumn': {
-                click: this.onDeleteAddressClick
+                click: this.onDeleteInlineItemClick
             }
         });
 
@@ -65,11 +65,11 @@ Ext.define('INV.controller.Companies', {
         console.log('fire event for Delete Company');
     },
 
-    onAddAddressClick: function(button){
-
+    onAddInlineItemClick: function(button){
         var grid = button.up('grid'),
-            store = this.getCompanyAddressesStore();
-            companyId = this.getCompanyDetail().getCompanyId();
+            store = grid.store,
+            model = store.model,
+            companyId = this.getCompanyDetail().getCompanyId(),
             maxRecords = 3;
 
         if (store.getCount() >= maxRecords) {
@@ -79,25 +79,21 @@ Ext.define('INV.controller.Companies', {
 
         grid.editingPlugin.cancelEdit();
 
-        address = Ext.create('INV.model.CompanyAddress',{
-            address: 'Street, no, ap',
-            city: 'City, State',
-            zipcode: 'zipcode',
-            company_id: companyId
-        });
-        //console.log(address);
-        store.insert(store.getCount() + 1, address);
+        newRecord =  Ext.create(model);
+        console.log(newRecord);
+
+        store.insert(store.getCount() + 1, newRecord);
         //store.sync({callback:function(){console.log('store SYNC CALLBACK dupa ADD');notification.msg('ADD','SYNC CALLBACK dupa ADD')}});
         grid.editingPlugin.startEdit(store.getCount()-1, 1);
     },
 
-    onDeleteAddressClick: function(view, cell, recordIndex, cellIndex, e){//view, rowIndex, colIndex, item, e){
-        var store = this.getCompanyAddressesStore();
+    onDeleteInlineItemClick: function(view, cell, recordIndex, cellIndex, e){
+        //var store = this.getCompanyAddressesStore();
 
         view.editingPlugin.cancelEdit();
 
         notification.msg('Remove', 'the record ' + view.store.getAt(recordIndex).data.name + ' was deleted!');
-        store.removeAt(recordIndex);
+        view.store.removeAt(recordIndex);
         //store.sync({callback:function(){console.log('store SYNC CALLBACK dupa DELETE');notification.msg('Remove','SYNC CALLBACK dupa DELETE')}});
     }
 });
