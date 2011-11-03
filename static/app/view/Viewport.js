@@ -3,7 +3,7 @@ Ext.define('INV.view.Viewport', {
     layout: 'fit',
 
     requires: [
-        'INV.view.product.Main',
+        'INV.view.company.Main',
         'INV.view.ux.Notify'
     ],
 
@@ -14,7 +14,7 @@ Ext.define('INV.view.Viewport', {
                 align: 'stretch'
             },
             items: [{
-                xtype: 'productmain',
+                xtype: 'companymain',
                 layout:'fit'
             }]
         };
