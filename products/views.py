@@ -46,12 +46,3 @@ def products_list(request):
            (products_list.count(), 'data',
             serializers.serialize('json', products_list, relations = ('category','properties')))
     return HttpResponse(data, mimetype="application/json")
-
-def index(request):
-    
-    return render_to_response(
-        'index.html',
-        {
-        },
-        context_instance=RequestContext(request)
-    )

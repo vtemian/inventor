@@ -9,11 +9,17 @@ def dictFromModel(object):
         try:
             value = getattr(object, field)
             if isinstance(value, models.Manager):
-                if value.__class__.__name__ == 'ManyRelatedManager':
+                instances = ['ManyRelatedManager', "RelatedManager"]
+                if value.__class__.__name__ in instances:
                     _dict[field] = []
                     for obj in value.select_related():
                         _tempDict = {}
-                        for f in obj._meta.get_all_field_names():
+                        try: 
+                            modelsList = obj._meta.get_all_field_names()
+                            modelsList.remove(object.__class__.__name__.lower())
+                        except:
+                            pass
+                        for f in modelsList:
                             val = getattr(obj, f)
                             if not isinstance(val, models.Manager):
                                 _tempDict[f] = unicode(val)
