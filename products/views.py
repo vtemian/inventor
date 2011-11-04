@@ -7,6 +7,50 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from products.models import *
 
+def handler(request):
+
+    handlers = {'POST'  : _create,
+                'GET'   : _read,
+                'PUT'   : _update,
+                'DELETE': _delete,}
+    return handlers[request.method].__call__(request)
+
+def _read(request):
+
+    response = Product.objects.asDict()
+    response['success'] = True
+
+    """a = Category.objects.create(name="catunu",
+                           description="o categorie")
+    b = Product.objects.create(name="1st Company",
+                           vat="111111111",
+                           regCom="54321",
+                           category = Category.objects.get(pk=1))
+    b = Product.objects.create(name="2nd Company",
+                           vat="111112222",
+                           regCom="12341234",
+                           category = Category.objects.get(pk=1))"""
+
+
+    print json.dumps(response, indent=4)
+    return HttpResponse(simplejson.dumps(response))
+
+def _create(request):
+
+    print request.method
+
+
+def _delete(request):
+
+    print request.method
+
+
+def _update(request):
+
+    print request.method
+
+
+
 @csrf_exempt
 def categories_list(request):
     categories_list = ProductCategory.objects.all()
@@ -23,7 +67,7 @@ def products_list(request):
         if not request.GET.has_key(item):
             return None
 
-    products_list = Products.objects.select_related('category','properties').all()
+    products_list = Product.objects.select_related('category','properties').all()
 
     if request.GET.has_key('sort'):
         sort = json.loads(request.GET.get('sort'))

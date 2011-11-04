@@ -49,7 +49,7 @@ Ext.define('INV.controller.Companies', {
     onCompaniesStoreLoad: function(){
         notification.msg('LOAD Companies','store event');
         console.log(this.getCompaniesStore());
-        //if (this.getCompaniesStore().getCount()) this.getCompanyList().getSelectionModel().select(0);
+        if (this.getCompaniesStore().getCount()) this.getCompanyList().getSelectionModel().select(0);
     },
 
     onCompanySelect: function(selModel, selection) {

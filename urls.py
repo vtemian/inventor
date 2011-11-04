@@ -5,7 +5,7 @@ import settings
 
 urlpatterns = patterns('',
     (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'index.html'}),
-    (r'^company/', include('company.urls')),
+    (r'^companies/', include('companies.urls')),
     (r'^products/', include('products.urls')),
     (r'^categories/', 'products.views.categories_list')
 )

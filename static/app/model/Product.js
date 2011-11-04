@@ -1,14 +1,16 @@
 Ext.define('INV.model.Product', {
     extend: 'Ext.data.Model',
     fields: [
-        {name:'id', type:'int'},
-        {name:'code', type: 'string'},
-        {name:'name', type: 'string'},
-        {name:'description', type: 'string'},
-        {name:'category', type: 'string'},
-        {name:'modified', type: 'boolean'},
-        {name:'notes', type: 'string'},
-        {name:'barcode', type: 'string'}
+        {name:'id', type:'int', mapping:'id'},
+        {name:'code', type: 'string', mapping:'code'},
+        {name:'name', type: 'string', mapping:'name'},
+        {name:'description', type: 'string', mapping:'description'},
+        {name:'category', type: 'string', mapping: 'category.name'},
+        {name:'um', type: 'string', mapping: 'um.name'},
+
+        {name:'modified', type: 'boolean', mapping:'modified'},
+        {name:'notes', type: 'string', mapping:'notes'},
+        {name:'barcode', type: 'string', mapping:'barcode'}
         //{name:'properties', mapping: 'fields.properties', persist: true}
     ],
     associations:[

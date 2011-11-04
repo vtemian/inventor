@@ -2,22 +2,21 @@ from django.db import models
 from inventor.products.manager import ProductManager
 import reversion
 
-class ProductCategory(models.Model):
+class Category(models.Model):
+
     name = models.CharField(max_length = 20)
     description = models.CharField(max_length = 60)
-    status = models.CharField(max_length = 60)
-
-class ProductProperties(models.Model):
-    name = models.CharField(max_length = 10)
 
 class Product(models.Model):
 
     code = models.CharField(max_length = 10)
     name = models.CharField(max_length = 50)
+    vat = models.CharField(max_length = 50)
+    regCom = models.CharField(max_length = 50)
     description = models.TextField()
-    category = models.ForeignKey(ProductCategory, related_name='ProductsCategory')
+    category = models.ForeignKey(Category, related_name='category')
     notes = models.TextField()
     barCode = models.CharField(max_length = 13)
     modified = models.BooleanField()
     active = models.BooleanField()
-    properties =  models.ManyToManyField(ProductProperties, related_name='ProductProperties')
+    objects = ProductManager()
