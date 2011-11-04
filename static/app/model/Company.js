@@ -1,10 +1,10 @@
 Ext.define('INV.model.Company', {
     extend: 'Ext.data.Model',
     fields: [
-        {name:'id', type:'int'},
-        {name:'name', type: 'string'},
-        {name:'vat', type: 'string'},
-        {name:'regcom', type: 'string'}
+        {name:'id', type:'int', mapping: 'id'},
+        {name:'name', type: 'string', mapping:'name'},
+        {name:'vat', type: 'string', mapping:'vat'},
+        {name:'regcom', type: 'string', mapping:'regCom'}
     ],
     associations:[
         {type:'hasMany', model:'INV.model.CompanyAddress', associationKey:'CompanyAddress', name:'companyaddress'},

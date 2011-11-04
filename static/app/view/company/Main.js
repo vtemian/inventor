@@ -1,5 +1,5 @@
 Ext.define('INV.view.company.Main', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias : 'widget.companymain',
 
     requires: [
@@ -27,9 +27,9 @@ Ext.define('INV.view.company.Main', {
                          layout: 'fit',
                          border: false,
                          split: true,
-                         items: {
+                         items: [{
                             xtype: 'companylist'
-                        }
+                        }]
                     },{
                          region: 'center',
                          layout: 'border',

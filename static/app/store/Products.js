@@ -18,10 +18,6 @@ Ext.define('INV.store.Products', {
             type: 'json',
             root: 'data',
             successProperty: 'success',
-            totalProperty:  'total',
-            getAssociatedDataRoot: function(data, associationName) {
-                return data.fields[associationName]
-            }
-        }
+            totalProperty:  'total'}
     }
 });

@@ -4,6 +4,6 @@ Ext.application({
     name: 'INV',
     autoCreateViewport: true,
 
-    controllers: ['Companies']
+    controllers: ['Companies','Products']
 
 });

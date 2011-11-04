@@ -4,6 +4,7 @@ Ext.define('INV.view.Viewport', {
 
     requires: [
         'INV.view.company.Main',
+        'INV.view.product.Main',
         'INV.view.ux.Notify'
     ],
 
@@ -13,10 +14,19 @@ Ext.define('INV.view.Viewport', {
                 type: 'fit',
                 align: 'stretch'
             },
-            items: [{
-                xtype: 'companymain',
-                layout:'fit'
-            }]
+            items: [{xtype:'tabpanel',
+                    items:[{
+                        xtype: 'companymain',
+                        title:'Company',
+                        layout:'fit'
+                        },{
+                        xtype: 'productmain',
+                        title:'Product',
+                        layout:'fit'
+                        }
+                    ]
+                    }
+            ]
         };
 
         this.callParent();

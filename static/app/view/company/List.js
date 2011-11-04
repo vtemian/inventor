@@ -9,30 +9,39 @@ Ext.define('INV.view.company.List' ,{
     width: 350,
 
     sortableColumns: true,
-    columns: [
-         Ext.create('Ext.grid.RowNumberer'),
-        {header: 'Name',  dataIndex: 'name',  flex: 1},
-        {header: 'VAT', dataIndex: 'vat', flex: 1, hidden: true}
-    ],
-    tbar: [{
+
+
+
+    initComponent: function() {
+
+        this.columns = [
+             Ext.create('Ext.grid.RowNumberer'),
+            {header: 'Company',  dataIndex: 'name',  flex: 1},
+            {header: 'VAT', dataIndex: 'vat', flex: 1, hidden: true}
+        ];
+        
+        this.dockedItems = [{
+            xtype: 'pagingtoolbar',
+            store: 'Companies',   // same store GridPanel is using
+            dock: 'bottom',
+            displayInfo: true
+        },{
+            xtype: 'toolbar',
+            dock: 'top',
+            items: [{
                     text:"Add",
                     icon:'resources/images/add.png',
                     action: "add",
                     scope: this
-            },{
+                },{
                     text:"Delete",
                     icon:'resources/images/delete.png',
                     action: "delete",
                     scope: this
-            }],
-    dockedItems: [{
-        xtype: 'pagingtoolbar',
-        store: 'Companies',   // same store GridPanel is using
-        dock: 'bottom',
-        displayInfo: true
-    }],
+                }]
 
-    initComponent: function() {
+        }];
+
         this.callParent(arguments);
     }
 });

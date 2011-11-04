@@ -1,4 +1,5 @@
 from django.db import models
+from inventor.products.manager import ProductManager
 import reversion
 
 class ProductCategory(models.Model):
@@ -9,7 +10,7 @@ class ProductCategory(models.Model):
 class ProductProperties(models.Model):
     name = models.CharField(max_length = 10)
 
-class Products(models.Model):
+class Product(models.Model):
 
     code = models.CharField(max_length = 10)
     name = models.CharField(max_length = 50)

@@ -42,14 +42,14 @@ Ext.define('INV.controller.Companies', {
     },
 
     onLaunch: function() {
-        console.log('app launch');
+        console.log('companies launch');
 
     },
 
     onCompaniesStoreLoad: function(){
         notification.msg('LOAD Companies','store event');
         console.log(this.getCompaniesStore());
-        this.getCompanyList().getSelectionModel().select(0);
+        //if (this.getCompaniesStore().getCount()) this.getCompanyList().getSelectionModel().select(0);
     },
 
     onCompanySelect: function(selModel, selection) {

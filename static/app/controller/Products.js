@@ -49,14 +49,14 @@ Ext.define('INV.controller.Products', {
     },
 
     onLaunch: function() {
-        console.log('app launch');
+        console.log('products launch');
 
     },
 
     onProductsStoreLoad: function(){
         notification.msg('LOAD Products','store event');
         console.log(this.getProductsStore());
-        this.getProductList().getSelectionModel().select(0);
+        if (this.getProductsStore().getCount()) this.getProductList().getSelectionModel().select(0);
     },
 
     onProductSelect: function(selModel, selection) {

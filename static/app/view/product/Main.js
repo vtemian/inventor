@@ -1,5 +1,5 @@
 Ext.define('INV.view.product.Main', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias : 'widget.productmain',
 
     requires: [
@@ -27,9 +27,9 @@ Ext.define('INV.view.product.Main', {
                          layout: 'fit',
                          border: false,
                          split: true,
-                         items: {
+                         items: [{
                             xtype: 'productlist'
-                        }
+                        }]
                     },{
                          region: 'center',
                          layout: 'border',

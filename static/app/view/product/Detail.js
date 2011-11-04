@@ -13,30 +13,41 @@ Ext.define('INV.view.product.Detail', {
         this.items = [{
                     xtype:'form',
                     border:false,
-                    items:[
-                        {xtype:'textfield', name:'code', fieldLabel: 'Code'},
-                        {xtype:'textfield', name:'name', fieldLabel: 'Name'},
-                        {xtype:'textfield', name:'description', fieldLabel: 'Description'},
-                        {xtype:'textfield', name:'category', fieldLabel: 'Category'},
-                        {xtype:'textfield', name:'modified', fieldLabel: 'Modified'},
-                        {xtype:'textfield', name:'notes', fieldLabel: 'Notes'},
-                        {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'}
+                    items:[{xtype:'fieldset',
+                            title: '<p style="font-size:18px">Product</p>',
+                            style: {border:'none'},
+                            border:false,
+                            items: [
 
+                                {xtype:'textfield', name:'code', fieldLabel: 'Code'},
+                                {xtype:'textfield', name:'name', fieldLabel: 'Name'},
+                                {xtype:'textfield', name:'description', fieldLabel: 'Description'},
+                                {xtype:'textfield', name:'category', fieldLabel: 'Category'},
+                                {xtype:'textfield', name:'modified', fieldLabel: 'Modified'},
+                                {xtype:'textfield', name:'notes', fieldLabel: 'Notes'},
+                                {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'}
+                            ]}
                     ]
-                },{
-                    xtype: 'fieldcontainer',
-                    fieldLabel: 'Variety',
-                    //padding: 10,
-                    width:600,
-                    items: [{
-                            xtype:'inlinegrid',
-                            store:'ProductProperties',
-                            maxWidth:400,
-                            //height:100,
-                            columns:[{dataIndex: 'pk', width:20},
-                                {dataIndex: 'name', editor: {allowBlank: false}}
-                            ]
-                        }]
+                },{xtype:'fieldset',
+                            title: '<p style="font-size:18px">Properties</p>',
+                            style: {border:'none'},
+                            border:false,
+                            items: [{
+                                    xtype: 'fieldcontainer',
+                                    fieldLabel: 'Variety',
+                                    //padding: 10,
+                                    width:600,
+                                    items: [{
+                                            xtype:'inlinegrid',
+                                            //id: 'properties',
+                                            store:'CompanyBanks',
+                                            maxWidth:400,
+                                            //height:100,
+                                            columns:[{dataIndex: 'id', width:20},
+                                                {dataIndex: 'name', editor: {allowBlank: false}}
+                                            ]
+                                        }]
+                                }]
                 }
             ];
         this.callParent(arguments);
@@ -44,10 +55,10 @@ Ext.define('INV.view.product.Detail', {
 
     loadRecord: function(record) {
         this.down('form').loadRecord(record);
-        this.down('grid').store.loadData(record.propertiesStore.data.items, false);
+        //this.down('#properties').store.loadData(record.propertiesStore.data.items, false);
     },
 
     getProductId: function() {
-        return this.down('form').getRecord().data['pk'];
+        //return this.down('form').getRecord().data['id'];
     }
 });

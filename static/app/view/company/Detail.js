@@ -25,7 +25,7 @@ Ext.define('INV.view.company.Detail', {
                     },{
                         xtype:'fieldset',
                         title: '<p style="font-size:18px">Address, Contact, Bank</p>',
-            collapsible:true,
+                        collapsible:true,
                         style: {border:'none'},
                         border:false,
                         items: [{
@@ -90,6 +90,6 @@ Ext.define('INV.view.company.Detail', {
     },
 
     getCompanyId: function() {
-        return this.down('form').getRecord().data['id'];
+        //return this.down('form').getRecord().data['id'];
     }
 });
