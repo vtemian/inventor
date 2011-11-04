@@ -20,16 +20,7 @@ def _read(request):
     response = Product.objects.asDict()
     response['success'] = True
 
-    """a = Category.objects.create(name="catunu",
-                           description="o categorie")
-    b = Product.objects.create(name="1st Company",
-                           vat="111111111",
-                           regCom="54321",
-                           category = Category.objects.get(pk=1))
-    b = Product.objects.create(name="2nd Company",
-                           vat="111112222",
-                           regCom="12341234",
-                           category = Category.objects.get(pk=1))"""
+    #_initialdata()
 
 
     print json.dumps(response, indent=4)
@@ -49,6 +40,30 @@ def _update(request):
 
     print request.method
 
+def _initialdata():
+    a = Category.objects.create(name="catunu",
+                           description="o categorie")
+    aa = Category.objects.create(name="doi",
+                           description="a doua categorie")
+    m = UM.objects.create(name = 'kilogram',
+                        abreviation = 'kg',
+                        measures = 'wheight')
+    n = UM.objects.create(name = 'gram',
+                        abreviation = 'g',
+                        measures = 'wheight',
+                        conversionFactor = 1000,
+                        conversionUnit = UM.objects.get(pk=1))
+    b = Product.objects.create(code="ax123",
+                           name="bomboane roz",
+                           description="11sfqsger111",
+                           category = Category.objects.get(pk=1))
+    c = Product.objects.create(code="db443",
+                           name="alt produs important",
+                           description="111gqegrq222",
+                           modified=true,
+                           category = Category.objects.get(pk=2))
+    b.ums.add(m,n)
+    c.ums.add(n)
 
 
 @csrf_exempt

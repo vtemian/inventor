@@ -39,9 +39,9 @@ Ext.define('INV.view.company.Detail', {
                                         store:'CompanyAddresses',
                                         maxWidth:400,
                                         //height:100,
-                                        columns:[{dataIndex: 'street', width: 100, editor: 'textfiled'},
-                                            {dataIndex: 'city', width: 100, editor: 'textfiled'},
-                                            {dataIndex: 'zipcode', width: 80, editor: 'textfiled'}
+                                        columns:[{dataIndex: 'street', width: 100, editor: 'textfield'},
+                                            {dataIndex: 'city', width: 100, editor: 'textfield'},
+                                            {dataIndex: 'zipcode', width: 80, editor: 'textfield'}
                                         ]
                                     }]
                             },{
@@ -55,9 +55,9 @@ Ext.define('INV.view.company.Detail', {
                                         store:'CompanyContacts',
                                         maxWidth:400,
                                         //height:100,
-                                        columns:[{dataIndex: 'name', width: 60, editor: 'textfiled'},
-                                            {dataIndex: 'phoneNumber', width: 70, editor: 'textfiled'},
-                                            {dataIndex: 'email', width: 120, editor: 'textfiled'}
+                                        columns:[{dataIndex: 'name', width: 60, editor: 'textfield'},
+                                            {dataIndex: 'phoneNumber', width: 70, editor: 'textfield'},
+                                            {dataIndex: 'email', width: 120, editor: 'textfield'}
                                         ]
                                     }]
                             },{
@@ -71,8 +71,8 @@ Ext.define('INV.view.company.Detail', {
                                         store:'CompanyBanks',
                                         maxWidth:400,
                                         //height:100,
-                                        columns:[{dataIndex: 'name', width: 100, editor: 'textfiled'},
-                                            {dataIndex: 'iban', width: 100, editor: 'textfiled'}
+                                        columns:[{dataIndex: 'name', width: 100, editor: 'textfield'},
+                                            {dataIndex: 'iban', width: 100, editor: 'textfield'}
                                         ]
                                     }]
                             }]}

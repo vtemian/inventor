@@ -6,7 +6,6 @@ Ext.define('INV.model.Product', {
         {name:'name', type: 'string', mapping:'name'},
         {name:'description', type: 'string', mapping:'description'},
         {name:'category', type: 'string', mapping: 'category.name'},
-        {name:'um', type: 'string', mapping: 'um.name'},
 
         {name:'modified', type: 'boolean', mapping:'modified'},
         {name:'notes', type: 'string', mapping:'notes'},
@@ -15,6 +14,6 @@ Ext.define('INV.model.Product', {
     ],
     associations:[
         {type:'belongsTo', model:'INV.model.ProductCategory', associationKey:'category', name:'category'},
-        {type:'hasMany', model:'INV.model.ProductProperty', associatedKey:'properties', name:'properties'}
+        {type:'hasMany', model:'INV.model.ProductUm', associatedKey:'ums', name:'ums'}
     ]
 });

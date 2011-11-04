@@ -12,12 +12,12 @@ Ext.define('INV.store.Products', {
         }
     ],
     proxy: {
-        type: 'ajax',
+        type: 'rest',
         url: '/products/',
         reader: {
             type: 'json',
             root: 'data',
-            successProperty: 'success',
-            totalProperty:  'total'}
+            successProperty: 'success'
+        }
     }
 });

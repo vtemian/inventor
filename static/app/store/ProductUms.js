@@ -1,12 +1,11 @@
-Ext.define('INV.store.ProductProperties', {
+Ext.define('INV.store.ProductUms', {
     extend: 'Ext.data.Store',
-    model: 'INV.model.ProductProperty',
+    model: 'INV.model.ProductUm',
     autoSync:true,
-    //autoLoad:true,
+
     proxy: {
         type: 'rest',
-        //batchActions: false,
-        url: '/properties/',
+        url: '/product/ums',
         reader: {
             type: 'json',
             root: "data",

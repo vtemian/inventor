@@ -1,9 +1,9 @@
 Ext.define('INV.controller.Products', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Products', 'ProductCategories', 'ProductProperties'],
+    stores: ['Products', 'ProductCategories', 'ProductUms'],
 
-    models: ['Product', 'ProductCategory', 'ProductProperty'],
+    models: ['Product', 'ProductCategory', 'ProductUm'],
 
     views: ['product.Main','product.List','product.Detail','ux.InlineGrid'],
 
@@ -56,7 +56,7 @@ Ext.define('INV.controller.Products', {
     onProductsStoreLoad: function(){
         notification.msg('LOAD Products','store event');
         console.log(this.getProductsStore());
-        if (this.getProductsStore().getCount()) this.getProductList().getSelectionModel().select(0);
+        //if (this.getProductsStore().getCount()) this.getProductList().getSelectionModel().select(0);
     },
 
     onProductSelect: function(selModel, selection) {

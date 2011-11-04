@@ -26,28 +26,29 @@ Ext.define('INV.view.product.Detail', {
                                 {xtype:'textfield', name:'modified', fieldLabel: 'Modified'},
                                 {xtype:'textfield', name:'notes', fieldLabel: 'Notes'},
                                 {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'}
-                            ]}
-                    ]
-                },{xtype:'fieldset',
-                            title: '<p style="font-size:18px">Properties</p>',
-                            style: {border:'none'},
-                            border:false,
+                            ]
+                        }]
+                    },{
+                    xtype:'fieldset',
+                    title: '<p style="font-size:18px">Properties</p>',
+                    style: {border:'none'},
+                    border:false,
+                    items: [{
+                            xtype: 'fieldcontainer',
+                            fieldLabel: 'Variety',
+                            //padding: 10,
+                            width:600,
                             items: [{
-                                    xtype: 'fieldcontainer',
-                                    fieldLabel: 'Variety',
-                                    //padding: 10,
-                                    width:600,
-                                    items: [{
-                                            xtype:'inlinegrid',
-                                            //id: 'properties',
-                                            store:'CompanyBanks',
-                                            maxWidth:400,
-                                            //height:100,
-                                            columns:[{dataIndex: 'id', width:20},
-                                                {dataIndex: 'name', editor: {allowBlank: false}}
-                                            ]
-                                        }]
+                                    xtype:'inlinegrid',
+                                    id: 'properties',
+                                    store:'ProductUms',
+                                    maxWidth:400,
+                                    //height:100,
+                                    columns:[{dataIndex: 'id', width:20},
+                                        {dataIndex: 'name', editor: 'textfield'}
+                                    ]
                                 }]
+                        }]
                 }
             ];
         this.callParent(arguments);

@@ -12,7 +12,7 @@ Ext.define('INV.store.Companies', {
         }
     ],
     proxy: {
-        type: 'ajax',
+        type: 'rest',
         url: '/companies/',
         reader: {
             type: 'json',
