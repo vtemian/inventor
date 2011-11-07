@@ -42,6 +42,11 @@ Ext.define('INV.view.company.List' ,{
 
         }];
 
+        this.on('viewready',function(){
+            console.log('nr de inregistrari: ',this.store.getCount());
+            if (this.store.getCount()) this.getView().select(0);
+        });
+
         this.callParent(arguments);
     }
 });

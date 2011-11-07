@@ -13,10 +13,10 @@ Ext.define('INV.view.product.Detail', {
         this.items = [{
                     xtype:'form',
                     border:false,
+                    trackResetOnLoad:true,
                     items:[{xtype:'fieldset',
                             title: '<p style="font-size:18px">Product</p>',
                             style: {border:'none'},
-                            border:false,
                             items: [
 
                                 {xtype:'textfield', name:'code', fieldLabel: 'Code'},
@@ -25,9 +25,42 @@ Ext.define('INV.view.product.Detail', {
                                 {xtype:'textfield', name:'category', fieldLabel: 'Category'},
                                 {xtype:'textfield', name:'modified', fieldLabel: 'Modified'},
                                 {xtype:'textfield', name:'notes', fieldLabel: 'Notes'},
-                                {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'}
+                                {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'},
+                                {   xtype:'combo',
+                                    name:'um',
+                                    fieldLabel: 'UM',
+                                    multiSelect: true,
+                                    store:'ProductUms',
+                                    valueField: 'id',
+                                    displayField: 'name',
+                                    queryMode: 'local',
+                                    triggerAction: 'all'
+                                }
                             ]
-                        }]
+                        }],
+                    buttons: [{
+                                    text: 'Reset',
+                                    handler: function() {
+                                        this.up('form').getForm().reset();
+                                    }
+                                }, {
+                                    text: 'Submit',
+                                    formBind: true, //only enabled once the form is valid
+                                    disabled: true,
+                                    handler: function() {
+                                        var form = this.up('form').getForm();
+                                        if (form.isValid()) {
+                                            form.submit({
+                                                success: function(form, action) {
+                                                   Ext.Msg.alert('Success', action.result.msg);
+                                                },
+                                                failure: function(form, action) {
+                                                    Ext.Msg.alert('Failed', action.result.msg);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }]
                     },{
                     xtype:'fieldset',
                     title: '<p style="font-size:18px">Properties</p>',
@@ -40,7 +73,7 @@ Ext.define('INV.view.product.Detail', {
                             width:600,
                             items: [{
                                     xtype:'inlinegrid',
-                                    id: 'properties',
+                                    id: 'ums',
                                     store:'ProductUms',
                                     maxWidth:400,
                                     //height:100,
@@ -49,17 +82,18 @@ Ext.define('INV.view.product.Detail', {
                                     ]
                                 }]
                         }]
-                }
+                    }
             ];
+
         this.callParent(arguments);
     },
 
     loadRecord: function(record) {
         this.down('form').loadRecord(record);
-        //this.down('#properties').store.loadData(record.propertiesStore.data.items, false);
+        //this.down('#ums').store.loadData(record.umStore.data.items, false);
     },
 
     getProductId: function() {
-        //return this.down('form').getRecord().data['id'];
+        return this.down('form').getRecord().data['id'];
     }
 });

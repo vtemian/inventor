@@ -26,6 +26,7 @@ Ext.define('INV.view.company.Main', {
                          region: 'west', // this is what makes this panel into a region within the containing layout
                          layout: 'fit',
                          border: false,
+                         width:350,
                          split: true,
                          items: [{
                             xtype: 'companylist'

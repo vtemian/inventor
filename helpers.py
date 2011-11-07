@@ -11,10 +11,11 @@ def dictFromModel(object):
             if isinstance(value, models.Manager):
                 instances = ['ManyRelatedManager', "RelatedManager"]
                 if value.__class__.__name__ in instances:
+                    #print value.select_related()
                     _dict[field] = []
                     for obj in value.select_related():
                         _tempDict = {}
-                        try: 
+                        try:
                             modelsList = obj._meta.get_all_field_names()
                             modelsList.remove(object.__class__.__name__.lower())
                         except:

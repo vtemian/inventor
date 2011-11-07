@@ -10,5 +10,6 @@ Ext.define('INV.model.Company', {
         {type:'hasMany', model:'INV.model.CompanyAddress', associationKey:'CompanyAddress', name:'companyaddress'},
         {type:'hasMany', model:'INV.model.CompanyBank', associationKey:'CompanyBank', name:'companybank'},
         {type:'hasMany', model:'INV.model.CompanyContact', associationKey:'CompanyContact', name:'companycontact'}
-    ]
+    ],
+    idgen: 'uuid'
 });

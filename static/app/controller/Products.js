@@ -49,14 +49,13 @@ Ext.define('INV.controller.Products', {
     },
 
     onLaunch: function() {
-        console.log('products launch');
 
+        console.log('products launch');
     },
 
     onProductsStoreLoad: function(){
-        notification.msg('LOAD Products','store event');
-        console.log(this.getProductsStore());
-        //if (this.getProductsStore().getCount()) this.getProductList().getSelectionModel().select(0);
+
+        console.log('products Store Load');
     },
 
     onProductSelect: function(selModel, selection) {
@@ -65,10 +64,18 @@ Ext.define('INV.controller.Products', {
     },
 
     onAddProductClick: function(button){
-        console.log('fire event for New Product');
+
+        var store = this.getProductsStore(),
+            grid = button.up('grid');
+
+        product = Ext.create('INV.model.Product');
+
+        store.add(product);
+        grid.getView().select(product);
     },
 
     onDeleteProductClick: function(button){
+
         console.log('fire event for Delete Product');
     },
 
@@ -83,7 +90,7 @@ Ext.define('INV.controller.Products', {
             Ext.MessageBox.alert('Max Records', 'You have reached max records.');
             return;
         }
-
+        console.log('onAddCategoryClick');
         grid.editingPlugin.cancelEdit();
 
         category = Ext.create('INV.model.ProductCategory',{

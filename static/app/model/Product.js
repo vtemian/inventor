@@ -9,11 +9,13 @@ Ext.define('INV.model.Product', {
 
         {name:'modified', type: 'boolean', mapping:'modified'},
         {name:'notes', type: 'string', mapping:'notes'},
-        {name:'barcode', type: 'string', mapping:'barcode'}
+        {name:'barcode', type: 'string', mapping:'barcode'},
+        {name:'um', mapping: 'um'}
         //{name:'properties', mapping: 'fields.properties', persist: true}
     ],
     associations:[
         {type:'belongsTo', model:'INV.model.ProductCategory', associationKey:'category', name:'category'},
-        {type:'hasMany', model:'INV.model.ProductUm', associatedKey:'ums', name:'ums'}
-    ]
+        {type:'hasMany', model:'INV.model.ProductUm', associatedKey:'um', name:'um'}
+    ],
+    idgen: 'uuid'
 });

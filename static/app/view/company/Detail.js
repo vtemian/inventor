@@ -16,7 +16,6 @@ Ext.define('INV.view.company.Detail', {
                     items:[{xtype:'fieldset',
                             title: '<p style="font-size:18px">Company</p>',
                             style: {border:'none'},
-                            border:false,
                             items: [{xtype:'textfield', name:'name', fieldLabel: 'Name'},
                                      {xtype:'textfield', name:'vat', fieldLabel: 'VAT'},
                                      {xtype:'textfield', name:'regcom', fieldLabel: 'RegCOM'}
@@ -90,6 +89,6 @@ Ext.define('INV.view.company.Detail', {
     },
 
     getCompanyId: function() {
-        //return this.down('form').getRecord().data['id'];
+        return this.down('form').getRecord().data['id'];
     }
 });

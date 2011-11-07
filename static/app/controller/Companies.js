@@ -42,13 +42,13 @@ Ext.define('INV.controller.Companies', {
     },
 
     onLaunch: function() {
-        console.log('companies launch');
 
+        console.log('companies launch');
     },
 
     onCompaniesStoreLoad: function(){
+
         notification.msg('LOAD Companies','store event');
-        console.log(this.getCompaniesStore());
         if (this.getCompaniesStore().getCount()) this.getCompanyList().getSelectionModel().select(0);
     },
 
@@ -58,14 +58,23 @@ Ext.define('INV.controller.Companies', {
     },
 
     onAddCompanyClick: function(button){
-        console.log('fire event for New Company');
+
+        var store = this.getProductsStore(),
+            grid = button.up('grid');
+
+        company = Ext.create('INV.model.Company');
+
+        store.add(company);
+        grid.getView().select(company);
     },
 
     onDeleteCompanyClick: function(button){
+
         console.log('fire event for Delete Company');
     },
 
     onAddInlineItemClick: function(button){
+
         var grid = button.up('grid'),
             store = grid.store,
             model = store.model,
@@ -80,15 +89,14 @@ Ext.define('INV.controller.Companies', {
         grid.editingPlugin.cancelEdit();
 
         newRecord =  Ext.create(model);
-        console.log(newRecord);
+        console.log('onAddInlineItemClick');
 
         store.insert(store.getCount() + 1, newRecord);
         //store.sync({callback:function(){console.log('store SYNC CALLBACK dupa ADD');notification.msg('ADD','SYNC CALLBACK dupa ADD')}});
         grid.editingPlugin.startEdit(store.getCount()-1, 1);
     },
 
-    onDeleteInlineItemClick: function(view, cell, recordIndex, cellIndex, e){
-        //var store = this.getCompanyAddressesStore();
+    onDeleteInlineItemClick: function(view, cell, recordIndex, cellIndex, e){//var store = this.getCompanyAddressesStore();
 
         view.editingPlugin.cancelEdit();
 

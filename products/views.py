@@ -10,33 +10,46 @@ from products.models import *
 def handler(request):
 
     handlers = {'POST'  : _create,
-                'GET'   : _read,
+                'GET'   : _productRead,
                 'PUT'   : _update,
                 'DELETE': _delete,}
     return handlers[request.method].__call__(request)
 
-def _read(request):
+def umHandler(request):
+
+    handlers = {'POST'  : _create,
+                'GET'   : _umRead,
+                'PUT'   : _update,
+                'DELETE': _delete,}
+    return handlers[request.method].__call__(request)
+
+def _create(request):
+
+    print request.method
+
+def _productRead(request):
 
     response = Product.objects.asDict()
     response['success'] = True
 
     #_initialdata()
 
-
-    print json.dumps(response, indent=4)
+    #print json.dumps(response, indent=4)
     return HttpResponse(simplejson.dumps(response))
 
-def _create(request):
+def _umRead(request):
 
-    print request.method
+    response = UM.objects.asDict()
+    response['success'] = True
 
-
-def _delete(request):
-
-    print request.method
-
+    #print response
+    return HttpResponse(simplejson.dumps(response))
 
 def _update(request):
+
+    print request.method
+
+def _delete(request):
 
     print request.method
 
@@ -56,14 +69,19 @@ def _initialdata():
     b = Product.objects.create(code="ax123",
                            name="bomboane roz",
                            description="11sfqsger111",
+                           modified=False,
+                           notes='some notes and observations',
+                           barCode=1231231231231233,
                            category = Category.objects.get(pk=1))
     c = Product.objects.create(code="db443",
                            name="alt produs important",
                            description="111gqegrq222",
-                           modified=true,
+                           modified=True,
+                           notes='notes and observations',
+                           barCode=1231231231231233,
                            category = Category.objects.get(pk=2))
-    b.ums.add(m,n)
-    c.ums.add(n)
+    b.um.add(m,n)
+    c.um.add(n)
 
 
 @csrf_exempt

@@ -2,7 +2,7 @@ Ext.define('INV.store.Companies', {
     extend: 'Ext.data.Store',
     model: 'INV.model.Company',
     autoLoad: true,
-    //autoSync:true,
+    autoSync:true,
 
     remoteSort: true,
     sorters: [

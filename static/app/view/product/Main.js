@@ -27,6 +27,7 @@ Ext.define('INV.view.product.Main', {
                          layout: 'fit',
                          border: false,
                          split: true,
+                         width:350,
                          items: [{
                             xtype: 'productlist'
                         }]
