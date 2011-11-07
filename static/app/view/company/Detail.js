@@ -16,6 +16,7 @@ Ext.define('INV.view.company.Detail', {
                     items:[{xtype:'fieldset',
                             title: '<p style="font-size:18px">Company</p>',
                             style: {border:'none'},
+                            width: 600,
                             items: [{xtype:'textfield', name:'name', fieldLabel: 'Name'},
                                      {xtype:'textfield', name:'vat', fieldLabel: 'VAT'},
                                      {xtype:'textfield', name:'regcom', fieldLabel: 'RegCOM'}
@@ -24,7 +25,6 @@ Ext.define('INV.view.company.Detail', {
                     },{
                         xtype:'fieldset',
                         title: '<p style="font-size:18px">Address, Contact, Bank</p>',
-                        collapsible:true,
                         style: {border:'none'},
                         border:false,
                         items: [{

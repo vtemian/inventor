@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotModified
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
@@ -7,9 +7,10 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from products.models import *
 
+@csrf_exempt
 def handler(request):
 
-    handlers = {'POST'  : _create,
+    handlers = {'POST'  : _productCreate,
                 'GET'   : _productRead,
                 'PUT'   : _update,
                 'DELETE': _delete,}
@@ -17,15 +18,41 @@ def handler(request):
 
 def umHandler(request):
 
-    handlers = {'POST'  : _create,
+    handlers = {'POST'  : _umCreate,
                 'GET'   : _umRead,
                 'PUT'   : _update,
                 'DELETE': _delete,}
     return handlers[request.method].__call__(request)
 
-def _create(request):
+@csrf_exempt
+def _productCreate(request):
 
-    print request.method
+    try:
+        data =[]
+        postData = json.loads(request.read())
+        if isinstance(postData, dict) and postData.has_key('id') and postData.get('id') > 0:
+            print postData
+            print postData.get('id')
+            product = Product.objects.create(
+                #dumy code generation
+                code=postData.get('id')
+            )
+
+            data = {'id': postData.get('id'), 'pk': product.pk, 'name':'', 'code':postData.get('id'), \
+                    'description':'', 'category':'', 'modified':'false', 'notes':'', 'barcode':'', 'um':'' }
+
+
+    except Exception, err:
+        print '[ err ] Exception at productsCreate: \t',
+        print err
+
+
+
+    #print product.id
+
+    response = simplejson.dumps({"success": True, "data":data})
+    return HttpResponse(response, mimetype="application/json")
+
 
 def _productRead(request):
 
@@ -36,6 +63,11 @@ def _productRead(request):
 
     #print json.dumps(response, indent=4)
     return HttpResponse(simplejson.dumps(response))
+
+def _umCreate(request):
+    
+    print request.method
+
 
 def _umRead(request):
 

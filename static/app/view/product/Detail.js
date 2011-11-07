@@ -37,30 +37,8 @@ Ext.define('INV.view.product.Detail', {
                                     triggerAction: 'all'
                                 }
                             ]
-                        }],
-                    buttons: [{
-                                    text: 'Reset',
-                                    handler: function() {
-                                        this.up('form').getForm().reset();
-                                    }
-                                }, {
-                                    text: 'Submit',
-                                    formBind: true, //only enabled once the form is valid
-                                    disabled: true,
-                                    handler: function() {
-                                        var form = this.up('form').getForm();
-                                        if (form.isValid()) {
-                                            form.submit({
-                                                success: function(form, action) {
-                                                   Ext.Msg.alert('Success', action.result.msg);
-                                                },
-                                                failure: function(form, action) {
-                                                    Ext.Msg.alert('Failed', action.result.msg);
-                                                }
-                                            });
-                                        }
-                                    }
-                                }]
+                        }]
+
                     },{
                     xtype:'fieldset',
                     title: '<p style="font-size:18px">Properties</p>',
@@ -85,8 +63,23 @@ Ext.define('INV.view.product.Detail', {
                     }
             ];
 
+        this.dockedItems = {
+                        dock:'bottom',
+                        xtype:'toolbar',
+                        items: [{
+                                    text: 'Reset',
+                                    action:'reset'
+                                }, {
+                                    text: 'Submit',
+                                    action:'submit',
+                                    formBind: true, //only enabled once the form is valid
+                                    disabled: true
+                                }]};
+
         this.callParent(arguments);
     },
+
+
 
     loadRecord: function(record) {
         this.down('form').loadRecord(record);

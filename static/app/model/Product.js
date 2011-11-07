@@ -16,6 +16,5 @@ Ext.define('INV.model.Product', {
     associations:[
         {type:'belongsTo', model:'INV.model.ProductCategory', associationKey:'category', name:'category'},
         {type:'hasMany', model:'INV.model.ProductUm', associatedKey:'um', name:'um'}
-    ],
-    idgen: 'uuid'
+    ]
 });

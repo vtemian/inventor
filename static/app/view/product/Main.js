@@ -42,8 +42,8 @@ Ext.define('INV.view.product.Main', {
                                     minheight: 100,
                                     bodyPadding:10,
                                     items: [
-                                        {xtype:'textfield', name:'code', fieldLabel: 'Code'},
-                                        {xtype:'textfield', name:'name', fieldLabel: 'Name'}
+                                        {xtype:'textfield', name:'code', fieldLabel: 'Here will be a tabpanel with grids'},
+                                        {xtype:'textfield', name:'name', fieldLabel: 'Dumy related data'}
                                     ]
                             }]
                     }

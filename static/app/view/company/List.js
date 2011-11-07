@@ -42,12 +42,20 @@ Ext.define('INV.view.company.List' ,{
 
         }];
 
-        this.on('viewready',function(){
-            console.log('nr de inregistrari: ',this.store.getCount());
-            if (this.store.getCount()) this.getView().select(0);
-        });
-
         this.callParent(arguments);
+
+        this.on('viewready',this.viewReady);
+        this.mon(this.getStore(), 'load', this.storeLoaded, this);
+    },
+
+    viewReady: function(){
+
+            if (this.store.getCount() > 0 && this.rendered) this.getView().select(0);
+    },
+
+    storeLoaded: function(store) {
+
+        if (store.getCount() > 0 && this.rendered) this.getView().select(0);
     }
 });
 

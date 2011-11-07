@@ -48,8 +48,7 @@ Ext.define('INV.controller.Companies', {
 
     onCompaniesStoreLoad: function(){
 
-        notification.msg('LOAD Companies','store event');
-        if (this.getCompaniesStore().getCount()) this.getCompanyList().getSelectionModel().select(0);
+        console.log('companies Store Load');
     },
 
     onCompanySelect: function(selModel, selection) {

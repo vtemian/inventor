@@ -2,7 +2,7 @@ Ext.define('INV.store.Products', {
     extend: 'Ext.data.Store',
     model: 'INV.model.Product',
     autoLoad: true,
-    autoSync:true,
+    //autoSync:true,
 
     remoteSort: true,
     sorters: [
@@ -14,6 +14,7 @@ Ext.define('INV.store.Products', {
     proxy: {
         type: 'rest',
         url: '/products/',
+        appendId: false,
         reader: {
             type: 'json',
             root: 'data',

@@ -29,6 +29,12 @@ Ext.define('INV.controller.Products', {
             'productlist button[action=delete]': {
                 click: this.onAddProductClick
             },
+            'productdetail button[action=submit]':{
+                click: this.onDetailFormSubmitClick
+            },
+            'productdetail button[action=reset]':{
+                click: this.onDetailFormResetClick
+            },
             'inlinegrid button[action=add]': {
                 click: this.onAddCategoryClick
             },
@@ -60,7 +66,7 @@ Ext.define('INV.controller.Products', {
 
     onProductSelect: function(selModel, selection) {
 
-        this.getProductDetail().loadRecord(selection[0]);
+        if (!Ext.isEmpty(selection)) this.getProductDetail().loadRecord(selection[0]);
     },
 
     onAddProductClick: function(button){
@@ -69,14 +75,44 @@ Ext.define('INV.controller.Products', {
             grid = button.up('grid');
 
         product = Ext.create('INV.model.Product');
+        while (Ext.isEmpty(product.id)){
+            product = Ext.create('INV.model.Product');
+            console.log(product.id);
+        }
+        console.log('dupa WHILE',product.id);
 
         store.add(product);
+        store.sync({success: function(batch, options){
+            //console.log('store SYNC success dupa ADD');
+            //console.log(batch);
+        }});
         grid.getView().select(product);
     },
 
     onDeleteProductClick: function(button){
 
         console.log('fire event for Delete Product');
+    },
+
+    onDetailFormSubmitClick: function(button){
+        var form = button.up('panel').down('form').getForm();
+        
+        if (form.isValid()) {
+            form.submit({
+                success: function(form, action) {
+                   Ext.Msg.alert('Success', action.result.msg);
+                },
+                failure: function(form, action) {
+                    Ext.Msg.alert('Failed', action.result.msg);
+                }
+            });
+        }
+    },
+
+    onDetailFormResetClick: function(button){
+        var form = button.up('panel').down('form');
+
+        form.getForm().reset();
     },
 
     onAddCategoryClick: function(button){
