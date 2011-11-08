@@ -29,7 +29,6 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add = True)
     updated = models.DateTimeField(auto_now = True)
     modified = models.BooleanField(blank=True)
-    deleted = models.BooleanField()
     objects = ProductManager()
 
     def delete(self, using=None):

@@ -35,8 +35,7 @@ def _productCreate(request):
             print postData.get('id')
             product = Product.objects.create(
                 #dumy code generation
-                code=postData.get('id'),
-                deleted = False
+                code=postData.get('id')
             )
 
             data = {'id': postData.get('id'), 'pk': product.pk, 'name':'', 'code':postData.get('id'), \
@@ -52,9 +51,6 @@ def _productCreate(request):
 
 
 def _productRead(request):
-
-    start = int(request.GET.get("start"))
-    limit = int(request.GET.get("limit"))
 
     response = Product.objects.asDict()
     response['success'] = True

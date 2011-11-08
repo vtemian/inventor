@@ -105,6 +105,7 @@ Ext.define('INV.controller.Products', {
         store.removeAt(recordIndex);
         store.sync({success: function(batch, options){
             console.log('record deleted');
+            //todo: remove record from detail form
         }},this);
     },
 
@@ -126,7 +127,7 @@ Ext.define('INV.controller.Products', {
     onDetailFormResetClick: function(button){
         var form = button.up('panel').down('form'),
             record = form.getRecord();
-        
+        console.log(record);
         form.getForm().reset();
     },
 

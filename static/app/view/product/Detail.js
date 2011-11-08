@@ -83,7 +83,8 @@ Ext.define('INV.view.product.Detail', {
 
     loadRecord: function(record) {
         this.down('form').loadRecord(record);
-        //this.down('#ums').store.loadData(record.umStore.data.items, false);
+        //when a new record is loaded there are no associated stores
+        if (record.umStore) this.down('#ums').store.loadData(record.umStore.data.items, false);
     },
 
     getProductId: function() {

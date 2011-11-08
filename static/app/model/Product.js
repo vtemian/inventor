@@ -7,11 +7,14 @@ Ext.define('INV.model.Product', {
         {name:'name', type: 'string', mapping:'name'},
         {name:'description', type: 'string', mapping:'description'},
         {name:'category', type: 'string', mapping: 'category.name'},
-
-        {name:'modified', type: 'boolean', mapping:'modified'},
+        {name:'um', mapping: 'um'},
         {name:'notes', type: 'string', mapping:'notes'},
         {name:'barcode', type: 'string', mapping:'barcode'},
-        {name:'um', mapping: 'um'}
+        {name:'barcode', type: 'string', mapping:'barcode'},
+        {name:'created', type: 'date', mapping:'barcode'},
+        {name:'updated', type: 'date', mapping:'barcode'},
+        {name:'modified', type: 'boolean', mapping:'modified'}
+
         //{name:'properties', mapping: 'fields.properties', persist: true}
     ],
     associations:[
