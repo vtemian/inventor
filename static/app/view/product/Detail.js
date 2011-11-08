@@ -22,11 +22,19 @@ Ext.define('INV.view.product.Detail', {
                                 {xtype:'textfield', name:'code', fieldLabel: 'Code'},
                                 {xtype:'textfield', name:'name', fieldLabel: 'Name'},
                                 {xtype:'textfield', name:'description', fieldLabel: 'Description'},
-                                {xtype:'textfield', name:'category', fieldLabel: 'Category'},
+                                {
+                                    xtype:'combo',
+                                    name:'category',
+                                    fieldLabel: 'Category',
+                                    store:'ProductCategories',
+                                    valueField:'id',
+                                    displayField:'name'
+                                },
                                 {xtype:'textfield', name:'modified', fieldLabel: 'Modified'},
                                 {xtype:'textfield', name:'notes', fieldLabel: 'Notes'},
                                 {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'},
-                                {   xtype:'combo',
+                                {
+                                    xtype:'combo',
                                     name:'um',
                                     fieldLabel: 'UM',
                                     multiSelect: true,
@@ -39,27 +47,6 @@ Ext.define('INV.view.product.Detail', {
                             ]
                         }]
 
-                    },{
-                    xtype:'fieldset',
-                    title: '<p style="font-size:18px">Properties</p>',
-                    style: {border:'none'},
-                    border:false,
-                    items: [{
-                            xtype: 'fieldcontainer',
-                            fieldLabel: 'Variety',
-                            //padding: 10,
-                            width:600,
-                            items: [{
-                                    xtype:'inlinegrid',
-                                    id: 'ums',
-                                    store:'ProductUms',
-                                    maxWidth:400,
-                                    //height:100,
-                                    columns:[{dataIndex: 'id', width:20},
-                                        {dataIndex: 'name', editor: 'textfield'}
-                                    ]
-                                }]
-                        }]
                     }
             ];
 
@@ -83,8 +70,6 @@ Ext.define('INV.view.product.Detail', {
 
     loadRecord: function(record) {
         this.down('form').loadRecord(record);
-        //when a new record is loaded there are no associated stores
-        if (record.umStore) this.down('#ums').store.loadData(record.umStore.data.items, false);
     },
 
     getProductId: function() {

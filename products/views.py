@@ -22,7 +22,15 @@ def umHandler(request):
     handlers = {'POST'  : _umCreate,
                 'GET'   : _umRead,
                 'PUT'   : _umUpdate,
-                'DELETE': _umDelete,}
+                'DELETE': _umDelete}
+    return handlers[request.method].__call__(request)
+
+def categoriesHandler(request):
+
+    handlers = {'POST'  : _categoryCreate,
+                'GET'   : _categoryRead,
+                'PUT'   : _categoryUpdate,
+                'DELETE': _categoryDelete}
     return handlers[request.method].__call__(request)
 
 @csrf_exempt
@@ -31,9 +39,7 @@ def _productCreate(request):
     data = []
     try:
         postData = json.loads(request.read())
-        if isinstance(postData, dict) and postData.has_key('id') and postData.get('id') > 0:
-            print postData
-            print postData.get('id')
+        if isinstance(postData, dict) and postData.has_key('id'):
             product = Product.objects.create(
                 #dumy code generation
                 code=postData.get('id')
@@ -42,7 +48,6 @@ def _productCreate(request):
             data = {'id': postData.get('id'), 'pk': product.pk, 'name':'', 'code':postData.get('id'), \
                     'description':'', 'category':'', 'modified':'false', 'notes':'', 'barcode':'', 'um':'' }
 
-        
     except Exception, err:
         print '[ err ] Exception at productsCreate: \t',
         print err
@@ -82,10 +87,11 @@ def _productUpdate(request, product_id):
 def _productDelete(request):
     
     id = json.loads(request.read())
+    print id
     product = get_object_or_404(Product, pk = id['id']);
     product.delete()
     
-    return HttpResponse({'success':'true'}, mimetype='application/json')
+    return HttpResponse(simplejson.dumps({'success':'true'}), mimetype='application/json')
 
 
 def _umCreate(request):
@@ -108,6 +114,27 @@ def _umUpdate(request):
 
 def _umDelete(request):
     
+    pass
+
+def _categoryCreate(request):
+
+    pass
+
+def _categoryRead(request):
+
+    response = Category.objects.asDict()
+    response['success'] = True
+
+    #print json.dumps(response, indent=4)
+    return HttpResponse(simplejson.dumps(response))
+
+def _categoryUpdate(request):
+
+    pass
+
+
+def _categoryDelete(request):
+
     pass
 
 def _initialdata():
@@ -141,42 +168,4 @@ def _initialdata():
     c.um.add(n)
 
 
-@csrf_exempt
-def categories_list(request):
-    categories_list = ProductCategory.objects.all()
-    data = '{"succes" : true, "total": %s, "%s": %s}' % \
-           (categories_list.count(), 'data',
-            serializers.serialize('json', categories_list))
-    return HttpResponse(data, mimetype="application/json")
 
-@csrf_exempt
-def products_list(request):
-
-    required = ['start', 'limit']
-    for item in required:
-        if not request.GET.has_key(item):
-            return None
-
-    products_list = Product.objects.select_related('category','properties').all()
-
-    if request.GET.has_key('sort'):
-        sort = json.loads(request.GET.get('sort'))
-        for s in sort:
-            if s['direction'] == 'DESC':
-                products_list.order_by('-' + s['property'])
-            else:
-                products_list.order_by(s['property'])
-            break
-
-    start = int(request.GET.get("start"))
-    limit = int(request.GET.get("limit"))
-    total = products_list.count()
-    if start > total:
-        return None
-
-    products_list = products_list[start:][:limit]
-
-    data = '{"succes" : true, "total": %s, "%s": %s}' % \
-           (products_list.count(), 'data',
-            serializers.serialize('json', products_list, relations = ('category','properties')))
-    return HttpResponse(data, mimetype="application/json")

@@ -6,6 +6,7 @@ class Category(models.Model):
 
     name = models.CharField(max_length = 20)
     description = models.CharField(max_length = 60)
+    objects = ProductManager()
 
 class UM(models.Model):
 

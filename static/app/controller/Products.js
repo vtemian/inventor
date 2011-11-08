@@ -65,8 +65,12 @@ Ext.define('INV.controller.Products', {
     },
 
     onProductSelect: function(selModel, selection) {
+        var detail = this.getProductDetail();
 
-        if (!Ext.isEmpty(selection)) this.getProductDetail().loadRecord(selection[0]);
+        if (!Ext.isEmpty(selection)) detail.loadRecord(selection[0]);
+
+        //set focus on the first field from the detail form
+        detail.down('form').down('textfield').focus();
     },
 
     onAddProductClick: function(button){
@@ -80,17 +84,11 @@ Ext.define('INV.controller.Products', {
 
         store.add(product);
         store.sync({success: function(batch, options){
-            console.log('options: ',options);
-            console.log('BATCH:',batch);
+
             product = store.getById(product.id);
             product.beginEdit();
-            console.log('b4 edit: ',product.copy());
             product.set('id', Ext.JSON.decode(batch.operations[0].response.responseText).data.pk);
-            product.set('name', Ext.JSON.decode(batch.operations[0].response.responseText).data.pk);
-
             product.commit(true);
-            //product.endEdit(true);
-            console.log('after commit: ',product.copy());
 
             grid.getView().select(product);
         }},this);
@@ -105,7 +103,8 @@ Ext.define('INV.controller.Products', {
         store.removeAt(recordIndex);
         store.sync({success: function(batch, options){
             console.log('record deleted');
-            //todo: remove record from detail form
+
+            grid.getView().select(0);
         }},this);
     },
 
@@ -126,9 +125,22 @@ Ext.define('INV.controller.Products', {
 
     onDetailFormResetClick: function(button){
         var form = button.up('panel').down('form'),
+            grid = this.getProductList(),
+            store = this.getProductsStore(),
             record = form.getRecord();
         console.log(record);
-        form.getForm().reset();
+        if (record.dataSave){
+            store.remove(record)
+            store.sync({success: function(batch, options){
+                console.log('new record deleted');
+
+                grid.getView().select(0);
+            }},this);
+        }
+        else {
+            form.getForm().reset();
+        }
+
     },
 
     onAddCategoryClick: function(button){
