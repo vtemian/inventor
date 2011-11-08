@@ -40,20 +40,16 @@ def _productCreate(request):
     try:
         postData = json.loads(request.read())
         if isinstance(postData, dict) and postData.has_key('id'):
-            product = Product.objects.create(
-                #dumy code generation
-                code=postData.get('id')
-            )
-
-            data = {'id': postData.get('id'), 'pk': product.pk, 'name':'', 'code':postData.get('id'), \
-                    'description':'', 'category':'', 'modified':'false', 'notes':'', 'barcode':'', 'um':'' }
-
+            product = Product.objects.create(code=postData.get("id"))
+    
     except Exception, err:
         print '[ err ] Exception at productsCreate: \t',
         print err
-
-    response = simplejson.dumps({"success": True, "data":data})
-    return HttpResponse(response, mimetype="application/json")
+    
+    data = Product.objects.asDict(Product.objects.filter(pk=product.id))['data'][0]
+    data['pk'] = data['id']
+    data['id'] = postData.get("id")
+    return HttpResponse(simplejson.dumps({"success": True, "data": data}), mimetype="application/json")
 
 
 def _productRead(request):
@@ -81,7 +77,7 @@ def _productRead(request):
 
 def _productUpdate(request, product_id):
 
-    pass
+    print request.read()
 
 
 def _productDelete(request):
