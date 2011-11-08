@@ -83,14 +83,17 @@ Ext.define('INV.controller.Products', {
         }
 
         store.add(product);
+        button.disable();
         store.sync({success: function(batch, options){
 
             product = store.getById(product.id);
-            product.beginEdit();
-            product.set('id', Ext.JSON.decode(batch.operations[0].response.responseText).data.pk);
-            product.commit(true);
-
-            grid.getView().select(product);
+            if (product){
+                product.beginEdit();
+                product.set('id', Ext.JSON.decode(batch.operations[0].response.responseText).data.pk);
+                product.commit(true);
+                
+                grid.getView().select(product);
+            }
         }},this);
 
     },
