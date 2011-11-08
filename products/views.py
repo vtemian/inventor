@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseNotModified
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils import simplejson
 from django.core import serializers
@@ -64,21 +64,17 @@ def _productRead(request):
     #print json.dumps(response, indent=4)
     return HttpResponse(simplejson.dumps(response))
 
-def _productUpdate(request):
+def _productUpdate(request, product_id):
 
     print request
 
-def _productDelete(request):
+def _productDelete(request, product_id):
 
-    try:
-        postData = json.loads(request.read())
-        if isinstance(postData, dict) and postData.has_key('id'):
-            Product.objects.get(pk=postData['id']).softDelete()
-        jsonObj = simplejson.dumps({'success': True})
-        return HttpResponse(jsonObj, mimetype='application/json')
+    product = get_object_or_404( Product, pk = product_id)
+    product.delete()
 
-    except Exception, err:
-        print err
+    return HttpResponse({'success':'true'}, mimetype='application/json')
+
 
 def _umCreate(request):
     

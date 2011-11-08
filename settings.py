@@ -77,7 +77,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'reversion',
+    'reversion',
     'inventor.products',
     'inventor.companies',
     'wadofstuff',

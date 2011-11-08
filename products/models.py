@@ -32,5 +32,14 @@ class Product(models.Model):
     deleted = models.BooleanField()
     objects = ProductManager()
 
-    def softDelete(self):
-        print self.active
+    def delete(self, using=None):
+        # save last state as a revision
+        with reversion.revision:
+            self.save()
+
+        with reversion.revision:
+            super(Product, self).delete(using)
+
+if not reversion.is_registered(Product):
+    reversion.register(Product)
+    reversion.register(UM)
