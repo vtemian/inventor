@@ -9,19 +9,20 @@ from products.models import *
 
 @csrf_exempt
 def handler(request):
-
+    
     handlers = {'POST'  : _productCreate,
                 'GET'   : _productRead,
                 'PUT'   : _productUpdate,
-                'DELETE': _productDelete,}
+                'DELETE': _productDelete}
+        
     return handlers[request.method].__call__(request)
 
 def umHandler(request):
 
     handlers = {'POST'  : _umCreate,
                 'GET'   : _umRead,
-                'PUT'   : _update,
-                'DELETE': _delete,}
+                'PUT'   : _umUpdate,
+                'DELETE': _umDelete,}
     return handlers[request.method].__call__(request)
 
 @csrf_exempt
@@ -52,23 +53,38 @@ def _productCreate(request):
 
 def _productRead(request):
 
-    response = Product.objects.asDict()
+    direction = {"ASC": '', "DESC": "-"}
+    
+    start = int(request.GET.get("start"))
+    limit = int(request.GET.get("limit"))
+    sort  = json.loads(request.GET.get("sort"))
+    sort.reverse()
+    
+    for field in sort:
+        objects = Product.objects.all().order_by(direction[field['direction']] + field['property'])
+    objects = objects[start:start+limit]
+    response = Product.objects.asDict(objects)
+
     response['success'] = True
+    response['total'] = Product.objects.all().count()
 
     #_initialdata()
 
     #print json.dumps(response, indent=4)
     return HttpResponse(simplejson.dumps(response))
 
+
 def _productUpdate(request, product_id):
 
-    print request
+    pass
 
-def _productDelete(request, product_id):
 
-    product = get_object_or_404( Product, pk = product_id)
+def _productDelete(request):
+    
+    id = json.loads(request.read())
+    product = get_object_or_404(Product, pk = id['id']);
     product.delete()
-
+    
     return HttpResponse({'success':'true'}, mimetype='application/json')
 
 
@@ -85,13 +101,14 @@ def _umRead(request):
     #print response
     return HttpResponse(simplejson.dumps(response))
 
-def _update(request):
+def _umUpdate(request):
+    
+    pass
 
-    print request.method
 
-def _delete(request):
-
-    print request.method
+def _umDelete(request):
+    
+    pass
 
 def _initialdata():
     a = Category.objects.create(name="catunu",

@@ -22,7 +22,7 @@ class Product(models.Model):
     code = models.CharField(max_length = 10)
     name = models.CharField(max_length = 50)
     description = models.TextField()
-    category = models.ForeignKey(Category, null=True, related_name = 'category')
+    category = models.ForeignKey(Category, null=True, related_name = '+')
     um = models.ManyToManyField(UM, related_name = '+')
     notes = models.TextField()
     barCode = models.CharField(max_length = 20)

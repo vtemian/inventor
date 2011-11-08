@@ -10,6 +10,10 @@ Ext.define('INV.store.Products', {
         {
             property : 'code',
             direction: 'ASC'
+        },
+        {
+            property : 'name',
+            direction: 'ASC'
         }
     ],
     proxy: {
