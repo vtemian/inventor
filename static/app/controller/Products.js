@@ -27,7 +27,7 @@ Ext.define('INV.controller.Products', {
                 click: this.onAddProductClick
             },
             'productlist button[action=delete]': {
-                click: this.onAddProductClick
+                click: this.onDeleteProductClick
             },
             'productdetail button[action=submit]':{
                 click: this.onDetailFormSubmitClick
@@ -70,28 +70,42 @@ Ext.define('INV.controller.Products', {
     },
 
     onAddProductClick: function(button){
-
         var store = this.getProductsStore(),
             grid = button.up('grid');
 
         product = Ext.create('INV.model.Product');
-        while (Ext.isEmpty(product.id)){
+        while (isNaN(product.id)) {
             product = Ext.create('INV.model.Product');
-            console.log(product.id);
         }
-        console.log('dupa WHILE',product.id);
 
         store.add(product);
         store.sync({success: function(batch, options){
-            //console.log('store SYNC success dupa ADD');
-            //console.log(batch);
-        }});
-        grid.getView().select(product);
+            console.log('options: ',options);
+            console.log('BATCH:',batch);
+            product = store.getById(product.id);
+            product.beginEdit();
+            console.log('b4 edit: ',product.copy());
+            product.set('id', Ext.JSON.decode(batch.operations[0].response.responseText).data.pk);
+            product.set('name', Ext.JSON.decode(batch.operations[0].response.responseText).data.pk);
+
+            product.commit(true);
+            //product.endEdit(true);
+            console.log('after commit: ',product.copy());
+
+            grid.getView().select(product);
+        }},this);
+
     },
 
     onDeleteProductClick: function(button){
+        var store = this.getProductsStore(),
+            grid = button.up('grid');
 
-        console.log('fire event for Delete Product');
+        recordIndex = grid.getSelectionModel().getSelection()[0].index
+        store.removeAt(recordIndex);
+        store.sync({success: function(batch, options){
+            console.log('record deleted');
+        }},this);
     },
 
     onDetailFormSubmitClick: function(button){
@@ -110,8 +124,9 @@ Ext.define('INV.controller.Products', {
     },
 
     onDetailFormResetClick: function(button){
-        var form = button.up('panel').down('form');
-
+        var form = button.up('panel').down('form'),
+            record = form.getRecord();
+        
         form.getForm().reset();
     },
 

@@ -1,5 +1,6 @@
 Ext.define('INV.model.Product', {
     extend: 'Ext.data.Model',
+    idgen:'uuid',
     fields: [
         {name:'id', type:'int', mapping:'id'},
         {name:'code', type: 'string', mapping:'code'},

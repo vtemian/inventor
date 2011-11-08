@@ -12,8 +12,8 @@ def handler(request):
 
     handlers = {'POST'  : _productCreate,
                 'GET'   : _productRead,
-                'PUT'   : _update,
-                'DELETE': _delete,}
+                'PUT'   : _productUpdate,
+                'DELETE': _productDelete,}
     return handlers[request.method].__call__(request)
 
 def umHandler(request):
@@ -27,34 +27,34 @@ def umHandler(request):
 @csrf_exempt
 def _productCreate(request):
 
+    data = []
     try:
-        data =[]
         postData = json.loads(request.read())
         if isinstance(postData, dict) and postData.has_key('id') and postData.get('id') > 0:
             print postData
             print postData.get('id')
             product = Product.objects.create(
                 #dumy code generation
-                code=postData.get('id')
+                code=postData.get('id'),
+                deleted = False
             )
 
             data = {'id': postData.get('id'), 'pk': product.pk, 'name':'', 'code':postData.get('id'), \
                     'description':'', 'category':'', 'modified':'false', 'notes':'', 'barcode':'', 'um':'' }
 
-
+        
     except Exception, err:
         print '[ err ] Exception at productsCreate: \t',
         print err
-
-
-
-    #print product.id
 
     response = simplejson.dumps({"success": True, "data":data})
     return HttpResponse(response, mimetype="application/json")
 
 
 def _productRead(request):
+
+    start = int(request.GET.get("start"))
+    limit = int(request.GET.get("limit"))
 
     response = Product.objects.asDict()
     response['success'] = True
@@ -63,6 +63,22 @@ def _productRead(request):
 
     #print json.dumps(response, indent=4)
     return HttpResponse(simplejson.dumps(response))
+
+def _productUpdate(request):
+
+    print request
+
+def _productDelete(request):
+
+    try:
+        postData = json.loads(request.read())
+        if isinstance(postData, dict) and postData.has_key('id'):
+            Product.objects.get(pk=postData['id']).softDelete()
+        jsonObj = simplejson.dumps({'success': True})
+        return HttpResponse(jsonObj, mimetype='application/json')
+
+    except Exception, err:
+        print err
 
 def _umCreate(request):
     

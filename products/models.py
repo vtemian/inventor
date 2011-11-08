@@ -26,6 +26,11 @@ class Product(models.Model):
     um = models.ManyToManyField(UM, related_name = '+')
     notes = models.TextField()
     barCode = models.CharField(max_length = 20)
-    modified = models.BooleanField()
-    active = models.BooleanField()
+    created = models.DateTimeField(auto_now_add = True)
+    updated = models.DateTimeField(auto_now = True)
+    modified = models.BooleanField(blank=True)
+    deleted = models.BooleanField()
     objects = ProductManager()
+
+    def softDelete(self):
+        print self.active
