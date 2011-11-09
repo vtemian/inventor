@@ -53,4 +53,3 @@ Ext.define('INV.view.company.Main', {
         this.callParent(arguments);
     }
 });
-

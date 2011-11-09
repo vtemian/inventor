@@ -1,8 +1,8 @@
-Ext.define('INV.view.company.List' ,{
+Ext.define('INV.view.customer.List' ,{
     extend: 'Ext.grid.Panel',
-    alias : 'widget.companylist',
+    alias : 'widget.customerlist',
 
-    store: 'Companies',
+    store: 'Customers',
 
     layout: 'fit',
     autoShow: true,
@@ -22,7 +22,7 @@ Ext.define('INV.view.company.List' ,{
         
         this.dockedItems = [{
             xtype: 'pagingtoolbar',
-            store: 'Companies',   // same store GridPanel is using
+            store: 'Customers',   // same store GridPanel is using
             dock: 'bottom',
             displayInfo: true
         },{
@@ -58,5 +58,3 @@ Ext.define('INV.view.company.List' ,{
         if (store.getCount() > 0 && this.rendered) this.getView().select(0);
     }
 });
-
-

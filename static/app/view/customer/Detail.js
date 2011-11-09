@@ -1,6 +1,6 @@
-Ext.define('INV.view.company.Detail', {
+Ext.define('INV.view.customer.Detail', {
     extend: 'Ext.panel.Panel',
-    alias : 'widget.companydetail',
+    alias : 'widget.customerdetail',
 
     layout: 'auto',
     autoShow: true,
@@ -34,7 +34,7 @@ Ext.define('INV.view.company.Detail', {
                                 width:600,
                                 items: [{
                                         xtype:'inlinegrid',
-                                        id: 'address',
+                                        id: 'customeraddress',
                                         store:'CompanyAddresses',
                                         maxWidth:400,
                                         //height:100,
@@ -50,7 +50,7 @@ Ext.define('INV.view.company.Detail', {
                                 width:600,
                                 items: [{
                                         xtype:'inlinegrid',
-                                        id: 'contact',
+                                        id: 'customercontact',
                                         store:'CompanyContacts',
                                         maxWidth:400,
                                         //height:100,
@@ -66,7 +66,7 @@ Ext.define('INV.view.company.Detail', {
                                 width:600,
                                 items: [{
                                         xtype:'inlinegrid',
-                                        id: 'bank',
+                                        id: 'customerbank',
                                         store:'CompanyBanks',
                                         maxWidth:400,
                                         //height:100,
@@ -83,9 +83,9 @@ Ext.define('INV.view.company.Detail', {
 
     loadRecord: function(record) {
         this.down('form').loadRecord(record);
-        this.down('#address').store.loadData(record.companyaddressStore.data.items, false);
-        this.down('#bank').store.loadData(record.companybankStore.data.items, false);
-        this.down('#contact').store.loadData(record.companycontactStore.data.items, false);
+        this.down('#customeraddress').store.loadData(record.customeraddressStore.data.items, false);
+        this.down('#customerbank').store.loadData(record.customerbankStore.data.items, false);
+        this.down('#customercontact').store.loadData(record.customercontactStore.data.items, false);
     },
 
     getCompanyId: function() {

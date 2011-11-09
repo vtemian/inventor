@@ -58,5 +58,3 @@ Ext.define('INV.view.company.List' ,{
         if (store.getCount() > 0 && this.rendered) this.getView().select(0);
     }
 });
-
-

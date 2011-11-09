@@ -1,33 +1,33 @@
-Ext.define('INV.controller.Companies', {
+Ext.define('INV.controller.Customers', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Companies', 'CompanyAddresses', 'CompanyBanks', 'CompanyContacts'],
+    stores: ['Customers', 'CompanyAddresses', 'CompanyBanks', 'CompanyContacts'],
 
-    models: ['Company', 'CompanyAddress', 'CompanyBank', 'CompanyContact'],
+    models: ['Customer', 'CompanyAddress', 'CompanyBank', 'CompanyContact'],
 
-    views: ['company.Main','company.List','company.Detail','ux.InlineGrid'],
+    views: ['customer.Main','customer.List','customer.Detail','ux.InlineGrid'],
 
     refs: [
         {
-            ref: 'companyDetail',
-            selector: 'companydetail'
+            ref: 'customerDetail',
+            selector: 'customerdetail'
         },{
-            ref: 'companyList',
-            selector: 'companylist'
+            ref: 'customerList',
+            selector: 'customerlist'
         }
     ],
 
     init: function() {
 
         this.control({
-            'companylist': {
-                selectionchange: this.onCompanySelect
+            'customerlist': {
+                selectionchange: this.onCustomerSelect
             },
-            'companylist button[action=add]': {
-                click: this.onAddCompanyClick
+            'customerlist button[action=add]': {
+                click: this.onAddCustomerClick
             },
-            'companylist button[action=delete]': {
-                click: this.onAddCompanyClick
+            'customerlist button[action=delete]': {
+                click: this.onAddCustomerClick
             },
             'inlinegrid button[action=add]': {
                 click: this.onAddInlineItemClick
@@ -37,40 +37,40 @@ Ext.define('INV.controller.Companies', {
             }
         });
 
-        this.getCompaniesStore().on('load', this.onCompaniesStoreLoad, this);
+        this.getCustomersStore().on('load', this.onCustomersStoreLoad, this);
 
     },
 
     onLaunch: function() {
 
-        console.log('companies launch');
+        console.log('customers launch');
     },
 
-    onCompaniesStoreLoad: function(){
+    onCustomersStoreLoad: function(){
 
-        console.log('companies Store Load');
+        console.log('customers Store Load');
     },
 
-    onCompanySelect: function(selModel, selection) {
+    onCustomerSelect: function(selModel, selection) {
         var record = selection[0];
 
-        this.getCompanyDetail().loadRecord(record);
+        this.getCustomerDetail().loadRecord(record);
     },
 
-    onAddCompanyClick: function(button){
+    onAddCustomerClick: function(button){
 
-        var store = this.getCompaniesStore(),
+        var store = this.getCustomersStore(),
             grid = button.up('grid');
 
-        company = Ext.create('INV.model.Company');
+        customer = Ext.create('INV.model.Customer');
 
-        store.add(company);
-        grid.getView().select(company);
+        store.add(customer);
+        grid.getView().select(customer);
     },
 
-    onDeleteCompanyClick: function(button){
+    onDeleteCustomerClick: function(button){
 
-        console.log('fire event for Delete Company');
+        console.log('fire event for Delete Customer');
     },
 
     onAddInlineItemClick: function(button){
@@ -78,7 +78,7 @@ Ext.define('INV.controller.Companies', {
         var grid = button.up('grid'),
             store = grid.store,
             model = store.model,
-            companyId = this.getCompanyDetail().getCompanyId(),
+            customerId = this.getCustomerDetail().getCustomerId(),
             maxRecords = 3;
 
         if (store.getCount() >= maxRecords) {
@@ -96,7 +96,7 @@ Ext.define('INV.controller.Companies', {
         grid.editingPlugin.startEdit(store.getCount()-1, 1);
     },
 
-    onDeleteInlineItemClick: function(view, cell, recordIndex, cellIndex, e){//var store = this.getCompanyAddressesStore();
+    onDeleteInlineItemClick: function(view, cell, recordIndex, cellIndex, e){
 
         view.editingPlugin.cancelEdit();
 

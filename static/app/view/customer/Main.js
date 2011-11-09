@@ -1,13 +1,13 @@
-Ext.define('INV.view.company.Main', {
+Ext.define('INV.view.customer.Main', {
     extend: 'Ext.panel.Panel',
-    alias : 'widget.companymain',
+    alias : 'widget.customermain',
 
     requires: [
-        'INV.view.company.List',
-        'INV.view.company.Detail'
+        'INV.view.customer.List',
+        'INV.view.customer.Detail'
     ],
 
-    title:'view company main.js',
+    title:'view customer main.js',
     layout: 'fit',
     autoShow: true,
 
@@ -29,13 +29,13 @@ Ext.define('INV.view.company.Main', {
                          width:350,
                          split: true,
                          items: [{
-                            xtype: 'companylist'
+                            xtype: 'customerlist'
                         }]
                     },{
                          region: 'center',
                          layout: 'border',
                          items: [{
-                                    xtype: 'companydetail',
+                                    xtype: 'customerdetail',
                                     region:'center'
                                 },{
                                     region: 'south',
@@ -53,4 +53,3 @@ Ext.define('INV.view.company.Main', {
         this.callParent(arguments);
     }
 });
-

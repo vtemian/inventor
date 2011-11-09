@@ -4,6 +4,7 @@ Ext.define('INV.view.Viewport', {
 
     requires: [
         'INV.view.company.Main',
+        'INV.view.customer.Main',
         'INV.view.product.Main',
         'INV.view.ux.Notify'
     ],
@@ -22,6 +23,10 @@ Ext.define('INV.view.Viewport', {
                         },{
                         xtype: 'productmain',
                         title:'Produse',
+                        layout:'fit'
+                        },{
+                        xtype: 'customermain',
+                        title:'Clienti',
                         layout:'fit'
                         }
                     ]}
