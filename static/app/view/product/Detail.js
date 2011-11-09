@@ -13,39 +13,61 @@ Ext.define('INV.view.product.Detail', {
         this.items = [{
                     xtype:'form',
                     border:false,
+                    layout:'column',
                     trackResetOnLoad:true,
-                    items:[{xtype:'fieldset',
-                            title: '<p style="font-size:18px">Product</p>',
-                            style: {border:'none'},
-                            items: [
+                    items:[{
+                            width: 550,
+                            border:false,
+                            items:[{
+                                xtype:'fieldset',
+                                title: '<p style="font-size:18px">Product</p>',
+                                style: {border:'none'},
+                                defaults:{width:350},
+                                items: [
 
-                                {xtype:'textfield', name:'code', fieldLabel: 'Code'},
-                                {xtype:'textfield', name:'name', fieldLabel: 'Name'},
-                                {xtype:'textfield', name:'description', fieldLabel: 'Description'},
-                                {
-                                    xtype:'combo',
-                                    name:'category',
-                                    fieldLabel: 'Category',
-                                    store:'ProductCategories',
-                                    valueField:'id',
-                                    displayField:'name'
-                                },
-                                {xtype:'checkbox', name:'modified', fieldLabel: 'Modified'},
-                                {xtype:'textfield', name:'notes', fieldLabel: 'Notes'},
-                                {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'},
-                                {
-                                    xtype:'combo',
-                                    name:'um',
-                                    fieldLabel: 'UM',
-                                    multiSelect: true,
-                                    store:'ProductUms',
-                                    valueField: 'id',
-                                    displayField: 'name',
-                                    queryMode: 'local',
-                                    triggerAction: 'all'
-                                }
-                            ]
-                        }]
+                                    {xtype:'textfield', name:'code', fieldLabel: 'Code'},
+                                    {xtype:'textfield', name:'name', fieldLabel: 'Name'},
+                                    {xtype:'textfield', name:'description', fieldLabel: 'Description'},
+                                    {
+                                        xtype:'combo',
+                                        name:'category',
+                                        fieldLabel: 'Category',
+                                        store:'ProductCategories',
+                                        valueField:'id',
+                                        displayField:'name'
+                                    },
+                                    {xtype:'checkbox', name:'modified', fieldLabel: 'Modified'},
+                                    {xtype:'textfield', name:'notes', fieldLabel: 'Notes'},
+                                    {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'},
+                                    {
+                                        xtype:'combo',
+                                        name:'um',
+                                        fieldLabel: 'UM',
+                                        multiSelect: true,
+                                        store:'ProductUms',
+                                        valueField: 'id',
+                                        displayField: 'name',
+                                        queryMode: 'local',
+                                        triggerAction: 'all'
+                                    }
+                                ]
+                                }]
+                        },{
+                            columnWidth: .5,
+                            align:'right',
+                            border:false,
+                            items:[{
+                                    xtype:'fieldset',
+                                    title: '<p style="font-size:18px">Status</p>',
+                                    defaults:{
+                                        disabled:true
+                                    },
+                                    items:[
+                                        {xtype:'textfield', name:'created', fieldLabel: 'Created'},
+                                        {xtype:'textfield', name:'updated', fieldLabel: 'Updated'}
+                                    ]
+                            }]}
+                    ]
 
                     }
             ];

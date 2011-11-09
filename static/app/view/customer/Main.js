@@ -20,7 +20,7 @@ Ext.define('INV.view.customer.Main', {
             items: [{
                         xtype: 'box',
                         region: 'north',
-                        html: '<h1>html</h1>',
+                        html: '<h1>submeniu</h1>',
                         height: 30
                     },{
                          region: 'west', // this is what makes this panel into a region within the containing layout

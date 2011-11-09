@@ -10,9 +10,8 @@ Ext.define('INV.model.Product', {
         {name:'um', mapping: 'um'},
         {name:'notes', type: 'string', mapping:'notes'},
         {name:'barcode', type: 'string', mapping:'barcode'},
-        {name:'barcode', type: 'string', mapping:'barcode'},
-        {name:'created', type: 'date', mapping:'barcode'},
-        {name:'updated', type: 'date', mapping:'barcode'},
+        {name:'created', type: 'date', mapping:'created'},
+        {name:'updated', type: 'date', mapping:'updated'},
         {name:'modified', type: 'boolean', mapping:'modified', convert: function(record){return record.toLowerCase()}}
 
         //{name:'properties', mapping: 'fields.properties', persist: true}

@@ -74,7 +74,7 @@ Ext.define('INV.view.customer.Detail', {
                                             {dataIndex: 'iban', width: 100, editor: 'textfield'}
                                         ]
                                     }]
-                            }]}
+                    }]}
 
 
             ];
@@ -83,9 +83,9 @@ Ext.define('INV.view.customer.Detail', {
 
     loadRecord: function(record) {
         this.down('form').loadRecord(record);
-        this.down('#customeraddress').store.loadData(record.customeraddressStore.data.items, false);
-        this.down('#customerbank').store.loadData(record.customerbankStore.data.items, false);
-        this.down('#customercontact').store.loadData(record.customercontactStore.data.items, false);
+        this.down('#customeraddress').store.loadData(record.companyaddressStore.data.items, false);
+        this.down('#customerbank').store.loadData(record.companybankStore.data.items, false);
+        this.down('#customercontact').store.loadData(record.companycontactStore.data.items, false);
     },
 
     getCompanyId: function() {

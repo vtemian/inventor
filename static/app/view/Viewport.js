@@ -17,12 +17,12 @@ Ext.define('INV.view.Viewport', {
             },
             items: [{xtype:'tabpanel',
                     items:[{
-                        xtype: 'companymain',
-                        title:'Furnizori',
-                        layout:'fit'
-                        },{
                         xtype: 'productmain',
                         title:'Produse',
+                        layout:'fit'
+                        },{
+                        xtype: 'companymain',
+                        title:'Furnizori',
                         layout:'fit'
                         },{
                         xtype: 'customermain',

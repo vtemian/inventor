@@ -20,7 +20,7 @@ Ext.define('INV.view.product.Main', {
             items: [{
                         xtype: 'box',
                         region: 'north',
-                        html: '<h1>html</h1>',
+                        html: '<h1>submeniu</h1>',
                         height: 30
                     },{
                          region: 'west', // this is what makes this panel into a region within the containing layout
@@ -39,11 +39,18 @@ Ext.define('INV.view.product.Main', {
                                     region:'center'
                                 },{
                                     region: 'south',
+                                    xtype:'tabpanel',
+                                    tabPosition:'bottom',
                                     minheight: 100,
                                     bodyPadding:10,
-                                    items: [
-                                        {xtype:'textfield', name:'code', fieldLabel: 'Here will be a tabpanel with grids'},
-                                        {xtype:'textfield', name:'name', fieldLabel: 'Dumy related data'}
+                                    items: [{
+                                        title:'Stocuri'
+                                    },{
+                                        title:'Intrari'
+                                    },{
+                                        title:'Iesiri'
+                                    }
+
                                     ]
                             }]
                     }
