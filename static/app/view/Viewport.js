@@ -17,15 +17,14 @@ Ext.define('INV.view.Viewport', {
             items: [{xtype:'tabpanel',
                     items:[{
                         xtype: 'companymain',
-                        title:'Company',
+                        title:'Furnizori',
                         layout:'fit'
                         },{
                         xtype: 'productmain',
-                        title:'Product',
+                        title:'Produse',
                         layout:'fit'
                         }
-                    ]
-                    }
+                    ]}
             ]
         };
 

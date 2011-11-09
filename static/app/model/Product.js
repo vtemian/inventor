@@ -13,7 +13,7 @@ Ext.define('INV.model.Product', {
         {name:'barcode', type: 'string', mapping:'barcode'},
         {name:'created', type: 'date', mapping:'barcode'},
         {name:'updated', type: 'date', mapping:'barcode'},
-        {name:'modified', type: 'boolean', mapping:'modified'}
+        {name:'modified', type: 'boolean', mapping:'modified', convert: function(record){return record.toLowerCase()}}
 
         //{name:'properties', mapping: 'fields.properties', persist: true}
     ],

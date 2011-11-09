@@ -52,8 +52,9 @@ Ext.define('INV.controller.Companies', {
     },
 
     onCompanySelect: function(selModel, selection) {
+        var record = selection[0];
 
-        this.getCompanyDetail().loadRecord(selection[0]);
+        this.getCompanyDetail().loadRecord(record);
     },
 
     onAddCompanyClick: function(button){

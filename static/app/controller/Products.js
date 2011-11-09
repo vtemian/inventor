@@ -85,15 +85,15 @@ Ext.define('INV.controller.Products', {
         store.add(product);
         button.disable();
         store.sync({success: function(batch, options){
-            if (product){
+
                 product = store.getById(product.id);
                 product.beginEdit();
                 product.set('id', Ext.JSON.decode(batch.operations[0].response.responseText).data.pk);
                 product.commit(true);
-                
+
                 grid.getView().select(product);
             }
-        }},this);
+        },this);
 
     },
 
@@ -101,8 +101,8 @@ Ext.define('INV.controller.Products', {
         var store = this.getProductsStore(),
             grid = button.up('grid');
 
-        recordIndex = grid.getSelectionModel().getSelection()[0].index
-        store.removeAt(recordIndex);
+        record = grid.getSelectionModel().getSelection()[0];
+        store.remove(record);
         store.sync({success: function(batch, options){
             console.log('record deleted');
 

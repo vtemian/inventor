@@ -30,14 +30,14 @@ Ext.define('INV.view.product.List' ,{
                 xtype:'toolbar',
                 dock:'top',
                 items:[{
-                        text:"Add",
+                        text:'Add',
                         icon:'resources/images/add.png',
                         action: "add",
                         scope: this
                 },{
-                        text:"Delete",
+                        text:'Delete',
                         icon:'resources/images/delete.png',
-                        action: "delete",
+                        action: 'delete',
                         scope: this
                 }]
             }];

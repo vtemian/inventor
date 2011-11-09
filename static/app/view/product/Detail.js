@@ -30,7 +30,7 @@ Ext.define('INV.view.product.Detail', {
                                     valueField:'id',
                                     displayField:'name'
                                 },
-                                {xtype:'textfield', name:'modified', fieldLabel: 'Modified'},
+                                {xtype:'checkbox', name:'modified', fieldLabel: 'Modified'},
                                 {xtype:'textfield', name:'notes', fieldLabel: 'Notes'},
                                 {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'},
                                 {
