@@ -6,7 +6,7 @@ Ext.define('INV.model.Product', {
         {name:'code', type: 'string', mapping:'code'},
         {name:'name', type: 'string', mapping:'name'},
         {name:'description', type: 'string', mapping:'description'},
-        {name:'category', type: 'string', mapping: 'category.name'},
+        {name:'category', type: 'int', mapping: 'category.id'},
         {name:'um', mapping: 'um'},
         {name:'notes', type: 'string', mapping:'notes'},
         {name:'barcode', type: 'string', mapping:'barcode'},

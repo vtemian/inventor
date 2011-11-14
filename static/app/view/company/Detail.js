@@ -78,6 +78,22 @@ Ext.define('INV.view.company.Detail', {
 
 
             ];
+
+        this.dockedItems = {
+                dock:'bottom',
+                xtype:'toolbar',
+                items: [{
+                            text: 'Reset',
+                            action:'reset',
+                            icon:'resources/images/cross.png'
+                        }, {
+                            text: 'Submit',
+                            action:'submit',
+                            icon:'resources/images/save.png',
+                            formBind: true, //only enabled once the form is valid
+                            disabled: true
+                        }]};
+
         this.callParent(arguments);
     },
 

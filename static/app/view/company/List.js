@@ -28,11 +28,23 @@ Ext.define('INV.view.company.List' ,{
         },{
             xtype: 'toolbar',
             dock: 'top',
-            items: [{
+ items: [{
+
+                        text:'Search',
+                        xtype:'textfield',
+                        emptyText:'search',
+                        width:100,
+                        scope: this
+                },{xtype:'tbfill'},{
                     text:"Add",
                     icon:'resources/images/add.png',
                     action: "add",
                     scope: this
+                },{
+                        text:'Copy',
+                        icon:'resources/images/copy.png',
+                        action: "copy",
+                        scope: this
                 },{
                     text:"Delete",
                     icon:'resources/images/delete.png',

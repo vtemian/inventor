@@ -44,14 +44,6 @@ Ext.define('INV.controller.Products', {
         });
 
         this.getProductsStore().on('load', this.onProductsStoreLoad, this);
-
-        this.getProductCategoriesStore().on('add', function(){console.log('ADD');notification.msg('ADD Cat','store event')}, this);
-        this.getProductCategoriesStore().on('beforesync', function(){console.log('BEFORESYNC');notification.msg('BEFORESYNC Cat','store event')}, this);
-        this.getProductCategoriesStore().on('load', function(){console.log('LOAD');notification.msg('LOAD Cat','store event')}, this);
-        this.getProductCategoriesStore().on('remove', function(){console.log('REMOVE');notification.msg('REMOVE Cat','store event')}, this);
-        this.getProductCategoriesStore().on('update', function(){console.log('UPDATE');notification.msg('UPDATE Cat','store event')}, this);
-        this.getProductCategoriesStore().on('write', function(){console.log('WRITE');notification.msg('WRITE Cat','store event')}, this);
-
     },
 
     onLaunch: function() {
@@ -70,7 +62,7 @@ Ext.define('INV.controller.Products', {
         if (!Ext.isEmpty(selection)) detail.loadRecord(selection[0]);
 
         //set focus on the first field from the detail form
-        detail.down('form').down('textfield').focus();
+        detail.down('textfield').focus();
     },
 
     onAddProductClick: function(button){
@@ -91,10 +83,27 @@ Ext.define('INV.controller.Products', {
                 product.set('id', Ext.JSON.decode(batch.operations[0].response.responseText).data.pk);
                 product.commit(true);
 
+                button.enable();
                 grid.getView().select(product);
             }
         },this);
 
+    },
+
+    onDetailFormSubmitClick: function(button){
+        var form = button.up('form').getForm(),
+            product = form.getRecord(),
+            values = form.getValues();
+
+        if (form.isValid()) {
+            button.disable();
+            product.set(values);
+            this.getProductsStore().sync({success: function(batch, options){
+                button.enable();
+                grid.getView().select(product);
+            }
+        },this);
+        }
     },
 
     onDeleteProductClick: function(button){
@@ -110,27 +119,13 @@ Ext.define('INV.controller.Products', {
         }},this);
     },
 
-    onDetailFormSubmitClick: function(button){
-        var form = button.up('panel').down('form').getForm();
-        
-        if (form.isValid()) {
-            form.submit({
-                success: function(form, action) {
-                   Ext.Msg.alert('Success', action.result.msg);
-                },
-                failure: function(form, action) {
-                    Ext.Msg.alert('Failed', action.result.msg);
-                }
-            });
-        }
-    },
-
     onDetailFormResetClick: function(button){
-        var form = button.up('panel').down('form'),
+        var form = button.up('form').getForm(),
             grid = this.getProductList(),
             store = this.getProductsStore(),
             record = form.getRecord();
         console.log(record);
+        
         if (record.dataSave){
             store.remove(record)
             store.sync({success: function(batch, options){
@@ -140,7 +135,7 @@ Ext.define('INV.controller.Products', {
             }},this);
         }
         else {
-            form.getForm().reset();
+            form.reset();
         }
 
     },

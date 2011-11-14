@@ -23,16 +23,27 @@ Ext.define('INV.view.product.List' ,{
         ];
         this.dockedItems =  [{
                 xtype: 'pagingtoolbar',
-                store: 'Products',   // same store GridPanel is using
+                store: this.store,   // same store GridPanel is using
                 dock: 'bottom',
                 displayInfo: true
             },{
                 xtype:'toolbar',
                 dock:'top',
                 items:[{
+                        text:'Search',
+                        xtype:'textfield',
+                        emptyText:'search',
+                        width:100,
+                        scope: this
+                },{xtype:'tbfill'},{
                         text:'Add',
                         icon:'resources/images/add.png',
                         action: "add",
+                        scope: this
+                },{
+                        text:'Copy',
+                        icon:'resources/images/copy.png',
+                        action: "copy",
                         scope: this
                 },{
                         text:'Delete',

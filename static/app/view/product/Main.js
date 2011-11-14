@@ -36,22 +36,29 @@ Ext.define('INV.view.product.Main', {
                          layout: 'border',
                          items: [{
                                     xtype: 'productdetail',
-                                    region:'center'
+                                    region:'center',
+                                    trackResetOnLoad:true
                                 },{
                                     region: 'south',
                                     xtype:'tabpanel',
                                     tabPosition:'bottom',
-                                    minheight: 100,
+                                    height: 150,
                                     bodyPadding:10,
                                     items: [{
-                                        title:'Stocuri'
+                                        title:'Fisa de magazie',
+                                        xtype:'panel'
                                     },{
-                                        title:'Intrari'
+                                        title:'Stocuri detaliate',
+                                        xtype:'panel'
                                     },{
-                                        title:'Iesiri'
+                                        title:'Grafice'
+                                    },{
+                                        title:'Altceva'
+
                                     }
 
                                     ]
+
                             }]
                     }
             ]
