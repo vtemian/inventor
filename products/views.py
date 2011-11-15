@@ -55,7 +55,7 @@ def _productCreate(request):
 
 
 def _productRead(request):
-
+    
     direction = {"ASC": '', "DESC": "-"}
     
     start = int(request.GET.get("start"))
@@ -78,44 +78,16 @@ def _productRead(request):
 
 @csrf_exempt
 def _productUpdate(request):
-
     try:
-        product = json.loads(request.read())
-        print product
-        product = Product.objects.get(pk=product['id'])
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-                form.save()
+        prod = json.loads(request.read())
+        product = Product.objects.get(pk=prod['id'])
+        print product.name
+        product.saveFromJson(prod)    
+        
     except Exception, err:
         print '[ err ] Exception @ _productUpdate: \t',
         print err
-
-#    product = json.loads(request.read())
-#    #print kwargs
-#
-#    try:
-#        category = Category.objects.get(pk = product['category'])
-#        product['category'] = category
-#        um = UM.objects.get(pk = product['um'][0])
-#        product.pop('um')
-#        product.pop('created')
-#        product.pop('updated')
-#
-#        product = Product(**product)
-#
-#        product.um.add(um)
-#
-#        print [f.name for f in Product._meta.fields]
-#        print [getattr(product, f.name) for f in Product._meta.fields]
-#
-#        product.save()
-#
-#    except Exception, err:
-#        print '[ err ] Exception at productsCreate: \t',
-#        print err
-
-    #print product
-
+ 
     response = {}
     response['data'] = model_to_dict(product)
     response['success'] = 'true'

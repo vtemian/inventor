@@ -40,7 +40,25 @@ class Product(models.Model):
 
         with reversion.revision:
             super(Product, self).delete(using)
-
+            
+    def saveFromJson(self, object):
+        fields = self._meta.get_all_field_names()
+        object.pop('updated')
+        object.pop('created')
+        
+        category = object.pop('category', None)
+        self.category = Category.objects.get(pk=category)
+        
+        um = object.pop('um', None)
+        self.um.clear()
+        for item in um:
+            self.um.add(UM.objects.get(pk=item))
+        
+        for key in object.keys():
+            if key in fields:
+                setattr(self, key, object[key])
+        super(Product, self).save()
+            
 
 if not reversion.is_registered(Product):
     reversion.register(Product)
