@@ -1,3 +1,4 @@
+from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseNotModified
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -5,6 +6,7 @@ from django.utils import simplejson
 from django.core import serializers
 import json
 from django.views.decorators.csrf import csrf_exempt
+from products.forms import ProductForm
 from products.models import *
 
 @csrf_exempt
@@ -74,17 +76,55 @@ def _productRead(request):
     #print json.dumps(response, indent=4)
     return HttpResponse(simplejson.dumps(response))
 
+@csrf_exempt
+def _productUpdate(request):
 
-def _productUpdate(request, product_id):
+    try:
+        product = json.loads(request.read())
+        print product
+        product = Product.objects.get(pk=product['id'])
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+                form.save()
+    except Exception, err:
+        print '[ err ] Exception @ _productUpdate: \t',
+        print err
 
-    print request.read()
+#    product = json.loads(request.read())
+#    #print kwargs
+#
+#    try:
+#        category = Category.objects.get(pk = product['category'])
+#        product['category'] = category
+#        um = UM.objects.get(pk = product['um'][0])
+#        product.pop('um')
+#        product.pop('created')
+#        product.pop('updated')
+#
+#        product = Product(**product)
+#
+#        product.um.add(um)
+#
+#        print [f.name for f in Product._meta.fields]
+#        print [getattr(product, f.name) for f in Product._meta.fields]
+#
+#        product.save()
+#
+#    except Exception, err:
+#        print '[ err ] Exception at productsCreate: \t',
+#        print err
 
+    #print product
+
+    response = {}
+    response['data'] = model_to_dict(product)
+    response['success'] = 'true'
+    return HttpResponse(simplejson.dumps(response))
 
 def _productDelete(request):
     
-    id = json.loads(request.read())
-    print id
-    product = get_object_or_404(Product, pk = id['id']);
+    product = json.loads(request.read())
+    product = get_object_or_404(Product, pk = product['id']);
     product.delete()
     
     return HttpResponse(simplejson.dumps({'success':'true'}), mimetype='application/json')

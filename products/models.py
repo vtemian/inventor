@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from inventor.products.manager import ProductManager
 import reversion
@@ -39,6 +40,7 @@ class Product(models.Model):
 
         with reversion.revision:
             super(Product, self).delete(using)
+
 
 if not reversion.is_registered(Product):
     reversion.register(Product)

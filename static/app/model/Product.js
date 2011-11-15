@@ -6,10 +6,10 @@ Ext.define('INV.model.Product', {
         {name:'code', type: 'string', mapping:'code'},
         {name:'name', type: 'string', mapping:'name'},
         {name:'description', type: 'string', mapping:'description'},
-        {name:'category', type: 'int', mapping: 'category.id'},
+        {name:'category', type: 'int', mapping: 'category'},
         {name:'um', mapping: 'um'},
         {name:'notes', type: 'string', mapping:'notes'},
-        {name:'barcode', type: 'string', mapping:'barcode'},
+        {name:'barCode', type: 'string', mapping:'barCode'},
         {name:'created', type: 'date', mapping:'created'},
         {name:'updated', type: 'date', mapping:'updated'},
         {name:'modified', type: 'boolean', mapping:'modified', convert: function(record){return record.toLowerCase()}}

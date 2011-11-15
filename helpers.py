@@ -15,7 +15,7 @@ def dictFromModel(object, depth = DEFAULT_RECURSION):
             if isinstance(value, models.Manager):
                 _dict[field] = _getManagerValue(value, object, depth - 1)
             elif isinstance(value, models.Model):
-                _dict[field] = dictFromModel(value, depth - 1)
+                _dict[field] = value.pk#dictFromModel(value, depth - 1)
             else:
                 _dict[field] = unicode(value)
         except Exception, err:
@@ -39,7 +39,7 @@ def _getManagerValue(field, object, depth):
             fieldNames.remove(object.__class__.__name__.lower())
         except Exception, err:
             pass
-        _list.append(dictFromModel(obj))
+        _list.append(obj.pk) #dictFromModel(obj))
     return _list
     
     

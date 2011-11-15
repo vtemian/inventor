@@ -93,7 +93,8 @@ Ext.define('INV.controller.Products', {
     onDetailFormSubmitClick: function(button){
         var form = button.up('form').getForm(),
             product = form.getRecord(),
-            values = form.getValues();
+            values = form.getValues(),
+            grid = this.getProductList();
 
         if (form.isValid()) {
             button.disable();
