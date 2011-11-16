@@ -14,6 +14,7 @@ def dictFromModel(object, depth = DEFAULT_RECURSION):
             value = getattr(object, field)
             if isinstance(value, models.Manager):
                 _dict[field] = _getManagerValue(value, object, depth - 1)
+                print value
             elif isinstance(value, models.Model):
                 _dict[field] = value.pk#dictFromModel(value, depth - 1)
             else:

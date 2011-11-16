@@ -38,7 +38,8 @@ Ext.define('INV.view.product.Detail', {
                         fieldLabel: 'Category',
                         store:'ProductCategories',
                         valueField:'id',
-                        displayField:'name'
+                        displayField:'name',
+                        emptyText:'select'
                     },
                     {xtype:'checkbox', name:'modified', fieldLabel: 'Modified'},
                     {xtype:'textfield', name:'notes', fieldLabel: 'Notes', allowBlank:false},
@@ -199,7 +200,7 @@ Ext.define('INV.view.product.Detail', {
     },
 
     onDirtyChange: function (){
-            console.log('ON dirty change');
+            console.log('form onDirtyChange');
     },
 
 
@@ -217,8 +218,8 @@ Ext.define('INV.view.product.Detail', {
         if (boundItems) {
             boundItems.each(function(item) {item.setDisabled(!valid)})
         }
-        console.log('tre sa SALVEZ ?', form.isDirty(), field.isDirty());
-        console.log('din cauza lu : ', field.value);
+        console.log('onFieldChange ::: FORM is Dirty: ', form.isDirty(),'FIELD is Dirty: ' , field.isDirty());
+
         //me.isValid = valid;
     },
 
@@ -226,6 +227,6 @@ Ext.define('INV.view.product.Detail', {
         var me = this,
             form = me.getForm();
         console.log(form.isDirty(), field.isDirty());
-        if (form.isDirty()) console.log('asta SALVEZ: ', field.value)
+        if (form.isDirty()) console.log('FORM isDirty @ onBlur: ', field.name)
     }
 });

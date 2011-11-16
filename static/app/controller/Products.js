@@ -98,6 +98,7 @@ Ext.define('INV.controller.Products', {
 
         if (form.isValid()) {
             button.disable();
+            console.log(values);
             product.set(values);
             this.getProductsStore().sync({success: function(batch, options){
                 button.enable();
