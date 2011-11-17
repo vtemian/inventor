@@ -10,9 +10,11 @@ Ext.define('INV.model.Product', {
         {name:'um', mapping: 'um'},
         {name:'notes', type: 'string', mapping:'notes'},
         {name:'barCode', type: 'string', mapping:'barCode'},
-        {name:'created', type: 'date', mapping:'created'},
-        {name:'updated', type: 'date', mapping:'updated'},
-        {name:'modified', type: 'boolean', mapping:'modified', convert: function(v){return v.toLowerCase()}}
+        {name:'price_endetail', type: 'float', mapping:'price_endetail'},
+        {name:'price_engros', type: 'float', mapping:'price_engros'},
+        {name:'created_at', type: 'date', mapping:'created_at'},
+        {name:'updated_at', type: 'date', mapping:'updated_at'},
+        {name:'modified', type: 'boolean', mapping:'modified', convert: function(v){if (Ext.isString(v)) return v.toLowerCase()}}
 
         //{name:'properties', mapping: 'fields.properties', persist: true}
     ],

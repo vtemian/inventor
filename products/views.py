@@ -8,6 +8,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from products.forms import ProductForm
 from products.models import *
+from decimal import Decimal
 
 @csrf_exempt
 def handler(request):
@@ -91,7 +92,7 @@ def _productUpdate(request):
     response = {}
     response['data'] = model_to_dict(product)
     response['success'] = 'true'
-    return HttpResponse(simplejson.dumps(response))
+    return HttpResponse(simplejson.dumps(response, use_decimal=True))
 
 def _productDelete(request):
     
@@ -151,29 +152,84 @@ def _initialdata():
     aa = Category.objects.create(name="doi",
                            description="a doua categorie")
     m = UM.objects.create(name = 'kilogram',
-                        abreviation = 'kg',
+                        abbreviation = 'kg',
                         measures = 'wheight')
     n = UM.objects.create(name = 'gram',
-                        abreviation = 'g',
+                        abbreviation = 'g',
                         measures = 'wheight',
-                        conversionFactor = 1000,
-                        conversionUnit = UM.objects.get(pk=1))
+                        conversion_factor = 1000,
+                        conversion_unit = UM.objects.get(pk=1))
+
     b = Product.objects.create(code="ax123",
                            name="bomboane roz",
                            description="11sfqsger111",
                            modified=False,
                            notes='some notes and observations',
-                           barCode=1231231231231233,
-                           category = Category.objects.get(pk=1))
+                           bar_code=1231231231231233,
+                           category = Category.objects.get(pk=1),
+                           price_endetail = 1.5,
+                           price_engros = 1)
     c = Product.objects.create(code="db443",
                            name="alt produs important",
                            description="111gqegrq222",
                            modified=True,
                            notes='notes and observations',
-                           barCode=1231231231231233,
-                           category = Category.objects.get(pk=2))
+                           bar_code=1231231231231233,
+                           category = Category.objects.get(pk=2),
+                           price_endetail = 2.5,
+                           price_engros = 1.8)
+    d = Product.objects.create(code="db443",
+                           name="alt produs important",
+                           description="111gqegrq222",
+                           modified=True,
+                           notes='notes and observations',
+                           bar_code=1231231231231233,
+                           category = Category.objects.get(pk=2),
+                           price_endetail = 1.9,
+                           price_engros = 1.2)
     b.um.add(m,n)
     c.um.add(n)
+    d.um.add(m)
 
+    bom1 = Bom.objects.create(name='bom unu',
+                    scrap_percentage = 10,
+                    labour_cost = 5)
+    bom2 = Bom.objects.create(name='bom unu',
+                    scrap_percentage = 1,
+                    labour_cost = 15)
+
+    bomd1 = BomDetail.objects.create(
+                    bom = bom1,
+                    ingredient=b,
+                    quantity = 3.5,
+                    um = m,
+                    loss = 10)
+    bomd2 = BomDetail.objects.create(
+                    bom = bom1,
+                    ingredient=c,
+                    quantity = 5,
+                    um = n,
+                    loss = 5)
+    bomd3 = BomDetail.objects.create(
+                    bom = bom1,
+                    ingredient=d,
+                    quantity = 50,
+                    um = n,
+                    loss = 5)
+    bomd4 = BomDetail.objects.create(
+                    bom = bom2,
+                    ingredient=b,
+                    quantity = 11,
+                    um = n,
+                    loss = 5)
+    bomd5 = BomDetail.objects.create(
+                    bom = bom2,
+                    ingredient=c,
+                    quantity = 15,
+                    um = n,
+                    loss = 5)
+
+    bom1.product.add(b,c)
+    bom2.product.add(d)
 
 

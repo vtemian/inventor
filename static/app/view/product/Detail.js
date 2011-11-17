@@ -43,7 +43,7 @@ Ext.define('INV.view.product.Detail', {
                     },
                     {xtype:'checkbox', name:'modified', fieldLabel: 'Modified'},
                     {xtype:'textfield', name:'notes', fieldLabel: 'Notes', allowBlank:false},
-                    {xtype:'textfield', name:'barcode', fieldLabel: 'Bar code'},
+                    {xtype:'textfield', name:'barCode', fieldLabel: 'Bar code'},
                     {
                         xtype:'combo',
                         name:'um',
@@ -110,8 +110,8 @@ Ext.define('INV.view.product.Detail', {
                                     {"abbr":2, "name":"ver 3, 06.11.11 14:45 - Caius"}
                                 ]
                     })},
-                    {xtype:'textfield', name:'created', fieldLabel: 'Created', anchor:'75%'},
-                    {xtype:'textfield', name:'updated', fieldLabel: 'Updated', anchor:'75%'},
+                    {xtype:'textfield', name:'created_at', fieldLabel: 'Created', anchor:'75%'},
+                    {xtype:'textfield', name:'updated_at', fieldLabel: 'Updated', anchor:'75%'},
                     {xtype:'textfield', name:'status', fieldLabel: 'Status', anchor:'75%'}
 
                 ]
@@ -128,6 +128,7 @@ Ext.define('INV.view.product.Detail', {
                     {xtype:'fieldcontainer', fieldLabel: 'Pret en-detail', layout:'hbox',
                         items: [{
                             xtype: 'textfield',
+                            name: 'price_endetail',
                             flex: 1
                         }, {
                             xtype: 'displayfield',
@@ -142,6 +143,7 @@ Ext.define('INV.view.product.Detail', {
                     {xtype:'fieldcontainer', fieldLabel: 'Pret en-gros', layout:'hbox',
                         items: [{
                             xtype: 'textfield',
+                            name: 'price_engros',
                             flex: 1
                         }, {
                             xtype: 'displayfield',
@@ -182,7 +184,9 @@ Ext.define('INV.view.product.Detail', {
                                     action:'submit',
                                     icon:'resources/images/save.png',
                                     formBind: true, //only enabled once the form is valid
-                                    disabled: true
+                                    //disabled: true,
+                                    onDisable: function(){console.log('disabled')},
+                                    onEnable: function(){console.log('enabled')}
                                 }]};
 
 
@@ -199,34 +203,80 @@ Ext.define('INV.view.product.Detail', {
 
     },
 
-    onDirtyChange: function (){
-            console.log('form onDirtyChange');
-    },
-
-
-
     getProductId: function() {
         return this.down('form').getRecord().data['id'];
     },
 
     onFieldChange: function(field, newValue, oldValue, eOpts) {
         var me = this,
-            form = me.getForm(),
-            valid = form.isValid(),
-            boundItems = form.getBoundItems();
+            form = me.getForm();
 
-        if (boundItems) {
-            boundItems.each(function(item) {item.setDisabled(!valid)})
-        }
-        console.log('onFieldChange ::: FORM is Dirty: ', form.isDirty(),'FIELD is Dirty: ' , field.isDirty());
-
-        //me.isValid = valid;
+        console.log('onFieldChange ::: FORM Dirty: ', form.isDirty(),'FIELD Dirty: ' , field.name, field.isDirty());
     },
 
+    onDirtyChange: function (form, dirty, eOpts){
+        var sw = (form.isValid() & dirty) ? true:false;
+
+        //this.switchBoundItems(form, sw);
+
+    },
+    
     onFieldBlur: function(field){
         var me = this,
             form = me.getForm();
-        console.log(form.isDirty(), field.isDirty());
-        if (form.isDirty()) console.log('FORM isDirty @ onBlur: ', field.name)
+
+        //console.log(form.isDirty(), field.isDirty(), field.name);
+        if (form.isDirty()) {
+            //set the new values should behave like load
+            //form.setValues(form.getValues());
+            //save the record
+
+            console.log(' SETVALUES + SAVE ::::  FORM isDirty? @ onBlur: ', form.isDirty(), field.name);
+        }
+    },
+
+    switchBoundItems: function (form, sw){
+        var boundItems = form.getBoundItems();
+
+        if (boundItems) {
+            boundItems.each(function(cmp) {
+                console.log('valid & dirty: ',sw,' disabled: ', cmp.disabled, 'value:', cmp.disabled === sw);
+                if (cmp.disabled === sw) {
+                    cmp.setDisabled(!sw);
+                    console.log('boundItems switch');
+                }
+            });
+        }
+    },
+
+    loadRecord: function(record) {
+        var me = this,
+            form = me.getForm(),
+            fields = form.getFields();
+
+        // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
+        fields.each(function(field) {
+            field.suspendEvents();
+        });
+        form.loadRecord(record);
+        fields.each(function(field) {
+            field.resumeEvents();
+        });
+    },
+
+    reset: function(){
+        var me = this,
+            form = me.getForm(),
+            fields = form.getFields();
+
+        form.clearInvalid();
+        // temporarily suspend events on form fields before reseting the form to prevent the fields' change events from firing
+        fields.each(function(field) {
+            field.suspendEvents();
+        });
+        form.reset();
+        fields.each(function(field) {
+            field.resumeEvents();
+        });
     }
 });

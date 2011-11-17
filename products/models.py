@@ -12,11 +12,10 @@ class Category(models.Model):
 class UM(models.Model):
 
     name = models.CharField(max_length = 20)
-    abreviation = models.CharField(max_length = 5)
+    abbreviation = models.CharField(max_length = 5)
     measures = models.CharField(max_length = 20) #weight, volume, model (Product, InvoiceItem, etc.)
-    #measureValue = models.CharField(max_length = 20) #model pk value
-    conversionFactor = models.FloatField(null=True)
-    conversionUnit = models.ForeignKey('self', null=True, related_name='+')
+    conversion_factor = models.DecimalField(null=True, max_digits=10, decimal_places=4)
+    conversion_unit = models.ForeignKey('self', null=True, related_name='+')
     objects = ProductManager()
 
 class Product(models.Model):
@@ -27,9 +26,11 @@ class Product(models.Model):
     category = models.ForeignKey(Category, null=True, related_name = '+')
     um = models.ManyToManyField(UM, related_name = '+')
     notes = models.TextField()
-    barCode = models.CharField(max_length = 20)
-    created = models.DateTimeField(auto_now_add = True)
-    updated = models.DateTimeField(auto_now = True)
+    bar_code = models.CharField(max_length = 20)
+    price_endetail = models.DecimalField(max_digits=14, decimal_places=4)
+    price_engros = models.DecimalField(max_digits=14, decimal_places=4)
+    created_at = models.DateTimeField(auto_now_add = True)
+    updated_at = models.DateTimeField(auto_now = True)
     modified = models.BooleanField(blank=True)
     objects = ProductManager()
 
@@ -58,8 +59,20 @@ class Product(models.Model):
             if key in fields:
                 setattr(self, key, object[key])
         super(Product, self).save()
-            
 
+class Bom(models.Model):
+    name = models.CharField(max_length=50)
+    product = models.ManyToManyField(Product, related_name='bom')
+    scrap_percentage = models.DecimalField(max_digits=5, decimal_places=2)
+    labour_cost = models.DecimalField(max_digits=10, decimal_places=4)
+
+class BomDetail(models.Model):
+    bom = models.ForeignKey(Bom, related_name='ingredients')
+    ingredient = models.ForeignKey(Product, related_name='inReceipes')
+    quantity = models.DecimalField(max_digits=10, decimal_places=4)
+    um = models.ForeignKey(UM)
+    loss = models.DecimalField(max_digits=5, decimal_places=2)
+    
 if not reversion.is_registered(Product):
     reversion.register(Product)
     reversion.register(UM)

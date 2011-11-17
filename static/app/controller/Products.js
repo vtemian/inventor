@@ -96,7 +96,7 @@ Ext.define('INV.controller.Products', {
             values = form.getValues(),
             grid = this.getProductList();
 
-        if (form.isValid()) {
+        if (form.isValid() & form.isDirty()) {
             button.disable();
             console.log(values);
             product.set(values);
