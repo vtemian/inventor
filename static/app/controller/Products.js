@@ -67,26 +67,23 @@ Ext.define('INV.controller.Products', {
 
     onAddProductClick: function(button){
         var store = this.getProductsStore(),
-            grid = button.up('grid');
+            grid = button.up('grid'),
+            categories = this.getProductCategoriesStore();
 
-        product = Ext.create('INV.model.Product');
+        button.disable();
+        product = INV.model.Product.create();
         while (isNaN(product.id)) {
-            product = Ext.create('INV.model.Product');
+            product = INV.model.Product.create();
         }
 
-        store.add(product);
-        button.disable();
-        store.sync({success: function(batch, options){
-
-                product = store.getById(product.id);
-                product.beginEdit();
-                product.set('id', Ext.JSON.decode(batch.operations[0].response.responseText).data.pk);
-                product.commit(true);
-
-                button.enable();
+        product.save({
+            success: function(ed) {
+                store.add(product);
+                if (Ext.isString(values.category)) categories.load();
                 grid.getView().select(product);
+                button.enable();
             }
-        },this);
+        }, this);
 
     },
 
@@ -94,17 +91,18 @@ Ext.define('INV.controller.Products', {
         var form = button.up('form').getForm(),
             product = form.getRecord(),
             values = form.getValues(),
-            grid = this.getProductList();
+            grid = this.getProductList(),
+            categories = this.getProductCategoriesStore();
 
         if (form.isValid() & form.isDirty()) {
             button.disable();
-            console.log(values);
             product.set(values);
             this.getProductsStore().sync({success: function(batch, options){
-                button.enable();
+                if (Ext.isString(values.category)) categories.load();
                 grid.getView().select(product);
+                button.enable();
             }
-        },this);
+        });
         }
     },
 

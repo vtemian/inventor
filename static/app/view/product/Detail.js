@@ -19,6 +19,7 @@ Ext.define('INV.view.product.Detail', {
 
         me.items = [{
             columnWidth:0.5,
+            minWidth:300,
             border:false,
             items:[{
                 xtype:'fieldset',
@@ -31,30 +32,54 @@ Ext.define('INV.view.product.Detail', {
                 items: [
                     {xtype:'textfield', name:'code', fieldLabel: 'Code'},
                     {xtype:'textfield', name:'name', fieldLabel: 'Name'},
-                    {xtype:'textfield', name:'description', fieldLabel: 'Description'},
-                    {
-                        xtype:'combo',
-                        name:'category',
-                        fieldLabel: 'Category',
-                        store:'ProductCategories',
-                        valueField:'id',
-                        displayField:'name',
-                        emptyText:'select'
+                    {xtype:'fieldcontainer', layout:'hbox',
+                        items: [{
+                            xtype: 'textfield',
+                            name: 'price_endetail',
+                            fieldLabel: 'Price',
+                            flex: 1
+                        },{
+                            xtype: 'textfield',
+                            name: 'price_engros',
+                            fieldLabel: 'engros',
+                            labelAlign: 'right',
+                            labelWidth: 50,
+                            flex: 0.9
+                        }]
+                    },{
+                        xtype:'fieldcontainer', layout:'hbox',
+                            items: [{
+                                xtype:'combo',
+                                name:'category',
+                                fieldLabel: 'Category',
+                                flex: 1,
+                                store:'ProductCategories',
+                                valueField:'id',
+                                displayField:'name',
+                                emptyText:'select'
+                            },
+                            {
+                                xtype:'combo',
+                                name:'um',
+                                fieldLabel: 'UM',
+                                labelAlign: 'right',
+                                labelWidth: 50,
+                                flex: 0.9,
+                                multiSelect: true,
+                                store:'ProductUms',
+                                valueField: 'id',
+                                displayField: 'abbreviation',
+                                emptyText:'select',
+                                queryMode: 'local',
+                                triggerAction: 'all'
+                            }]
                     },
-                    {xtype:'checkbox', name:'modified', fieldLabel: 'Modified'},
-                    {xtype:'textfield', name:'notes', fieldLabel: 'Notes', allowBlank:false},
+                    {xtype:'displayfield'},
                     {xtype:'textfield', name:'barCode', fieldLabel: 'Bar code'},
-                    {
-                        xtype:'combo',
-                        name:'um',
-                        fieldLabel: 'UM',
-                        multiSelect: true,
-                        store:'ProductUms',
-                        valueField: 'id',
-                        displayField: 'name',
-                        queryMode: 'local',
-                        triggerAction: 'all'
-                    }]
+                    {xtype:'textfield', name:'description', fieldLabel: 'Description'},
+                    {xtype:'checkbox', name:'modified', fieldLabel: 'Modified', inputValue:'true', uncheckedValue:'false'},
+                    {xtype:'textfield', name:'notes', fieldLabel: 'Notes', allowBlank:false}
+                ]
                 },{
                 xtype:'fieldset',
                 title: '<p style="font-size:18px">Stocuri</p>',
@@ -117,47 +142,6 @@ Ext.define('INV.view.product.Detail', {
                 ]
             },{
                 xtype:'fieldset',
-                title: '<p style="font-size:18px">Pret vanzare</p>',
-                collapsible:true,
-                style: {border:'none'},
-                layout: 'anchor',
-                defaults: {
-                    anchor: '90%'
-                },
-                items:[
-                    {xtype:'fieldcontainer', fieldLabel: 'Pret en-detail', layout:'hbox',
-                        items: [{
-                            xtype: 'textfield',
-                            name: 'price_endetail',
-                            flex: 1
-                        }, {
-                            xtype: 'displayfield',
-                            value: ' lei, '
-                        }, {
-                            xtype: 'textfield',
-                            flex: 1
-                        }, {
-                            xtype: 'displayfield',
-                            value: ' % adaos'
-                        }]},
-                    {xtype:'fieldcontainer', fieldLabel: 'Pret en-gros', layout:'hbox',
-                        items: [{
-                            xtype: 'textfield',
-                            name: 'price_engros',
-                            flex: 1
-                        }, {
-                            xtype: 'displayfield',
-                            value: ' lei, '
-                        }, {
-                            xtype: 'textfield',
-                            flex: 1
-                        }, {
-                            xtype: 'displayfield',
-                            value: ' % adaos'
-                        }]}
-                ]
-                },{
-                xtype:'fieldset',
                 title: '<p style="font-size:18px">Norma consum</p>',
                 collapsible:true,
                 style: {border:'none'},
@@ -184,9 +168,7 @@ Ext.define('INV.view.product.Detail', {
                                     action:'submit',
                                     icon:'resources/images/save.png',
                                     formBind: true, //only enabled once the form is valid
-                                    //disabled: true,
-                                    onDisable: function(){console.log('disabled')},
-                                    onEnable: function(){console.log('enabled')}
+                                    disabled: true
                                 }]};
 
 

@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     (r'^companies/', include('companies.urls')),
     (r'^customers/', include('companies.urls')),
     (r'^products/', include('products.urls')),
+    (r'^bom/', 'products.views.bomHandler'),
     (r'^categories/', 'products.views.categoriesHandler'),
     (r'^ums/', 'products.views.umHandler')
 )

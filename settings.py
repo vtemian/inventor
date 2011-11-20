@@ -101,5 +101,6 @@ LOGGING = {
     }
 }
 SERIALIZATION_MODULES = {
-    'json': 'wadofstuff.django.serializers.json'
+    'json': 'wadofstuff.django.serializers.json',
+    'json4ext': 'wadofstuff.django.serializers.json4ext'
 }

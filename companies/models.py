@@ -7,8 +7,6 @@ class Company(models.Model):
     name = models.CharField(max_length = 50)
     vat = models.CharField(max_length = 50, unique = True)
     regCom = models.CharField(max_length = 50)
-    objects = CompanyManager()
-
 
 class Address(models.Model):
     
