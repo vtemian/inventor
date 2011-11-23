@@ -44,22 +44,36 @@ class Product(models.Model):
         fields = self._meta.get_all_field_names()
         object.pop('updated_at')
         object.pop('created_at')
-        
-        category = object.pop('category', None)
-        if isinstance(category, int):
-            self.category = Category.objects.get(pk = category)
-        elif unicode.isalnum(category):
-            self.category, created = Category.objects.get_or_create(name = category)
+        try:
+            category = object.pop('category', None)
 
-        um = object.pop('um', None)
-        self.um.clear()
-        for item in um:
-            self.um.add(UM.objects.get(pk=item))
+            if category:
+                if isinstance(category, int):
+                    self.category = Category.objects.get(pk = category)
+                elif unicode.isalnum(category):
+                    self.category, created = Category.objects.get_or_create(name = category)
+        except Exception, err:
+            print '[ err ] Exception Product-saveFromJson @ category: \t',
+            print err
+            
+        try:
+            um = object.pop('um', None)
+            self.um.clear()
+            for item in um:
+                self.um.add(UM.objects.get(pk=item))
+        except Exception, err:
+            print '[ err ] Exception Product-saveFromJson @ um: \t',
+            print err
 
-        for key in object.keys():
-            if key in fields:
-                setattr(self, key, object[key])
-        self.updated_at = datetime.now()
+        try:
+            for key in object.keys():
+                if key in fields:
+                    setattr(self, key, object[key])
+            self.updated_at = datetime.now()
+        except Exception, err:
+            print '[ err ] Exception Product-saveFromJson @ rest of keys: \t',
+            print err
+
         super(Product, self).save()
 
 class Bom(models.Model):

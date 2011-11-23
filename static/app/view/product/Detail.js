@@ -56,7 +56,8 @@ Ext.define('INV.view.product.Detail', {
                                 store:'ProductCategories',
                                 valueField:'id',
                                 displayField:'name',
-                                emptyText:'select'
+                                emptyText:'select',
+                                queryMode: 'local'
                             },
                             {
                                 xtype:'combo',
@@ -236,6 +237,29 @@ Ext.define('INV.view.product.Detail', {
             form = me.getForm(),
             fields = form.getFields();
 
+        //ask confirmation before loading a record if form isDirty
+        if (form.isDirty()){
+            Ext.MessageBox.show({
+                title:'Save Changes?',
+                msg: 'You have unsaved changes. <br />Would you like to save your changes?',
+                buttons: Ext.MessageBox.YESNOCANCEL,
+                icon: Ext.MessageBox.QUESTION,
+                fn: function(btn){
+                    console.log(btn);
+                    switch (btn){
+                        case 'yes':
+                            console.log('save and continue loading ');
+                            break;
+                        case 'no':
+                            console.log('continue loading ');
+                            break;
+                        case 'cancel':
+                            console.log('stop loading and stay on the modified record');
+                            return;
+                    }
+                }
+            });
+        }
         // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
         fields.each(function(field) {
             field.suspendEvents();

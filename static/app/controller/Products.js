@@ -68,41 +68,43 @@ Ext.define('INV.controller.Products', {
     onAddProductClick: function(button){
         var store = this.getProductsStore(),
             grid = button.up('grid'),
-            categories = this.getProductCategoriesStore();
+            detail = this.getProductDetail();
 
-        button.disable();
         product = INV.model.Product.create();
         while (isNaN(product.id)) {
             product = INV.model.Product.create();
         }
-
-        product.save({
-            success: function(ed) {
-                store.add(product);
-                if (Ext.isString(values.category)) categories.load();
-                grid.getView().select(product);
-                button.enable();
-            }
-        }, this);
-
+        detail.loadRecord(product);
     },
 
     onDetailFormSubmitClick: function(button){
         var form = button.up('form').getForm(),
             product = form.getRecord(),
-            values = form.getValues(),
+            isNewProduct = product.phantom,
+            values = form.getValues(false, true, false),
             grid = this.getProductList(),
-            categories = this.getProductCategoriesStore();
+            categories = this.getProductCategoriesStore(),
+            store = this.getProductsStore();
 
         if (form.isValid() & form.isDirty()) {
             button.disable();
             product.set(values);
-            this.getProductsStore().sync({success: function(batch, options){
-                if (Ext.isString(values.category)) categories.load();
-                grid.getView().select(product);
-                button.enable();
+            if (isNewProduct) {
+                store.add(product);
             }
-        });
+            product.save({success: function(prod, operation){
+                if (isNewProduct){ //switch ext generated id with real database pk
+                    product = store.last();
+                    product.beginEdit();
+                    product.set('id', Ext.JSON.decode(operation.response.responseText).data.pk);
+                    product.commit(true);
+                }
+                if (Ext.isString(values.category)) categories.load();
+                //grid.getView().select(product);
+                button.enable();
+            }},{
+                failure: function(){console.log('onDetailFormSubmitClick::ProductsStore.sync FAIL!')}
+            });
         }
     },
 

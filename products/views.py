@@ -52,8 +52,9 @@ def _productCreate(request):
     data = []
     try:
         postData = json.loads(request.read())
-        if isinstance(postData, dict) and postData.has_key('id'):
-            product = Product.objects.create(code=postData.get("id"))
+        extjsid = postData.pop('id')
+        product = Product.objects.create()
+        product.saveFromJson(postData)
     
     except Exception, err:
         print '[ err ] Exception at productsCreate: \t',
@@ -61,6 +62,8 @@ def _productCreate(request):
         
     response = {}
     response['data'] = model_to_dict(product)
+    response['data']['pk'] = product.pk #switch real database pk with ext generated id so the record is matched by ext
+    response['data']['id'] = extjsid
     response['success'] = 'true'
     return HttpResponse(simplejson.dumps(response, use_decimal=True))
 
