@@ -169,11 +169,14 @@ Ext.define('INV.view.product.Detail', {
                                     action:'submit',
                                     icon:'resources/images/save.png',
                                     formBind: true, //only enabled once the form is valid
-                                    disabled: true
+                                    disabled: true,
+                                    onDisable: function(){console.log('disabled')},
+                                    onEnable: function(){console.log('enabled')}
                                 }]};
 
 
         me.on('dirtychange', me.onDirtyChange);
+        me.on('validitychange', me.onValidityChange);
 
         me.callParent(arguments);
 
@@ -193,15 +196,21 @@ Ext.define('INV.view.product.Detail', {
     onFieldChange: function(field, newValue, oldValue, eOpts) {
         var me = this,
             form = me.getForm();
-
+        me.onDirtyChange(form,form.isDirty(),eOpts)
         console.log('onFieldChange ::: FORM Dirty: ', form.isDirty(),'FIELD Dirty: ' , field.name, field.isDirty());
     },
 
     onDirtyChange: function (form, dirty, eOpts){
         var sw = (form.isValid() & dirty) ? true:false;
+        console.log('onDirtyChange ::: FORM Dirty: ', form.isDirty(),'FORM Valid: ' , form.isValid());
+        this.switchBoundItems(form, sw);
 
-        //this.switchBoundItems(form, sw);
+    },
 
+    onValidityChange: function(form, valid, eOpts){
+        var sw = (form.isDirty() & valid) ? true:false;
+        console.log('onValidityChange ::: FORM Dirty: ', form.isDirty(),'FORM Valid: ' , valid);
+        this.switchBoundItems(form, sw);
     },
     
     onFieldBlur: function(field){
@@ -237,29 +246,6 @@ Ext.define('INV.view.product.Detail', {
             form = me.getForm(),
             fields = form.getFields();
 
-        //ask confirmation before loading a record if form isDirty
-        if (form.isDirty()){
-            Ext.MessageBox.show({
-                title:'Save Changes?',
-                msg: 'You have unsaved changes. <br />Would you like to save your changes?',
-                buttons: Ext.MessageBox.YESNOCANCEL,
-                icon: Ext.MessageBox.QUESTION,
-                fn: function(btn){
-                    console.log(btn);
-                    switch (btn){
-                        case 'yes':
-                            console.log('save and continue loading ');
-                            break;
-                        case 'no':
-                            console.log('continue loading ');
-                            break;
-                        case 'cancel':
-                            console.log('stop loading and stay on the modified record');
-                            return;
-                    }
-                }
-            });
-        }
         // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
         fields.each(function(field) {
             field.suspendEvents();
@@ -268,6 +254,7 @@ Ext.define('INV.view.product.Detail', {
         fields.each(function(field) {
             field.resumeEvents();
         });
+        me.down('[formBind]').disable();
     },
 
     reset: function(){

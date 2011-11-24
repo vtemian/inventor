@@ -34,12 +34,6 @@ Ext.define('INV.controller.Products', {
             },
             'productdetail button[action=reset]':{
                 click: this.onDetailFormResetClick
-            },
-            'inlinegrid button[action=add]': {
-                click: this.onAddCategoryClick
-            },
-            'inlinegrid actioncolumn': {
-                click: this.onDeleteCategoryClick
             }
         });
 
@@ -59,7 +53,7 @@ Ext.define('INV.controller.Products', {
     onProductSelect: function(selModel, selection) {
         var detail = this.getProductDetail();
 
-        if (!Ext.isEmpty(selection)) detail.loadRecord(selection[0]);
+        if (!Ext.isEmpty(selection)) this.loadProduct(selection[0]);
 
         //set focus on the first field from the detail form
         detail.down('textfield').focus();
@@ -67,45 +61,27 @@ Ext.define('INV.controller.Products', {
 
     onAddProductClick: function(button){
         var store = this.getProductsStore(),
-            grid = button.up('grid'),
-            detail = this.getProductDetail();
+            grid = button.up('grid');
 
         product = INV.model.Product.create();
         while (isNaN(product.id)) {
             product = INV.model.Product.create();
         }
-        detail.loadRecord(product);
+        this.loadProduct(product);
     },
 
     onDetailFormSubmitClick: function(button){
         var form = button.up('form').getForm(),
             product = form.getRecord(),
-            isNewProduct = product.phantom,
             values = form.getValues(false, true, false),
-            grid = this.getProductList(),
-            categories = this.getProductCategoriesStore(),
-            store = this.getProductsStore();
+            detail = this.getProductDetail();
 
-        if (form.isValid() & form.isDirty()) {
-            button.disable();
-            product.set(values);
-            if (isNewProduct) {
-                store.add(product);
-            }
-            product.save({success: function(prod, operation){
-                if (isNewProduct){ //switch ext generated id with real database pk
-                    product = store.last();
-                    product.beginEdit();
-                    product.set('id', Ext.JSON.decode(operation.response.responseText).data.pk);
-                    product.commit(true);
-                }
-                if (Ext.isString(values.category)) categories.load();
-                //grid.getView().select(product);
-                button.enable();
-            }},{
-                failure: function(){console.log('onDetailFormSubmitClick::ProductsStore.sync FAIL!')}
-            });
+        // the form should be dirty & valid if we are here
+        button.disable();
+        if (this.saveProduct(product, values)) {
+            detail.loadRecord(product);
         }
+
     },
 
     onDeleteProductClick: function(button){
@@ -142,39 +118,75 @@ Ext.define('INV.controller.Products', {
 
     },
 
-    onAddCategoryClick: function(button){
+    loadProduct: function (product){
+        var me = this,
+            detail = me.getProductDetail(),
+            grid = me.getProductList(),
+            form = detail.getForm(),
+            loadedProduct = form.getRecord(),
+            values = form.getValues(false, true, false);
 
-        var grid = button.up('grid'),
-            store = this.getProductCategoriesStore();
-            productId = this.getProductDetail().getProductId();
-            maxRecords = 10;
-
-        if (store.getCount() >= maxRecords) {
-            Ext.MessageBox.alert('Max Records', 'You have reached max records.');
-            return;
+                //ask confirmation before loading a record if form isDirty
+        if (form.isDirty()){
+            Ext.MessageBox.show({
+                title:'Save Changes?',
+                msg: 'You have unsaved changes. <br />Would you like to save your changes?',
+                buttons: Ext.MessageBox.YESNOCANCEL,
+                icon: Ext.MessageBox.QUESTION,
+                fn: function(btn){
+                    console.log(btn);
+                    switch (btn){
+                        case 'yes':
+                            console.log('save and continue loading ');
+                            if (form.isValid()) {
+                                me.saveProduct(loadedProduct, values);
+                                detail.loadRecord(product);
+                            } else {
+                                Ext.MessageBox.show({
+                                    title:'Invalid fields!',
+                                    msg: 'There are invalid fields! <br /> Please correct the invalid inputs and save again',
+                                    buttons: Ext.MessageBox.OK
+                                });
+                            }
+                            break;
+                        case 'no':
+                            console.log('continue loading ');
+                            detail.loadRecord(product);
+                            break;
+                        case 'cancel':
+                            console.log('stop loading and stay on the modified record');
+                            grid.getView().select(loadedProduct, true, true);
+                            break;
+                    }
+                }
+            });
+        } else {
+            detail.loadRecord(product);
         }
-        console.log('onAddCategoryClick');
-        grid.editingPlugin.cancelEdit();
-
-        category = Ext.create('INV.model.ProductCategory',{
-            name: 'New category',
-            description: 'New category description',
-            status: 'New category status',
-            product_id: productId
-        });
-        console.log(category);
-        store.insert(store.getCount() + 1, category);
-        //store.sync({callback:function(){console.log('store SYNC CALLBACK dupa ADD');notification.msg('ADD','SYNC CALLBACK dupa ADD')}});
-        grid.editingPlugin.startEdit(store.getCount()-1, 1);
     },
 
-    onDeleteCategoryClick: function(view, cell, recordIndex, cellIndex, e){//view, rowIndex, colIndex, item, e){
-        var store = this.getProductCategoriesStore();
+    saveProduct: function(product,values){
+        var isNewProduct = product.phantom,
+            categories = this.getProductCategoriesStore(),
+            store = this.getProductsStore(),
+            success = false;
 
-        view.editingPlugin.cancelEdit();
-
-        notification.msg('Remove', 'the record ' + view.store.getAt(recordIndex).data.name + ' was deleted!');
-        store.removeAt(recordIndex);
-        //store.sync({callback:function(){console.log('store SYNC CALLBACK dupa DELETE');notification.msg('Remove','SYNC CALLBACK dupa DELETE')}});
+        product.set(values);
+        if (isNewProduct) {
+            store.add(product);
+        }
+        product.save({success: function(prod, operation){
+            if (isNewProduct){ //switch ext generated id with real database pk
+                product = store.last();
+                product.beginEdit();
+                product.set('id', Ext.JSON.decode(operation.response.responseText).data.pk);
+                product.commit(true);
+                success = true;
+            }
+            if (Ext.isString(values.category)) categories.load();
+        }},{
+            failure: function(){console.log('onDetailFormSubmitClick::ProductsStore.sync FAIL!');}
+        });
+        return success;
     }
 });
