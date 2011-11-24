@@ -31,9 +31,6 @@ Ext.define('INV.controller.Products', {
             },
             'productdetail button[action=submit]':{
                 click: this.onDetailFormSubmitClick
-            },
-            'productdetail button[action=reset]':{
-                click: this.onDetailFormResetClick
             }
         });
 
@@ -74,14 +71,13 @@ Ext.define('INV.controller.Products', {
         var form = button.up('form').getForm(),
             product = form.getRecord(),
             values = form.getValues(false, true, false),
-            detail = this.getProductDetail();
+            grid = this.getProductList();
 
         // the form should be dirty & valid if we are here
         button.disable();
-        if (this.saveProduct(product, values)) {
-            detail.loadRecord(product);
-        }
-
+        this.saveProduct(product, values);
+        grid.getView().select(product, true, true);
+        this.getProductDetail().loadRecord(product);
     },
 
     onDeleteProductClick: function(button){
@@ -97,27 +93,6 @@ Ext.define('INV.controller.Products', {
         }},this);
     },
 
-    onDetailFormResetClick: function(button){
-        var form = button.up('form').getForm(),
-            grid = this.getProductList(),
-            store = this.getProductsStore(),
-            record = form.getRecord();
-        console.log(record);
-        
-        if (record.dataSave){
-            store.remove(record)
-            store.sync({success: function(batch, options){
-                console.log('new record deleted');
-
-                grid.getView().select(0);
-            }},this);
-        }
-        else {
-            form.reset();
-        }
-
-    },
-
     loadProduct: function (product){
         var me = this,
             detail = me.getProductDetail(),
@@ -126,7 +101,7 @@ Ext.define('INV.controller.Products', {
             loadedProduct = form.getRecord(),
             values = form.getValues(false, true, false);
 
-                //ask confirmation before loading a record if form isDirty
+        //ask confirmation before loading a record if form isDirty
         if (form.isDirty()){
             Ext.MessageBox.show({
                 title:'Save Changes?',
@@ -168,8 +143,7 @@ Ext.define('INV.controller.Products', {
     saveProduct: function(product,values){
         var isNewProduct = product.phantom,
             categories = this.getProductCategoriesStore(),
-            store = this.getProductsStore(),
-            success = false;
+            store = this.getProductsStore();
 
         product.set(values);
         if (isNewProduct) {
@@ -181,12 +155,10 @@ Ext.define('INV.controller.Products', {
                 product.beginEdit();
                 product.set('id', Ext.JSON.decode(operation.response.responseText).data.pk);
                 product.commit(true);
-                success = true;
             }
             if (Ext.isString(values.category)) categories.load();
         }},{
             failure: function(){console.log('onDetailFormSubmitClick::ProductsStore.sync FAIL!');}
         });
-        return success;
     }
 });
