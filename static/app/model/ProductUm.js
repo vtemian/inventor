@@ -8,5 +8,7 @@ Ext.define('INV.model.ProductUm', {
         {name:'conversionFactor', type: 'float', mapping:'conversionFactor'},
         {name:'conversionUnit', type: 'string', mapping:'conversionUnit'}
     ],
-    belongsTo: {model:'INV.model.Product', name:'product'}
+    associations:[
+        {type:'belongsTo', model:'INV.model.Product', associatedKey:'product', name:'product'}
+    ]
 });

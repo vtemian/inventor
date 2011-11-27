@@ -1,9 +1,9 @@
 Ext.define('INV.controller.Products', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Products', 'ProductCategories', 'ProductUms'],
+    stores: ['Products', 'ProductCategories', 'ProductUms', 'ProductBomIngredients'],
 
-    models: ['Product', 'ProductCategory', 'ProductUm'],
+    models: ['Product', 'ProductCategory', 'ProductUm' , 'ProductBom', 'ProductBomIngredient'],
 
     views: ['product.Main','product.List','product.Detail','ux.InlineGrid'],
 

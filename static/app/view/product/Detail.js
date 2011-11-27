@@ -2,6 +2,8 @@ Ext.define('INV.view.product.Detail', {
     extend: 'Ext.form.Panel',
     alias : 'widget.productdetail',
 
+    requires: ['INV.view.ux.ComboColumn'],
+
     autoShow: true,
     border: false,
     bodyPadding: 10,
@@ -150,17 +152,54 @@ Ext.define('INV.view.product.Detail', {
                 defaults: {
                     anchor: '90%'
                 },
-                items:[{
-//                    xtype:'inlinegrid',
-//                    id: 'normadeconsum',
-//                    store:' Bom',
-//                    maxWidth:400,
-//                    //height:100,
-//                    columns:[{dataIndex: 'i', width: 100, editor: 'textfield'},
-//                        {dataIndex: 'city', width: 100, editor: 'textfield'},
-//                        {dataIndex: 'zipcode', width: 80, editor: 'textfield'}
-//                    ]
-                }]
+                items:[{xtype:'textfield', name:'bom', fieldLabel: 'Norma', anchor:'75%'},
+                    {xtype:'textfield', name:'scrap_percentage', fieldLabel: 'Scrap', anchor:'75%'},
+                    {xtype:'textfield', name:'labour_cost', fieldLabel: 'Labor', anchor:'75%'},
+                    {    xtype: 'fieldcontainer',
+                        fieldLabel: 'Ingredients',
+                        //padding: 10,
+                        //width:600,
+                        items:[{
+                            xtype:'inlinegrid',
+                            id: 'ingredientsgrid',
+                            store:'ProductBomIngredients',
+                            addText:'Add ingredient',
+                            maxWidth:400,
+                            //height:100,
+                            columns:[
+                                {dataIndex: 'quantity', width: 40, editor:{type:'numberfield', hideTrigger:true}},
+                                {dataIndex: 'um', width: 60,
+                                    xtype: 'combocolumn',
+                                        gridId: 'ingredientsgrid',
+                                        editor: {
+                                            xtype: 'combobox',
+                                            typeAhead: true,
+                                            triggerAction: 'all',
+                                            selectOnTab: true,
+                                            emptyText:'select',
+                                            store: Ext.create('INV.store.ProductUms'),
+                                            displayField:'name',
+                                            valueField:'id',
+                                            lazyRender: true
+                                }},
+                                {dataIndex: 'ingredient', width: 100 ,
+                                    xtype: 'combocolumn',
+                                    gridId: 'ingredientsgrid',
+                                    editor: {
+                                        xtype: 'combobox',
+                                        typeAhead: true,
+                                        triggerAction: 'all',
+                                        selectOnTab: true,
+                                        emptyText:'select',
+                                        store: Ext.create('INV.store.Products'),
+                                        displayField:'name',
+                                        valueField:'id',
+                                        lazyRender: true
+                                }},
+                                {dataIndex: 'loss', width: 40, editor:{type:'numberfield', hideTrigger:true}}
+                            ]}
+                        ]}
+                ]
             }]
         }],
 
@@ -294,13 +333,19 @@ Ext.define('INV.view.product.Detail', {
     loadRecord: function(record) {
         var me = this,
             form = me.getForm(),
-            fields = form.getFields();
+            fields = form.getFields(),
+            ingredientsGrid = me.down('#ingredientsgrid');
 
         // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
         fields.each(function(field) {
             field.suspendEvents();
         });
         form.loadRecord(record);
+        if (record.raw.bom) {
+            ingredientsGrid.store.loadData(record.raw.bom.ingredients, false);
+        } else {
+            ingredientsGrid.store.removeAll();
+        }
         fields.each(function(field) {
             field.resumeEvents();
         });

@@ -14,12 +14,16 @@ Ext.define('INV.model.Product', {
         {name:'modified', type: 'boolean', mapping:'modified'},
         {name:'notes', type: 'string', mapping:'notes'},
         {name:'created_at', type: 'date', mapping:'created_at'},
-        {name:'updated_at', type: 'date', mapping:'updated_at'}
+        {name:'updated_at', type: 'date', mapping:'updated_at'},
+        {name:'bom', mapping:function(obj){ return Ext.isObject(obj.bom) ? obj.bom.name : ''}},
+        {name:'scrap_percentage', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.scrap_percentage : '' }},
+        {name:'labour_cost', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.labour_cost : ''}}
 
         //{name:'properties', mapping: 'fields.properties', persist: true}
     ],
     associations:[
         {type:'belongsTo', model:'INV.model.ProductCategory', associationKey:'category', name:'category'},
+        {type:'belongsTo', model:'INV.model.ProductBom', associationKey:'bom', name:'bom'},
         {type:'hasMany', model:'INV.model.ProductUm', associatedKey:'um', name:'um'}
     ],
     proxy: {

@@ -20,6 +20,8 @@ Ext.define('INV.view.ux.InlineGrid' ,{
     columns:[
         ],
 
+    addText:'',
+
     initComponent: function() {
         var me = this;
 
@@ -36,16 +38,17 @@ Ext.define('INV.view.ux.InlineGrid' ,{
                 xtype: 'toolbar',
                 ui: 'nocolor',
                 dock: 'bottom',
-                width: 30,
+                //width: 30,
                 //layout: 'fit',
                 items: [
                     {
                         icon: 'resources/images/add.png',
-                        action:'add'
+                        action:'add',
+                        text:me.addText
                     }]
             }];
 
-        me.plugins = [Ext.create('Ext.grid.plugin.RowEditing', {
+        me.plugins = [Ext.create('Ext.grid.plugin.CellEditing', {
             clicksToMoveEditor: 1,
             autoCancel: false,
             errorSummary: true
