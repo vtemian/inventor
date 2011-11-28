@@ -7,9 +7,9 @@ Ext.define('INV.model.Customer', {
         {name:'regcom', type: 'string', mapping:'regCom'}
     ],
     associations:[
-        {type:'hasMany', model:'INV.model.CompanyAddress', associationKey:'CompanyAddress', name:'companyaddress'},
-        {type:'hasMany', model:'INV.model.CompanyBank', associationKey:'CompanyBank', name:'companybank'},
-        {type:'hasMany', model:'INV.model.CompanyContact', associationKey:'CompanyContact', name:'companycontact'}
+        {type:'hasMany', model:'INV.model.Address', associationKey:'Addresses', name:'addresses'},
+        {type:'hasMany', model:'INV.model.Bank', associationKey:'Banks', name:'banks'},
+        {type:'hasMany', model:'INV.model.Contact', associationKey:'Contacts', name:'contacts'}
     ],
     idgen: 'uuid'
 });

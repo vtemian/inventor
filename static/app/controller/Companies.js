@@ -1,9 +1,9 @@
 Ext.define('INV.controller.Companies', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Companies', 'CompanyAddresses', 'CompanyBanks', 'CompanyContacts'],
+    stores: ['Companies', 'Addresses', 'Banks', 'Contacts'],
 
-    models: ['Company', 'CompanyAddress', 'CompanyBank', 'CompanyContact'],
+    models: ['Company', 'Address', 'Bank', 'Contact'],
 
     views: ['company.Main','company.List','company.Detail','ux.InlineGrid'],
 

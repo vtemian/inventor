@@ -1,6 +1,6 @@
-Ext.define('INV.store.CompanyContacts', {
+Ext.define('INV.store.Contacts', {
     extend: 'Ext.data.Store',
-    model: 'INV.model.CompanyContact',
+    model: 'INV.model.Contact',
     autoSync:true,
 
     proxy: {

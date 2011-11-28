@@ -20,7 +20,7 @@ def handler(request):
 
 def _read(request):
     
-    response = serializers.serialize('json4ext', Company.objects.all())
+    response = serializers.serialize('json4ext', Company.objects.all(), relations={'Addresses','Contacts', 'Banks'})
 
     #_initialdata()
 

@@ -37,15 +37,9 @@ Ext.define('INV.controller.Products', {
         this.getProductsStore().on('load', this.onProductsStoreLoad, this);
     },
 
-    onLaunch: function() {
+    onLaunch: function() {console.log('products launch');},
 
-        console.log('products launch');
-    },
-
-    onProductsStoreLoad: function(){
-
-        console.log('products Store Load');
-    },
+    onProductsStoreLoad: function(){console.log('products Store Load');},
 
     onProductSelect: function(selModel, selection) {
         var detail = this.getProductDetail();
@@ -67,6 +61,19 @@ Ext.define('INV.controller.Products', {
         this.loadProduct(product);
     },
 
+    onDeleteProductClick: function(button){
+        var store = this.getProductsStore(),
+            grid = button.up('grid'),
+            product = grid.getSelectionModel().getSelection()[0];
+        
+        store.remove(product);
+        store.sync({success: function(batch, options){
+            console.log('record deleted');
+
+            grid.getView().select(0);
+        }},this);
+    },
+
     onDetailFormSubmitClick: function(button){
         var form = button.up('form').getForm(),
             product = form.getRecord(),
@@ -78,19 +85,6 @@ Ext.define('INV.controller.Products', {
         this.saveProduct(product, values);
         grid.getView().select(product, true, true);
         this.getProductDetail().loadRecord(product);
-    },
-
-    onDeleteProductClick: function(button){
-        var store = this.getProductsStore(),
-            grid = button.up('grid');
-
-        record = grid.getSelectionModel().getSelection()[0];
-        store.remove(record);
-        store.sync({success: function(batch, options){
-            console.log('record deleted');
-
-            grid.getView().select(0);
-        }},this);
     },
 
     loadProduct: function (product){

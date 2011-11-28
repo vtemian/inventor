@@ -222,11 +222,11 @@ Ext.define('INV.view.product.Detail', {
                                     icon:'resources/images/save.png',
                                     formBind: true, //only enabled once the form is valid
                                     disabled: true,
-                                    onDisable: function(){console.log('disabled')},
-                                    onEnable: function(){console.log('enabled')}
+//                                    onDisable: function(){console.log('disabled')},
+//                                    onEnable: function(){console.log('enabled')}
                                 },{
                                     xtype: 'component',
-                                    id: 'formErrorState',
+                                    id: 'formErrorStateProduct',
                                     baseCls: 'form-error-state',
                                     flex: 1,
                                     validText: 'Form is valid',
@@ -274,7 +274,6 @@ Ext.define('INV.view.product.Detail', {
                                         }
                                     }
                                 }]};
-
 
         me.on('dirtychange', me.onDirtyChange);
         me.on('validitychange', me.onValidityChange);
@@ -373,7 +372,7 @@ Ext.define('INV.view.product.Detail', {
             errorCmp, fields, errors;
 
         if (me.hasBeenDirty || me.getForm().isDirty()) { //prevents showing global error when form first loads
-            errorCmp = me.down('#formErrorState');
+            errorCmp = me.down('#formErrorStateProduct');
             fields = me.getForm().getFields();
             errors = [];
             fields.each(function(field) {

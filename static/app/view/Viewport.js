@@ -16,13 +16,22 @@ Ext.define('INV.view.Viewport', {
                 align: 'stretch'
             },
             items: [{xtype:'tabpanel',
+                    activeTab:2,
                     items:[{
+                        xtype: 'companymain',
+                        title:'Furnizori',
+                        layout:'fit'
+                        },{
+                        xtype: 'panel',
+                        title:'Intrari',
+                        layout:'fit'
+                        },{
                         xtype: 'productmain',
                         title:'Produse',
                         layout:'fit'
                         },{
-                        xtype: 'companymain',
-                        title:'Furnizori',
+                        xtype: 'panel',
+                        title:'Iesiri',
                         layout:'fit'
                         },{
                         xtype: 'customermain',

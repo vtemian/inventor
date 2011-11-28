@@ -13,21 +13,21 @@ class Address(models.Model):
     street = models.CharField(max_length = 50)
     city = models.CharField(max_length = 50)
     zipcode = models.CharField(max_length = 50)
-    company = models.ForeignKey(Company, related_name="CompanyAddress")
+    company = models.ForeignKey(Company, related_name="Addresses")
     
 class Contact(models.Model):
     
     name = models.CharField(max_length = 50)
     phoneNumber = models.CharField(max_length = 50)
     email = models.EmailField()
-    company = models.ForeignKey(Company, related_name="CompanyContact")
+    company = models.ForeignKey(Company, related_name="Contacts")
     
 
 class BankAccount(models.Model):
     
     name = models.CharField(max_length = 50)
     iban = models.CharField(max_length = 50)
-    company = models.ForeignKey(Company, related_name="CompanyBank")
+    company = models.ForeignKey(Company, related_name="Banks")
 
 
 
