@@ -48,8 +48,10 @@ Ext.define('INV.view.customer.Detail', {
                                 width:600,
                                 items: [{
                                         xtype:'inlinegrid',
-                                        id: 'customeraddress',
+                                        id: 'customerAddressGrid',
                                         store:'Addresses',
+                                        addToolTip:'Add address',
+                                        deleteToolTip:'Remove address',
                                         maxWidth:400,
                                         //height:100,
                                         columns:[{dataIndex: 'street', width: 100, editor: 'textfield'},
@@ -64,7 +66,7 @@ Ext.define('INV.view.customer.Detail', {
                                 width:600,
                                 items: [{
                                         xtype:'inlinegrid',
-                                        id: 'customercontact',
+                                        id: 'customerContactGrid',
                                         store:'Contacts',
                                         maxWidth:400,
                                         //height:100,
@@ -80,7 +82,7 @@ Ext.define('INV.view.customer.Detail', {
                                 width:600,
                                 items: [{
                                         xtype:'inlinegrid',
-                                        id: 'customerbank',
+                                        id: 'customerBankGrid',
                                         store:'Banks',
                                         maxWidth:400,
                                         //height:100,
@@ -91,6 +93,37 @@ Ext.define('INV.view.customer.Detail', {
                     }]
             }]
 
+        },{
+            columnWidth:0.5,
+            border:false,
+            items:[{
+                xtype:'fieldset',
+                title: '<p style="font-size:18px">Status</p>',
+                layout: 'anchor',
+                defaults: {
+                    anchor: '90%',
+                    disabled:true
+                },
+                items:[
+                    {xtype:'combo', name:'version', fieldLabel: 'Versiune',
+                        disabled: false,
+                        emptyText:'ultima',
+                        displayField: 'name',
+                        valueField: 'abbr',
+                        store: Ext.create('Ext.data.Store', {
+                                fields: ['abbr', 'name'],
+                                data : [
+                                    {"abbr":1, "name":"ver 1, 13.09.11 16:05 - Alin"},
+                                    {"abbr":2, "name":"ver 2, 22.10.11 10:33 - Vlad"},
+                                    {"abbr":2, "name":"ver 3, 06.11.11 14:45 - Caius"}
+                                ]
+                    })},
+                    {xtype:'textfield', name:'created_at', fieldLabel: 'Created', anchor:'75%'},
+                    {xtype:'textfield', name:'updated_at', fieldLabel: 'Updated', anchor:'75%'},
+                    {xtype:'textfield', name:'status', fieldLabel: 'Status', anchor:'75%'}
+
+                ]
+            }]
         }];
 
         this.dockedItems = {
@@ -178,7 +211,7 @@ Ext.define('INV.view.customer.Detail', {
         )
     },
 
-    getCompanyId: function() {
+    getCustomerId: function() {
         return this.down('form').getRecord().data['id'];
     },
 
@@ -220,18 +253,32 @@ Ext.define('INV.view.customer.Detail', {
         var me = this,
             form = me.getForm(),
             fields = form.getFields();
-            //ingredientsGrid = me.down('#ingredientsgrid');
+            addressGrid = me.down('#customerAddressGrid'),
+            bankGrid = me.down('#customerBankGrid'),
+            contactGrid = me.down('#customerContactGrid');
 
         // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
         fields.each(function(field) {
             field.suspendEvents();
         });
         form.loadRecord(record);
-//        if (record.raw.bom) {
-//            ingredientsGrid.store.loadData(record.raw.bom.ingredients, false);
-//        } else {
-//            ingredientsGrid.store.removeAll();
-//        }
+
+        if (record.addressesStore) {
+            addressGrid.store.loadData(record.addressesStore.data.items, false);
+        } else {
+            addressGrid.store.removeAll();
+        }
+        if (record.banksStore) {
+            bankGrid.store.loadData(record.banksStore.data.items, false);
+        } else {
+            bankGrid.store.removeAll();
+        }
+        if (record.contactsStore) {
+            contactGrid.store.loadData(record.contactsStore.data.items, false);
+        } else {
+            contactGrid.store.removeAll();
+        }
+
         fields.each(function(field) {
             field.resumeEvents();
         });

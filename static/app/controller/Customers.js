@@ -78,9 +78,54 @@ Ext.define('INV.controller.Customers', {
         }},this);
     },
 
+    loadCustomer: function (customer){
+        var me = this,
+            detail = me.getCustomerDetail(),
+            grid = me.getCustomerList(),
+            form = detail.getForm(),
+            loadedCustomer = form.getRecord(),
+            values = form.getValues(false, true, false);
+
+        //ask confirmation before loading a record if form isDirty
+        if (form.isDirty()){
+            Ext.MessageBox.show({
+                title:'Save Changes?',
+                msg: 'You have unsaved changes. <br />Would you like to save your changes?',
+                buttons: Ext.MessageBox.YESNOCANCEL,
+                icon: Ext.MessageBox.QUESTION,
+                fn: function(btn){
+                    console.log(btn);
+                    switch (btn){
+                        case 'yes':
+                           //save and continue loading
+                            if (form.isValid()) {
+                                me.saveProduct(loadedCustomer, values);
+                                detail.loadRecord(customer);
+                            } else {
+                                Ext.MessageBox.show({
+                                    title:'Invalid fields!',
+                                    msg: 'There are invalid fields! <br /> Please correct the invalid inputs and save again',
+                                    buttons: Ext.MessageBox.OK
+                                });
+                            }
+                            break;
+                        case 'no':
+                            //continue loading
+                            detail.loadRecord(customer);
+                            break;
+                        case 'cancel':
+                            //stop loading and stay on the modified record
+                            grid.getView().select(loadedCustomer, true, true);
+                            break;
+                    }
+                }
+            });
+        } else {
+            detail.loadRecord(customer);
+        }
+    },
 
 
-    
     onAddInlineItemClick: function(button){
 
         var grid = button.up('grid'),

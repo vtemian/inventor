@@ -4,7 +4,9 @@ Ext.define('INV.model.Customer', {
         {name:'id', type:'int', mapping: 'id'},
         {name:'name', type: 'string', mapping:'name'},
         {name:'vat', type: 'string', mapping:'vat'},
-        {name:'regcom', type: 'string', mapping:'regCom'}
+        {name:'regcom', type: 'string', mapping:'regCom'},
+        {name:'created_at', type: 'date', mapping:'created_at'},
+        {name:'updated_at', type: 'date', mapping:'updated_at'}
     ],
     associations:[
         {type:'hasMany', model:'INV.model.Address', associationKey:'Addresses', name:'addresses'},

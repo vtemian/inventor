@@ -106,7 +106,7 @@ Ext.define('INV.controller.Products', {
                     console.log(btn);
                     switch (btn){
                         case 'yes':
-                            console.log('save and continue loading ');
+                            //save and continue loading
                             if (form.isValid()) {
                                 me.saveProduct(loadedProduct, values);
                                 detail.loadRecord(product);
@@ -119,11 +119,11 @@ Ext.define('INV.controller.Products', {
                             }
                             break;
                         case 'no':
-                            console.log('continue loading ');
+                            //continue loading
                             detail.loadRecord(product);
                             break;
                         case 'cancel':
-                            console.log('stop loading and stay on the modified record');
+                            //stop loading and stay on the modified record
                             grid.getView().select(loadedProduct, true, true);
                             break;
                     }

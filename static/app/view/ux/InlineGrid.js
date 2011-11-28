@@ -21,6 +21,8 @@ Ext.define('INV.view.ux.InlineGrid' ,{
         ],
 
     addText:'',
+    addToolTip:'',
+    deleteToolTip:'',
 
     initComponent: function() {
         var me = this;
@@ -30,7 +32,7 @@ Ext.define('INV.view.ux.InlineGrid' ,{
             width:25,
 			items: [{
 				icon: 'resources/images/delete.png',
-				tooltip: 'Delete'
+				tooltip: me.deleteToolTip
 			}]
 		});
 
@@ -44,7 +46,8 @@ Ext.define('INV.view.ux.InlineGrid' ,{
                     {
                         icon: 'resources/images/add.png',
                         action:'add',
-                        text:me.addText
+                        text:me.addText,
+                        tooltip: me.addToolTip
                     }]
             }];
 

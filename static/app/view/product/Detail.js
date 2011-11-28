@@ -163,7 +163,8 @@ Ext.define('INV.view.product.Detail', {
                             xtype:'inlinegrid',
                             id: 'ingredientsgrid',
                             store:'ProductBomIngredients',
-                            addText:'Add ingredient',
+                            addToolTip:'Add ingredient',
+                            deleteToolTip:'Delete ingredient',
                             maxWidth:400,
                             //height:100,
                             columns:[
