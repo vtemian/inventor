@@ -150,9 +150,15 @@ Ext.define('INV.controller.Products', {
                 product.set('id', Ext.JSON.decode(operation.response.responseText).data.pk);
                 product.commit(true);
             }
+
+            //reload categories if a string/new catefory was submmited
             if (Ext.isString(values.category)) categories.load();
         }},{
-            failure: function(){console.log('onDetailFormSubmitClick::ProductsStore.sync FAIL!');}
+            failure: function(prod, operation){
+                //NEVER GETS CALLED!!!!!!!!!!!!!!
+                console.log('onDetailFormSubmitClick::ProductsStore.sync FAIL!');
+                notification.msg('Product save error!', 'There was a server error: ' + Ext.JSON.decode(operation.response.responseText));
+            }
         });
     }
 });

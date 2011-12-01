@@ -24,13 +24,12 @@ class Product(models.Model):
     category = models.ForeignKey(Category, null=True, related_name = 'products')
     um = models.ManyToManyField(UM, related_name = '+')
     bom = models.ForeignKey('Bom', related_name='products', null=True)
-    notes = models.TextField()
     bar_code = models.CharField(max_length = 20)
-    price_endetail = models.DecimalField(null=True, max_digits=14, decimal_places=4)
+    price_endetail = models.DecimalField( max_digits=14, decimal_places=4)
     price_engros = models.DecimalField(null=True, max_digits=14, decimal_places=4)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
-    modified = models.BooleanField(blank=True)
+
 
     def delete(self, using=None):
         # save last state as a revision
@@ -44,6 +43,9 @@ class Product(models.Model):
         fields = self._meta.get_all_field_names()
         object.pop('updated_at')
         object.pop('created_at')
+
+        print object
+
         try:
             category = object.pop('category', None)
 
@@ -55,6 +57,7 @@ class Product(models.Model):
         except Exception, err:
             print '[ err ] Exception Product-saveFromJson @ category: \t',
             print err
+            raise
             
         try:
             um = object.pop('um', None)
@@ -64,6 +67,28 @@ class Product(models.Model):
         except Exception, err:
             print '[ err ] Exception Product-saveFromJson @ um: \t',
             print err
+            raise
+
+        #bom
+        try:
+            bom = object.pop('bom_id', None)
+            if bom:
+                if isinstance(bom, int):
+                    bom = Bom.objects.get(pk = bom)
+            elif bom == '':
+                bom = Bom.objects.create()
+            print bom
+
+            bom.name = object.pop('bom', None)
+            bom.scrap_percentage = object.pop('scrap_percentage', None)
+            bom.labour_cost = object.pop('labour_cost', None)
+            bom.save()
+            self.bom = bom
+
+        except Exception, err:
+            print '[ err ] Exception Product-saveFromJson @ bom: \t',
+            print err
+            raise
 
         try:
             for key in object.keys():
@@ -73,13 +98,14 @@ class Product(models.Model):
         except Exception, err:
             print '[ err ] Exception Product-saveFromJson @ rest of keys: \t',
             print err
+            raise
 
         super(Product, self).save()
 
 class Bom(models.Model):
     name = models.CharField(max_length=50)
-    scrap_percentage = models.DecimalField(max_digits=5, decimal_places=2)
-    labour_cost = models.DecimalField(max_digits=10, decimal_places=4)
+    scrap_percentage = models.DecimalField(null=True,max_digits=5, decimal_places=2)
+    labour_cost = models.DecimalField(null=True,max_digits=10, decimal_places=4)
 
 class Ingredient(models.Model):
     bom = models.ForeignKey(Bom, related_name='ingredients')

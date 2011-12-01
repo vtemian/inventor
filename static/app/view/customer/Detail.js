@@ -48,7 +48,7 @@ Ext.define('INV.view.customer.Detail', {
                                 width:600,
                                 items: [{
                                         xtype:'inlinegrid',
-                                        id: 'customerAddressGrid',
+                                        id: 'customerAddressesGrid',
                                         store:'Addresses',
                                         addToolTip:'Add address',
                                         deleteToolTip:'Remove address',
@@ -66,7 +66,7 @@ Ext.define('INV.view.customer.Detail', {
                                 width:600,
                                 items: [{
                                         xtype:'inlinegrid',
-                                        id: 'customerContactGrid',
+                                        id: 'customerContactsGrid',
                                         store:'Contacts',
                                         maxWidth:400,
                                         //height:100,
@@ -82,7 +82,7 @@ Ext.define('INV.view.customer.Detail', {
                                 width:600,
                                 items: [{
                                         xtype:'inlinegrid',
-                                        id: 'customerBankGrid',
+                                        id: 'customerBanksGrid',
                                         store:'Banks',
                                         maxWidth:400,
                                         //height:100,
@@ -253,32 +253,18 @@ Ext.define('INV.view.customer.Detail', {
         var me = this,
             form = me.getForm(),
             fields = form.getFields();
-            addressGrid = me.down('#customerAddressGrid'),
-            bankGrid = me.down('#customerBankGrid'),
-            contactGrid = me.down('#customerContactGrid');
 
         // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
         fields.each(function(field) {
             field.suspendEvents();
         });
         form.loadRecord(record);
-
-        if (record.addressesStore) {
-            addressGrid.store.loadData(record.addressesStore.data.items, false);
-        } else {
-            addressGrid.store.removeAll();
-        }
-        if (record.banksStore) {
-            bankGrid.store.loadData(record.banksStore.data.items, false);
-        } else {
-            bankGrid.store.removeAll();
-        }
-        if (record.contactsStore) {
-            contactGrid.store.loadData(record.contactsStore.data.items, false);
-        } else {
-            contactGrid.store.removeAll();
-        }
-
+        if (!record.phantom){
+            record.associations.each(function(assoc){
+                cmp = Ext.getCmp(assoc.gridId);
+                cmp.store.loadData(record.getAssociatedData()[assoc.name], false);
+            });
+        };
         fields.each(function(field) {
             field.resumeEvents();
         });

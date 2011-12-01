@@ -17,9 +17,7 @@ Ext.define('INV.view.product.List' ,{
             {header: 'Product',  dataIndex: 'name',  flex: 1},
             {header: 'Description', dataIndex: 'description', flex: 1, hidden: true},
             {header: 'Category', dataIndex: 'category', flex: 1, hidden: true},
-            {header: 'Notes', dataIndex: 'notes', flex: 1, hidden: true},
-            {header: 'Bar code', dataIndex: 'barcode', flex: 1, hidden: true},
-            {header: 'Modified', dataIndex: 'modified', flex: 1, hidden: true}
+            {header: 'Bar code', dataIndex: 'barcode', flex: 1, hidden: true}
         ];
         this.dockedItems =  [{
                 xtype: 'pagingtoolbar',

@@ -50,22 +50,27 @@ def categoriesHandler(request):
 def _productCreate(request):
 
     data = []
+    response = {}
     try:
         postData = json.loads(request.read())
         extjsid = postData.pop('id')
         product = Product.objects.create()
         product.saveFromJson(postData)
+
+        response['data'] = model_to_dict(product)
+        response['data']['pk'] = product.pk #switch real database pk with ext generated id so the record is matched by ext
+        response['data']['id'] = extjsid
+        response['success'] = 'true'
     
     except Exception, err:
         print '[ err ] Exception at productsCreate: \t',
-        print err
-        
-    response = {}
-    response['data'] = model_to_dict(product)
-    response['data']['pk'] = product.pk #switch real database pk with ext generated id so the record is matched by ext
-    response['data']['id'] = extjsid
-    response['success'] = 'true'
-    return HttpResponse(simplejson.dumps(response, use_decimal=True))
+        print err.message
+
+        response['data'] = []
+        response['msg'] =  '%s ' % err
+        response['success'] = 'false'
+
+    return HttpResponse(simplejson.dumps(response, use_decimal=True), mimetype="application/json")
 
 
 def _productRead(request):
@@ -200,8 +205,6 @@ def _initialdata():
     b = Product.objects.create(code="ax123",
                            name="bomboane roz",
                            description="11sfqsger111",
-                           modified=False,
-                           notes='some notes and observations',
                            bar_code=1231231231231233,
                            category = Category.objects.get(pk=1),
                            bom = Bom.objects.get(pk=1),
@@ -210,8 +213,6 @@ def _initialdata():
     c = Product.objects.create(code="db443",
                            name="alt produs important",
                            description="111gqegrq222",
-                           modified=True,
-                           notes='notes and observations',
                            bar_code=1231231231231233,
                            category = Category.objects.get(pk=2),
                            bom = Bom.objects.get(pk=1),
@@ -220,8 +221,6 @@ def _initialdata():
     d = Product.objects.create(code="db443",
                            name="alt produs important",
                            description="111gqegrq222",
-                           modified=True,
-                           notes='notes and observations',
                            bar_code=1231231231231233,
                            category = Category.objects.get(pk=2),
                            bom = Bom.objects.get(pk=3),

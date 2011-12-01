@@ -79,9 +79,9 @@ Ext.define('INV.view.product.Detail', {
                     },
                     {xtype:'displayfield'},
                     {xtype:'textfield', name:'barCode', fieldLabel: 'Bar code'},
-                    {xtype:'textfield', name:'description', fieldLabel: 'Description'},
-                    {xtype:'checkbox', name:'modified', fieldLabel: 'Modified', inputValue:'true', uncheckedValue:'false'},
-                    {xtype:'textfield', name:'notes', fieldLabel: 'Notes', allowBlank:false}
+                    {xtype:'textfield', name:'description', fieldLabel: 'Description'}
+                    //{xtype:'checkbox', name:'modified', fieldLabel: 'Modified', inputValue:'true', uncheckedValue:'false'},
+
                 ]
                 },{
                 xtype:'fieldset',
@@ -153,7 +153,7 @@ Ext.define('INV.view.product.Detail', {
                     anchor: '90%'
                 },
                 items:[{xtype:'textfield', name:'bom', fieldLabel: 'Norma', anchor:'75%'},
-                    {xtype:'textfield', name:'scrap_percentage', fieldLabel: 'Scrap', anchor:'75%'},
+                    {xtype:'numberfield', name:'scrap_percentage', fieldLabel: 'Scrap', anchor:'75%'},
                     {xtype:'textfield', name:'labour_cost', fieldLabel: 'Labor', anchor:'75%'},
                     {    xtype: 'fieldcontainer',
                         fieldLabel: 'Ingredients',
@@ -341,11 +341,16 @@ Ext.define('INV.view.product.Detail', {
             field.suspendEvents();
         });
         form.loadRecord(record);
-        if (record.raw.bom) {
-            ingredientsGrid.store.loadData(record.raw.bom.ingredients, false);
-        } else {
-            ingredientsGrid.store.removeAll();
+
+        ingredientsGrid.store.removeAll();
+        try{
+            if (!record.phantom)
+                if (Ext.isDefined(record.raw.bom) & record.raw.bom != null)
+                    if (Ext.typeOf(record.raw.bom.ingredients) == 'array' )
+                        ingredientsGrid.store.loadData(record.raw.bom.ingredients, false);
         }
+        catch(err) {console.log('Error loading Produc Bom Igredients - '+err)}
+        
         fields.each(function(field) {
             field.resumeEvents();
         });

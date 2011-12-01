@@ -11,10 +11,10 @@ Ext.define('INV.model.Product', {
         {name:'um', mapping: 'um', convert: function(v){return v == 'None'? '': v}},
         {name:'barCode', type: 'string', mapping:'barCode'},
         {name:'description', type: 'string', mapping:'description'},
-        {name:'modified', type: 'boolean', mapping:'modified'},
-        {name:'notes', type: 'string', mapping:'notes'},
+        //{name:'modified', type: 'boolean', mapping:'modified'},
         {name:'created_at', type: 'date', mapping:'created_at'},
         {name:'updated_at', type: 'date', mapping:'updated_at'},
+        {name:'bom_id', mapping:function(obj){ return Ext.isObject(obj.bom) ? obj.bom.id : ''}},
         {name:'bom', mapping:function(obj){ return Ext.isObject(obj.bom) ? obj.bom.name : ''}},
         {name:'scrap_percentage', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.scrap_percentage : '' }},
         {name:'labour_cost', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.labour_cost : ''}}
