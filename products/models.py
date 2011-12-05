@@ -1,6 +1,9 @@
 from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from inventor.products.manager import ProductManager
+
+
 import reversion
 
 class Category(models.Model):
@@ -39,15 +42,14 @@ class Product(models.Model):
         with reversion.revision:
             super(Product, self).delete(using)
             
-    def saveFromJson(self, object):
+    def saveFromJson(self, dict):
         fields = self._meta.get_all_field_names()
-        object.pop('updated_at')
-        object.pop('created_at')
-
-        print object
+        dict.pop('id')
+        dict.pop('updated_at')
+        dict.pop('created_at')
 
         try:
-            category = object.pop('category', None)
+            category = dict.pop('category', None)
 
             if category:
                 if isinstance(category, int):
@@ -60,7 +62,7 @@ class Product(models.Model):
             raise
             
         try:
-            um = object.pop('um', None)
+            um = dict.pop('um', None)
             self.um.clear()
             for item in um:
                 self.um.add(UM.objects.get(pk=item))
@@ -71,19 +73,25 @@ class Product(models.Model):
 
         #bom
         try:
-            bom = object.pop('bom_id', None)
-            if bom:
-                if isinstance(bom, int):
-                    bom = Bom.objects.get(pk = bom)
-            elif bom == '':
-                bom = Bom.objects.create()
-            print bom
+            bomId = dict.pop('bom_id', None)
+            bomName = dict.pop('bom', None)
+            bomScrap_percentage = dict.pop('scrap_percentage', None)
+            bomLabour_cost = dict.pop('labour_cost', None)
+            if isinstance(bomId, int):
+                #update
+                bom = Bom.objects.get(pk = bomId)
+                bom.name =  bomName
+                bom.scrap_percentage = bomScrap_percentage
+                bom.labour_cost = bomLabour_cost
+                bom.save()
+                print bom.__dict__
+                self.bom = bom
+            elif bomName != '' or bomScrap_percentage != 0 or bomLabour_cost != 0:
+                #create
+                bom = Bom.objects.create(name = bomName, scrap_percentage = bomScrap_percentage, labour_cost = bomLabour_cost)
+                print bom.__dict__
+                self.bom = bom
 
-            bom.name = object.pop('bom', None)
-            bom.scrap_percentage = object.pop('scrap_percentage', None)
-            bom.labour_cost = object.pop('labour_cost', None)
-            bom.save()
-            self.bom = bom
 
         except Exception, err:
             print '[ err ] Exception Product-saveFromJson @ bom: \t',
@@ -91,9 +99,9 @@ class Product(models.Model):
             raise
 
         try:
-            for key in object.keys():
+            for key in dict.keys():
                 if key in fields:
-                    setattr(self, key, object[key])
+                    setattr(self, key, dict[key])
             self.updated_at = datetime.now()
         except Exception, err:
             print '[ err ] Exception Product-saveFromJson @ rest of keys: \t',
@@ -110,9 +118,39 @@ class Bom(models.Model):
 class Ingredient(models.Model):
     bom = models.ForeignKey(Bom, related_name='ingredients')
     ingredient = models.ForeignKey(Product, related_name='ingredient')
-    quantity = models.DecimalField(max_digits=10, decimal_places=4)
+    quantity = models.DecimalField(max_digits=10, null=True, decimal_places=4)
     um = models.ForeignKey(UM)
-    loss = models.DecimalField(max_digits=5, decimal_places=2)
+    loss = models.DecimalField(max_digits=5, null=True, decimal_places=2)
+
+    def saveFromJson(self, dict):
+        fields = self._meta._fields()
+        dict.pop('id')
+
+        try:
+            for field in fields:
+                if field.name in dict:
+                    if isinstance(field, models.ForeignKey):
+                        #print 'FK: %s '% field.related.parent_model.__name__
+                        model = field.related.parent_model
+                        try:
+                            modelInstance = model.objects.get(pk = dict[field.name])
+                            setattr(self, field.name, modelInstance)
+                        except Exception:
+                            if model.__name__ == 'Bom':
+                                modelInstance = model.objects.create()
+                                setattr(self, field.name, modelInstance)
+                            else:
+                                setattr(self, field.name, 1)
+                        
+                    else:
+                        setattr(self, field.name, dict[field.name])
+        except Exception, err:
+            print '[ err ] Exception Ingredient-saveFromJson @ rest of keys: \t',
+            print err
+            raise
+
+        super(Ingredient, self).save()
+
     
 if not reversion.is_registered(Product):
     reversion.register(Product)

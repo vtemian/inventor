@@ -31,6 +31,15 @@ Ext.define('INV.controller.Products', {
             },
             'productdetail button[action=submit]':{
                 click: this.onDetailFormSubmitClick
+            },
+            'productdetail inlinegrid button[action=add]': {
+                click: this.onAddIngredientClick
+            },
+            'productdetail inlinegrid actioncolumn': {
+                click: this.onDeleteIngredientClick
+            },
+            'productdetail inlinegrid': {
+                edit: this.editInlineGrid
             }
         });
 
@@ -139,17 +148,13 @@ Ext.define('INV.controller.Products', {
             categories = this.getProductCategoriesStore(),
             store = this.getProductsStore();
 
+        console.log(product);
         product.set(values);
         if (isNewProduct) {
             store.add(product);
         }
+        console.log(product);
         product.save({success: function(prod, operation){
-            if (isNewProduct){ //switch ext generated id with real database pk
-                product = store.last();
-                product.beginEdit();
-                product.set('id', Ext.JSON.decode(operation.response.responseText).data.pk);
-                product.commit(true);
-            }
 
             //reload categories if a string/new catefory was submmited
             if (Ext.isString(values.category)) categories.load();
@@ -160,5 +165,55 @@ Ext.define('INV.controller.Products', {
                 notification.msg('Product save error!', 'There was a server error: ' + Ext.JSON.decode(operation.response.responseText));
             }
         });
+    },
+
+
+    onAddIngredientClick: function(button){
+
+        var grid = button.up('grid'),
+            store = grid.store,
+            maxRecords = 3,
+            bomId = this.getProductDetail().getProductBomId();
+        
+        if (this.getProductDetail().getProductId() == ''){
+            Ext.MessageBox.alert('BIG NONO', 'Save product before adding ingredients');
+            return;
+        }
+
+        if (store.getCount() >= maxRecords) {
+            Ext.MessageBox.alert('Max Records', 'You have reached max records.');
+            return;
+        }
+
+        ingredient = INV.model.ProductBomIngredient.create();
+        grid.editingPlugin.cancelEdit();
+        ingredient.data.bom = this.getProductDetail().getProductBomId();
+
+        store.add(ingredient);
+//        store.sync({callback:function(){
+//            console.log('store SYNC CALLBACK dupa ADD');
+//            notification.msg('ADD','SYNC CALLBACK dupa ADD');
+//        }});
+        console.log(bomId);
+        grid.editingPlugin.startEdit(store.last(), 0);
+    },
+
+    onDeleteIngredientClick: function(view, cell, recordIndex, cellIndex, e){
+
+        view.editingPlugin.cancelEdit();
+
+        //notification.msg('Remove', 'the record ' + view.store.getAt(recordIndex).data.name + ' was deleted!');
+        view.store.removeAt(recordIndex);
+        view.store.sync({callback:function(){
+            console.log('store SYNC CALLBACK dupa DELETE');
+            notification.msg('Remove','SYNC CALLBACK dupa DELETE');
+        }});
+    },
+
+    editInlineGrid: function(editor, e) {
+        // commit the changes right after editing finished
+        console.log('onEdit editor inlinegrid ', e.record);
+        e.record.save();
+
     }
 });

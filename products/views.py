@@ -29,13 +29,13 @@ def umHandler(request):
                 'PUT'   : _umUpdate,
                 'DELETE': _umDelete}
     return handlers[request.method].__call__(request)
+@csrf_exempt
+def ingredientHandler(request):
 
-def bomHandler(request):
-
-    handlers = {'POST'  : _bomCreate,
-                'GET'   : _bomRead,
-                'PUT'   : _bomUpdate,
-                'DELETE': _bomDelete}
+    handlers = {'POST'  : _ingredientCreate,
+                'GET'   : _ingredientRead,
+                'PUT'   : _ingredientUpdate,
+                'DELETE': _ingredientDelete}
     return handlers[request.method].__call__(request)
 
 def categoriesHandler(request):
@@ -49,18 +49,17 @@ def categoriesHandler(request):
 @csrf_exempt
 def _productCreate(request):
 
-    data = []
     response = {}
     try:
         postData = json.loads(request.read())
-        extjsid = postData.pop('id')
+        postData.pop('id')
         product = Product.objects.create()
         product.saveFromJson(postData)
 
-        response['data'] = model_to_dict(product)
-        response['data']['pk'] = product.pk #switch real database pk with ext generated id so the record is matched by ext
-        response['data']['id'] = extjsid
-        response['success'] = 'true'
+        product = Product.objects.filter(pk=product.pk)
+
+        response = serializers.serialize('json4ext', product, relations={'bom':{'relations':('ingredients',)}} )
+
     
     except Exception, err:
         print '[ err ] Exception at productsCreate: \t',
@@ -69,8 +68,10 @@ def _productCreate(request):
         response['data'] = []
         response['msg'] =  '%s ' % err
         response['success'] = 'false'
+        response = simplejson.dumps(response, use_decimal=True)
 
-    return HttpResponse(simplejson.dumps(response, use_decimal=True), mimetype="application/json")
+
+    return HttpResponse(response, mimetype="application/json")
 
 
 def _productRead(request):
@@ -104,11 +105,9 @@ def _productUpdate(request):
     except Exception, err:
         print '[ err ] Exception @ _productUpdate: \t',
         print err
- 
-    response = {}
-    response['data'] = model_to_dict(product)
-    response['success'] = 'true'
-    return HttpResponse(simplejson.dumps(response, use_decimal=True))
+
+    product = Product.objects.filter(pk=prod['id'])
+    return HttpResponse(serializers.serialize('json4ext', product, relations={'bom':{'relations':('ingredients',)}} ), mimetype="application/json")
 
 def _productDelete(request):
     
@@ -118,22 +117,45 @@ def _productDelete(request):
     
     return HttpResponse(simplejson.dumps({'success':'true'}), mimetype='application/json')
 
-def _bomCreate(request):
-    pass
+@csrf_exempt
+def _ingredientCreate(request):
 
-def _bomRead(request):
+    response = {}
+    try:
+        postData = json.loads(request.read())
+        ingredient = Ingredient()
+        ingredient.saveFromJson(postData)
+        pk = ingredient.pk
 
-    product = Product.objects.get(pk=6)
-    bom = Bom.objects.filter(product = product)
-    response = serializers.serialize('json4ext', bom)
+        ingredient = Ingredient.objects.filter(pk = pk)
 
-    #print json.dumps(response, indent=4)
+        response = serializers.serialize('json4ext',ingredient)
+
+#        pkstr = '\"id\": %s'%pk
+#        extjsidstr = '\"id\": 0,\"pk\":%s'%pk
+#        response = response.replace(pkstr, extjsidstr)
+
+    except Exception, err:
+        print '[ err ] Exception at ingredientCreate: \t',
+        print err.message
+
+        response['data'] = []
+        response['msg'] =  '%s ' % err
+        response['success'] = 'false'
+        response = simplejson.dumps(response, use_decimal=True)
+        
     return HttpResponse(response, mimetype="application/json")
 
+def _ingredientRead(request):
     pass
-def _bomUpdate(request):
-    pass
-def _bomDelete(request):
+
+@csrf_exempt
+def _ingredientUpdate(request):
+
+
+    return HttpResponse(serializers.serialize('json4ext', Ingredient.objects.all()), mimetype='application/json')
+
+def _ingredientDelete(request):
     pass
 
 

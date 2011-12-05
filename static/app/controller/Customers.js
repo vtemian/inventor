@@ -28,12 +28,6 @@ Ext.define('INV.controller.Customers', {
             },
             'customerlist button[action=delete]': {
                 click: this.onDeleteCustomerClick
-            },
-            'inlinegrid button[action=add]': {
-                click: this.onAddInlineItemClick
-            },
-            'inlinegrid actioncolumn': {
-                click: this.onDeleteInlineItemClick
             }
         });
 
@@ -123,38 +117,5 @@ Ext.define('INV.controller.Customers', {
         } else {
             detail.loadRecord(customer);
         }
-    },
-
-
-    onAddInlineItemClick: function(button){
-
-        var grid = button.up('grid'),
-            store = grid.store,
-            model = store.model,
-            customerId = this.getCustomerDetail().getCustomerId(),
-            maxRecords = 3;
-
-        if (store.getCount() >= maxRecords) {
-            Ext.MessageBox.alert('Max Records', 'You have reached max records.');
-            return;
-        }
-
-        grid.editingPlugin.cancelEdit();
-
-        newRecord =  Ext.create(model);
-        console.log('onAddInlineItemClick');
-
-        store.insert(store.getCount() + 1, newRecord);
-        //store.sync({callback:function(){console.log('store SYNC CALLBACK dupa ADD');notification.msg('ADD','SYNC CALLBACK dupa ADD')}});
-        grid.editingPlugin.startEdit(store.getCount()-1, 1);
-    },
-
-    onDeleteInlineItemClick: function(view, cell, recordIndex, cellIndex, e){
-
-        view.editingPlugin.cancelEdit();
-
-        notification.msg('Remove', 'the record ' + view.store.getAt(recordIndex).data.name + ' was deleted!');
-        view.store.removeAt(recordIndex);
-        //store.sync({callback:function(){console.log('store SYNC CALLBACK dupa DELETE');notification.msg('Remove','SYNC CALLBACK dupa DELETE')}});
     }
 });

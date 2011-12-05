@@ -32,16 +32,18 @@ Ext.define('INV.view.product.Detail', {
                     anchor: '90%'
                 },
                 items: [
-                    {xtype:'textfield', name:'code', fieldLabel: 'Code'},
-                    {xtype:'textfield', name:'name', fieldLabel: 'Name', minLength: 6},
+                    {xtype:'textfield', name:'code', fieldLabel: 'Code', maxLength: 10},
+                    {xtype:'textfield', name:'name', fieldLabel: 'Name', minLength: 3, maxLength: 50},
                     {xtype:'fieldcontainer', layout:'hbox',
                         items: [{
-                            xtype: 'textfield',
+                            xtype: 'numberfield',
+                            hideTrigger: true,
                             name: 'price_endetail',
                             fieldLabel: 'Price',
                             flex: 1
                         },{
-                            xtype: 'textfield',
+                            xtype: 'numberfield',
+                            hideTrigger: true,
                             name: 'price_engros',
                             fieldLabel: 'engros',
                             labelAlign: 'right',
@@ -153,8 +155,8 @@ Ext.define('INV.view.product.Detail', {
                     anchor: '90%'
                 },
                 items:[{xtype:'textfield', name:'bom', fieldLabel: 'Norma', anchor:'75%'},
-                    {xtype:'numberfield', name:'scrap_percentage', fieldLabel: 'Scrap', anchor:'75%'},
-                    {xtype:'textfield', name:'labour_cost', fieldLabel: 'Labor', anchor:'75%'},
+                    {xtype:'numberfield', hideTrigger: true, name:'scrap_percentage', fieldLabel: 'Scrap', anchor:'75%'},
+                    {xtype:'numberfield', hideTrigger: true, name:'labour_cost', fieldLabel: 'Labor', anchor:'75%'},
                     {    xtype: 'fieldcontainer',
                         fieldLabel: 'Ingredients',
                         //padding: 10,
@@ -169,25 +171,12 @@ Ext.define('INV.view.product.Detail', {
                             //height:100,
                             columns:[
                                 {dataIndex: 'quantity', width: 40, editor:{type:'numberfield', hideTrigger:true}},
-                                {dataIndex: 'um', width: 60,
-                                    xtype: 'combocolumn',
-                                        gridId: 'ingredientsgrid',
-                                        editor: {
-                                            xtype: 'combobox',
-                                            typeAhead: true,
-                                            triggerAction: 'all',
-                                            selectOnTab: true,
-                                            emptyText:'select',
-                                            store: Ext.create('INV.store.ProductUms'),
-                                            displayField:'name',
-                                            valueField:'id',
-                                            lazyRender: true
-                                }},
                                 {dataIndex: 'ingredient', width: 100 ,
                                     xtype: 'combocolumn',
                                     gridId: 'ingredientsgrid',
                                     editor: {
                                         xtype: 'combobox',
+                                        forceSelection: true,
                                         typeAhead: true,
                                         triggerAction: 'all',
                                         selectOnTab: true,
@@ -196,6 +185,21 @@ Ext.define('INV.view.product.Detail', {
                                         displayField:'name',
                                         valueField:'id',
                                         lazyRender: true
+                                }},
+                                {dataIndex: 'um', width: 40,
+                                    xtype: 'combocolumn',
+                                        gridId: 'ingredientsgrid',
+                                        editor: {
+                                            xtype: 'combobox',
+                                            forceSelection: true,
+                                            typeAhead: true,
+                                            triggerAction: 'all',
+                                            selectOnTab: true,
+                                            emptyText:'select',
+                                            store: Ext.create('INV.store.ProductUms'),
+                                            displayField:'abbreviation',
+                                            valueField:'id',
+                                            lazyRender: true
                                 }},
                                 {dataIndex: 'loss', width: 40, editor:{type:'numberfield', hideTrigger:true}}
                             ]}
@@ -293,7 +297,19 @@ Ext.define('INV.view.product.Detail', {
     },
 
     getProductId: function() {
-        return this.down('form').getRecord().data['id'];
+        var record = this.getRecord();
+        if (record.phantom){
+            return ''
+        }
+        return record.data['id'];
+    },
+
+    getProductBomId: function() {
+        var record = this.getRecord();
+        if (record.phantom){
+            return ''
+        }
+        return record.data['bom_id'];
     },
 
     onFieldChange: function(field, newValue, oldValue, eOpts) {

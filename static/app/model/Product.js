@@ -16,8 +16,8 @@ Ext.define('INV.model.Product', {
         {name:'updated_at', type: 'date', mapping:'updated_at'},
         {name:'bom_id', mapping:function(obj){ return Ext.isObject(obj.bom) ? obj.bom.id : ''}},
         {name:'bom', mapping:function(obj){ return Ext.isObject(obj.bom) ? obj.bom.name : ''}},
-        {name:'scrap_percentage', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.scrap_percentage : '' }},
-        {name:'labour_cost', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.labour_cost : ''}}
+        {name:'scrap_percentage', type: 'float', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.scrap_percentage : '' }},
+        {name:'labour_cost', type: 'float', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.labour_cost : ''}}
 
         //{name:'properties', mapping: 'fields.properties', persist: true}
     ],

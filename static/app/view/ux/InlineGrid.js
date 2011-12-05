@@ -51,12 +51,14 @@ Ext.define('INV.view.ux.InlineGrid' ,{
                     }]
             }];
 
-        me.plugins = [Ext.create('Ext.grid.plugin.CellEditing', {
+        me.plugins = [Ext.create('Ext.grid.plugin.RowEditing', {
             clicksToMoveEditor: 1,
             autoCancel: false,
             errorSummary: true
         })];
 
         me.callParent(arguments);
+
+
     }
 });
