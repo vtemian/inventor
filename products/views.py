@@ -106,7 +106,7 @@ def _productUpdate(request):
         print '[ err ] Exception @ _productUpdate: \t',
         print err
 
-    product = Product.objects.filter(pk=prod['id'])
+    product = Product.objects.filter(pk=product.pk)
     return HttpResponse(serializers.serialize('json4ext', product, relations={'bom':{'relations':('ingredients',)}} ), mimetype="application/json")
 
 def _productDelete(request):
@@ -117,6 +117,13 @@ def _productDelete(request):
     
     return HttpResponse(simplejson.dumps({'success':'true'}), mimetype='application/json')
 
+def productsList(request):
+
+    print request.read()
+    return HttpResponse(serializers.serialize('json4ext', Product.objects.all(), fields={'id','name'}), mimetype='application/json')
+
+
+
 @csrf_exempt
 def _ingredientCreate(request):
 
@@ -125,15 +132,9 @@ def _ingredientCreate(request):
         postData = json.loads(request.read())
         ingredient = Ingredient()
         ingredient.saveFromJson(postData)
-        pk = ingredient.pk
 
-        ingredient = Ingredient.objects.filter(pk = pk)
-
+        ingredient = Ingredient.objects.filter(pk = ingredient.pk)
         response = serializers.serialize('json4ext',ingredient)
-
-#        pkstr = '\"id\": %s'%pk
-#        extjsidstr = '\"id\": 0,\"pk\":%s'%pk
-#        response = response.replace(pkstr, extjsidstr)
 
     except Exception, err:
         print '[ err ] Exception at ingredientCreate: \t',

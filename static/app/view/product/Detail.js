@@ -177,22 +177,35 @@ Ext.define('INV.view.product.Detail', {
                                     editor: {
                                         xtype: 'combobox',
                                         forceSelection: true,
-                                        typeAhead: true,
+                                        typeAhead: true,//Uncaught TypeError: Cannot call method 'addCls' of null
+                                        typeAheadDelay: 1000,
                                         triggerAction: 'all',
                                         selectOnTab: true,
                                         emptyText:'select',
-                                        store: Ext.create('INV.store.Products'),
+                                        store: Ext.create('INV.store.ProductsList'),
                                         displayField:'name',
                                         valueField:'id',
-                                        lazyRender: true
-                                }},
+                                        lazyRender: true,
+                                        multiSelect: false,
+                                        listeners:{
+                                            select: function(combo, record){
+                                                var ingredient = combo.up('form').getRecord(),
+                                                    umStore = combo.nextSibling().store;
+                                               umStore.filter( Ext.create('Ext.util.Filter', {filterFn: function(item) {
+                                                                        return Ext.Array.contains(record[0].data.um, item.get("id"))
+                                                                    }, root: 'data'}))
+                                            }
+                                        }
+                                    }
+                                },
                                 {dataIndex: 'um', width: 40,
                                     xtype: 'combocolumn',
                                         gridId: 'ingredientsgrid',
                                         editor: {
                                             xtype: 'combobox',
                                             forceSelection: true,
-                                            typeAhead: true,
+                                            typeAhead: true,//Uncaught TypeError: Cannot call method 'addCls' of null
+                                            typeAheadDelay: 1000,
                                             triggerAction: 'all',
                                             selectOnTab: true,
                                             emptyText:'select',
@@ -200,7 +213,8 @@ Ext.define('INV.view.product.Detail', {
                                             displayField:'abbreviation',
                                             valueField:'id',
                                             lazyRender: true
-                                }},
+                                        }
+                                },
                                 {dataIndex: 'loss', width: 40, editor:{type:'numberfield', hideTrigger:true}}
                             ]}
                         ]}

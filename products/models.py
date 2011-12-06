@@ -119,7 +119,7 @@ class Ingredient(models.Model):
     bom = models.ForeignKey(Bom, related_name='ingredients')
     ingredient = models.ForeignKey(Product, related_name='ingredient')
     quantity = models.DecimalField(max_digits=10, null=True, decimal_places=4)
-    um = models.ForeignKey(UM)
+    um = models.ForeignKey(UM,  null=True)
     loss = models.DecimalField(max_digits=5, null=True, decimal_places=2)
 
     def saveFromJson(self, dict):
@@ -140,7 +140,7 @@ class Ingredient(models.Model):
                                 modelInstance = model.objects.create()
                                 setattr(self, field.name, modelInstance)
                             else:
-                                setattr(self, field.name, 1)
+                                setattr(self, field.name, None )
                         
                     else:
                         setattr(self, field.name, dict[field.name])
