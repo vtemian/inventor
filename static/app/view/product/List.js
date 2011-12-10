@@ -64,7 +64,10 @@ Ext.define('INV.view.product.List' ,{
 
     storeLoaded: function(store) {
 
-        if (store.getCount() > 0 && this.rendered) this.getView().select(0);
+        if (store.getCount() > 0 && this.rendered) {
+            this.getView().select(0);
+            console.log('LIST: Store load select 0')
+        }
     }
 });
 

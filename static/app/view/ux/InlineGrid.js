@@ -51,9 +51,9 @@ Ext.define('INV.view.ux.InlineGrid' ,{
                     }]
             }];
 
-        me.plugins = [Ext.create('Ext.grid.plugin.RowEditing', {
+        me.plugins = [Ext.create('Ext.grid.plugin.CellEditing', {
             clicksToMoveEditor: 1,
-            autoCancel: false,
+            autoCancel: true,
             errorSummary: true
         })];
 

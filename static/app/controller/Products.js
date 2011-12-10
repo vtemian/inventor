@@ -48,7 +48,13 @@ Ext.define('INV.controller.Products', {
 
     onLaunch: function() {console.log('products launch');},
 
-    onProductsStoreLoad: function(){console.log('products Store Load');},
+    onProductsStoreLoad: function(store){
+        console.log('products Store Load');
+        if (store.getCount() > 0) {
+           this.getProductList().getView().select(0);
+           console.log('CONTROLLER: products Store Load select 0');
+        }
+    },
 
     onProductSelect: function(selModel, selection) {
         var detail = this.getProductDetail();
@@ -144,25 +150,22 @@ Ext.define('INV.controller.Products', {
     },
 
     saveProduct: function(product,values){
-        var isNewProduct = product.phantom,
-            categories = this.getProductCategoriesStore(),
+        var me = this,
+            isNewProduct = product.phantom,
             store = this.getProductsStore();
 
-        console.log(product);
         product.set(values);
         if (isNewProduct) {
             store.add(product);
         }
-        console.log(product);
-        product.save({success: function(prod, operation){
-
+        product.save({success: function(product, operation){
             //reload categories if a string/new catefory was submmited
-            if (Ext.isString(values.category)) categories.load();
-        }},{
-            failure: function(prod, operation){
-                //NEVER GETS CALLED!!!!!!!!!!!!!!
-                console.log('onDetailFormSubmitClick::ProductsStore.sync FAIL!');
-                notification.msg('Product save error!', 'There was a server error: ' + Ext.JSON.decode(operation.response.responseText));
+            if (Ext.isString(values.category)) me.getProductCategoriesStore().load();
+            me.getProductsListStore().load();
+            },
+            failure: function(product, operation){
+                notification.msg('Product save error!', 'There was a server error. ');
+                console.log('ERROR:::Product->saveProduct::',operation.getError())
             }
         });
     },
@@ -173,7 +176,7 @@ Ext.define('INV.controller.Products', {
         var grid = button.up('grid'),
             store = grid.store,
             maxRecords = 3,
-            bomId = this.getProductDetail().getProductBomId();
+            productDetail = this.getProductDetail();
         
         if (this.getProductDetail().getProductId() == ''){
             Ext.MessageBox.alert('BIG NONO', 'Save product before adding ingredients');
@@ -185,35 +188,48 @@ Ext.define('INV.controller.Products', {
             return;
         }
 
-        ingredient = INV.model.ProductBomIngredient.create();
+        ingredient = INV.model.ProductBomIngredient.create({
+            bom : this.getProductDetail().getProductBomId(),
+            product : this.getProductDetail().getProductId()
+        });
         grid.editingPlugin.cancelEdit();
-        ingredient.data.bom = this.getProductDetail().getProductBomId();
 
         store.add(ingredient);
-//        store.sync({callback:function(){
-//            console.log('store SYNC CALLBACK dupa ADD');
-//            notification.msg('ADD','SYNC CALLBACK dupa ADD');
-//        }});
-        console.log(bomId);
         grid.editingPlugin.startEdit(store.last(), 0);
     },
 
     onDeleteIngredientClick: function(view, cell, recordIndex, cellIndex, e){
 
         view.editingPlugin.cancelEdit();
-
+        //view.store.getAt(recordIndex).data.id = 0; //trigger error
         //notification.msg('Remove', 'the record ' + view.store.getAt(recordIndex).data.name + ' was deleted!');
         view.store.removeAt(recordIndex);
-        view.store.sync({callback:function(){
-            console.log('store SYNC CALLBACK dupa DELETE');
-            notification.msg('Remove','SYNC CALLBACK dupa DELETE');
-        }});
+        view.store.sync();
     },
 
     editInlineGrid: function(editor, e) {
+        var me = this,
+            store = this.getProductsStore(),
+            view = this.getProductList().getView(),
+            lastSelectedId = this.getProductDetail().getProductId();
+
         // commit the changes right after editing finished
-        console.log('onEdit editor inlinegrid ', e.record);
-        e.record.save();
+        e.record.save({
+            scope:this,
+            success: function (ingredient, operation){
+                //reload Products Store to reflect changes
+                store.load({
+                    scope   : this,
+                    callback: function(records, operation, success){
+                        var rowIndex = store.find('id', lastSelectedId);
+                        console.log('LOAD CALLBACK: select lastSelected:',lastSelectedId);
+                        view.select(rowIndex);
+                    }
+                });
+            }
+        });
+        
+        console.log(store);
 
     }
 });

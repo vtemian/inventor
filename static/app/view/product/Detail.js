@@ -48,6 +48,7 @@ Ext.define('INV.view.product.Detail', {
                             fieldLabel: 'engros',
                             labelAlign: 'right',
                             labelWidth: 50,
+                            margin: '0 1 0 0 ',
                             flex: 0.9
                         }]
                     },{
@@ -69,8 +70,10 @@ Ext.define('INV.view.product.Detail', {
                                 fieldLabel: 'UM',
                                 labelAlign: 'right',
                                 labelWidth: 50,
+                                margin: '0 1 0 0 ',
                                 flex: 0.9,
-                                multiSelect: true,
+                                multiSelect: false,
+                                editable:false,
                                 store:'ProductUms',
                                 valueField: 'id',
                                 displayField: 'abbreviation',
@@ -127,19 +130,6 @@ Ext.define('INV.view.product.Detail', {
                     disabled:true
                 },
                 items:[
-                    {xtype:'combo', name:'version', fieldLabel: 'Versiune',
-                        disabled: false,
-                        emptyText:'ultima',
-                        displayField: 'name',
-                        valueField: 'abbr',
-                        store: Ext.create('Ext.data.Store', {
-                                fields: ['abbr', 'name'],
-                                data : [
-                                    {"abbr":1, "name":"ver 1, 13.09.11 16:05 - Alin"},
-                                    {"abbr":2, "name":"ver 2, 22.10.11 10:33 - Vlad"},
-                                    {"abbr":2, "name":"ver 3, 06.11.11 14:45 - Caius"}
-                                ]
-                    })},
                     {xtype:'textfield', name:'created_at', fieldLabel: 'Created', anchor:'75%'},
                     {xtype:'textfield', name:'updated_at', fieldLabel: 'Updated', anchor:'75%'},
                     {xtype:'textfield', name:'status', fieldLabel: 'Status', anchor:'75%'}
@@ -154,7 +144,7 @@ Ext.define('INV.view.product.Detail', {
                 defaults: {
                     anchor: '90%'
                 },
-                items:[{xtype:'textfield', name:'bom', fieldLabel: 'Norma', anchor:'75%'},
+                items:[
                     {xtype:'numberfield', hideTrigger: true, name:'scrap_percentage', fieldLabel: 'Scrap', anchor:'75%'},
                     {xtype:'numberfield', hideTrigger: true, name:'labour_cost', fieldLabel: 'Labor', anchor:'75%'},
                     {    xtype: 'fieldcontainer',
@@ -170,39 +160,13 @@ Ext.define('INV.view.product.Detail', {
                             maxWidth:400,
                             //height:100,
                             columns:[
-                                {dataIndex: 'quantity', width: 40, editor:{type:'numberfield', hideTrigger:true}},
-                                {dataIndex: 'ingredient', width: 100 ,
-                                    xtype: 'combocolumn',
-                                    gridId: 'ingredientsgrid',
-                                    editor: {
-                                        xtype: 'combobox',
-                                        forceSelection: true,
-                                        typeAhead: true,//Uncaught TypeError: Cannot call method 'addCls' of null
-                                        typeAheadDelay: 1000,
-                                        triggerAction: 'all',
-                                        selectOnTab: true,
-                                        emptyText:'select',
-                                        store: Ext.create('INV.store.ProductsList'),
-                                        displayField:'name',
-                                        valueField:'id',
-                                        lazyRender: true,
-                                        multiSelect: false,
-                                        listeners:{
-                                            select: function(combo, record){
-                                                var ingredient = combo.up('form').getRecord(),
-                                                    umStore = combo.nextSibling().store;
-                                               umStore.filter( Ext.create('Ext.util.Filter', {filterFn: function(item) {
-                                                                        return Ext.Array.contains(record[0].data.um, item.get("id"))
-                                                                    }, root: 'data'}))
-                                            }
-                                        }
-                                    }
-                                },
+                                {dataIndex: 'quantity', width: 40, editor:{type:'numberfield', selectOnFocus: true, hideTrigger:true}},
                                 {dataIndex: 'um', width: 40,
                                     xtype: 'combocolumn',
                                         gridId: 'ingredientsgrid',
                                         editor: {
                                             xtype: 'combobox',
+                                            readOnly:true,
                                             forceSelection: true,
                                             typeAhead: true,//Uncaught TypeError: Cannot call method 'addCls' of null
                                             typeAheadDelay: 1000,
@@ -215,7 +179,38 @@ Ext.define('INV.view.product.Detail', {
                                             lazyRender: true
                                         }
                                 },
-                                {dataIndex: 'loss', width: 40, editor:{type:'numberfield', hideTrigger:true}}
+                                {dataIndex: 'ingredient', width: 100 ,
+                                    xtype: 'combocolumn',
+                                    gridId: 'ingredientsgrid',
+                                    editor: {
+                                        xtype: 'combobox',
+                                        forceSelection: true,
+                                        typeAhead: true,//Uncaught TypeError: Cannot call method 'addCls' of null
+                                        typeAheadDelay: 1000,
+                                        triggerAction: 'all',
+                                        selectOnTab: true,
+                                        emptyText:'select',
+                                        store: Ext.create('INV.store.ProductsList'),
+                                        //queryMode: 'local',
+                                        displayField:'name',
+                                        valueField:'id',
+                                        lazyRender: true,
+                                        multiSelect: false,
+                                        listeners:{
+                                            select: function(combo, record){
+                                                var grid = Ext.getCmp('ingredientsgrid'),
+                                                    record = grid.getSelectionModel().getSelection()[0];
+                                                record.set('um', record[0].data.um);
+//                                                combo.previousNode().setValue(record[0].data.um);
+//                                                console.log(combo.previousNode());
+//                                                console.log(record[0].data.um);
+//                                               umStore.filter( Ext.create('Ext.util.Filter', {filterFn: function(item) {
+//                                                                        return Ext.Array.contains(record[0].data.um, item.get("id"))
+//                                                                    }, root: 'data'}))
+                                            }
+                                        }
+                                    }
+                                }
                             ]}
                         ]}
                 ]
@@ -329,20 +324,20 @@ Ext.define('INV.view.product.Detail', {
     onFieldChange: function(field, newValue, oldValue, eOpts) {
         var me = this,
             form = me.getForm();
+
         me.onDirtyChange(form,form.isDirty(),eOpts)
-        console.log('onFieldChange ::: FORM Dirty: ', form.isDirty(),'FIELD Dirty: ' , field.name, field.isDirty());
     },
 
     onDirtyChange: function (form, dirty, eOpts){
         var sw = (form.isValid() & dirty) ? true:false;
-        console.log('onDirtyChange ::: FORM Dirty: ', form.isDirty(),'FORM Valid: ' , form.isValid());
+
         this.switchBoundItems(form, sw);
 
     },
 
     onValidityChange: function(form, valid, eOpts){
         var sw = (form.isDirty() & valid) ? true:false;
-        console.log('onValidityChange ::: FORM Dirty: ', form.isDirty(),'FORM Valid: ' , valid);
+
         this.switchBoundItems(form, sw);
     },
 
@@ -351,10 +346,8 @@ Ext.define('INV.view.product.Detail', {
 
         if (boundItems) {
             boundItems.each(function(cmp) {
-                console.log('valid & dirty: ',sw,' disabled: ', cmp.disabled, 'value:', cmp.disabled === sw);
                 if (cmp.disabled === sw) {
                     cmp.setDisabled(!sw);
-                    console.log('boundItems switch');
                 }
             });
         }
@@ -370,8 +363,8 @@ Ext.define('INV.view.product.Detail', {
         fields.each(function(field) {
             field.suspendEvents();
         });
-        form.loadRecord(record);
 
+        form.loadRecord(record);
         ingredientsGrid.store.removeAll();
         try{
             if (!record.phantom)

@@ -52,7 +52,7 @@ def _productCreate(request):
     response = {}
     try:
         postData = json.loads(request.read())
-        postData.pop('id')
+        #postData.pop('id')
         product = Product.objects.create()
         product.saveFromJson(postData)
 
@@ -63,11 +63,11 @@ def _productCreate(request):
     
     except Exception, err:
         print '[ err ] Exception at productsCreate: \t',
-        print err.message
-
+        print err
+        
         response['data'] = []
-        response['msg'] =  '%s ' % err
-        response['success'] = 'false'
+        response['msg'] =  '%s' % err
+        response['success'] = False
         response = simplejson.dumps(response, use_decimal=True)
 
 
@@ -110,17 +110,24 @@ def _productUpdate(request):
     return HttpResponse(serializers.serialize('json4ext', product, relations={'bom':{'relations':('ingredients',)}} ), mimetype="application/json")
 
 def _productDelete(request):
-    
+
+    response = {}
+    response['data'] = []
     product = json.loads(request.read())
-    product = get_object_or_404(Product, pk = product['id']);
-    product.delete()
-    
-    return HttpResponse(simplejson.dumps({'success':'true'}), mimetype='application/json')
+    try:
+        product = Product.objects.get(pk = product['id']);
+        product.delete()
+        response['success'] = True
+    except ObjectDoesNotExist:
+        response['msg'] =  'Product not found'
+        response['success'] = False
+
+    return HttpResponse(simplejson.dumps(response), mimetype='application/json')
 
 def productsList(request):
 
     print request.read()
-    return HttpResponse(serializers.serialize('json4ext', Product.objects.all(), fields={'id','name'}), mimetype='application/json')
+    return HttpResponse(serializers.serialize('json4ext', Product.objects.all(), fields={'id','name','um'}), mimetype='application/json')
 
 
 
@@ -142,7 +149,7 @@ def _ingredientCreate(request):
 
         response['data'] = []
         response['msg'] =  '%s ' % err
-        response['success'] = 'false'
+        response['success'] = False
         response = simplejson.dumps(response, use_decimal=True)
         
     return HttpResponse(response, mimetype="application/json")
@@ -153,11 +160,28 @@ def _ingredientRead(request):
 @csrf_exempt
 def _ingredientUpdate(request):
 
+    ingred = json.loads(request.read())
+    ingredient = Ingredient.objects.get(pk = ingred['id'])
+    ingredient.saveFromJson(ingred)
 
-    return HttpResponse(serializers.serialize('json4ext', Ingredient.objects.all()), mimetype='application/json')
+    ingredient = Ingredient.objects.filter(pk = ingredient.pk)
+    return HttpResponse(serializers.serialize('json4ext', ingredient), mimetype='application/json')
 
 def _ingredientDelete(request):
-    pass
+
+    response = {}
+    response['data'] = []
+    ingredient = json.loads(request.read())
+    try:
+        ingredient = Ingredient.objects.get(pk=ingredient['id'])
+        ingredient.delete()
+        response['success'] = True
+    except Exception, err:
+        print err.message
+        response['msg'] =  'Ingredient not found'
+        response['success'] = False
+
+    return HttpResponse(simplejson.dumps(response), mimetype='application/json')
 
 
 def _umCreate(request):
@@ -249,9 +273,9 @@ def _initialdata():
                            bom = Bom.objects.get(pk=3),
                            price_endetail = 1.9,
                            price_engros = 1.2)
-    b.um.add(m,n)
-    c.um.add(n)
-    d.um.add(m)
+    b.um=m
+    c.um=n
+    d.um=m
 
     bomd1 = Ingredient.objects.create(
                     bom = bom1,

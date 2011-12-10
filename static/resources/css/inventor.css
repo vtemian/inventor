@@ -1,0 +1,87 @@
+/* Inline Grid row  */
+.row-noborder .x-grid-row .x-grid-cell {
+    border-color:white;
+    border-width:1px;
+}
+.overrow-border .x-grid-row-over .x-grid-cell {
+    border-style:dotted;
+    border-color:green;
+    border-width:1px;
+}
+.overrow-border .x-grid-row-over .x-action-col-icon{
+    display:inline;
+}
+.x-action-col-icon{
+    display:none;
+}
+.x-grid-row-editor-buttons {/*x-grid-row-editor-buttons-default x-box-layout-ct*/
+    display: none;
+}
+/* Notification message */
+#msg-div {
+    position:absolute;
+    left:35%;
+    top:10px;
+    width:300px;
+    z-index:20000;
+}
+#msg-div .msg {
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    background: #F6F6F6;
+    border: 2px solid #ccc;
+    margin-top: 2px;
+    padding: 10px 15px;
+    color: #555;
+}
+#msg-div .msg h3 {
+    margin: 0 0 8px;
+    font-weight: bold;
+    font-size: 15px;
+}
+#msg-div .msg p {
+    margin: 0;
+}
+/* Tab bar & button */
+.x-border-box .x-tab-top {
+    height: 32px;
+}
+
+.x-border-box .x-tab-bar-top .x-tab-bar-body {
+    height: 36px;
+}
+
+.x-tab-bar-top .x-tab-bar-strip {
+    top: 33px;
+}
+.x-tab button {
+    font-size: 14px;
+    font-weight: normal;
+}
+.x-tab-default-top button, .x-tab-default-top .x-tab-inner {
+    height: 21px;
+    line-height: 21px;
+}
+
+/* Styling of global error indicator */
+.form-error-state {
+	font-size: 11px;
+	padding-left: 20px;
+	height: 16px;
+	line-height: 18px;
+	background: no-repeat 0 0;
+	cursor: default;
+}
+.form-error-state-invalid {
+	color: #C30;
+	background-image: url(../images/exclamation.gif);
+}
+.form-error-state-valid {
+	color: #090;
+	background-image: url(../images/check.gif);
+}
+
+/* Error details tooltip */
+.errors-tip .error {
+	font-style: italic;
+}

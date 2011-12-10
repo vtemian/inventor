@@ -23,7 +23,8 @@ Ext.define('INV.store.Products', {
         reader: {
             type: 'json',
             root: 'data',
-            successProperty: 'success'
+            successProperty: 'success',
+            messageProperty: 'msg'
         }
     }
 });

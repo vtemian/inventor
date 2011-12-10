@@ -8,10 +8,19 @@ Ext.define('INV.store.ProductBomIngredients',{
         type: 'rest',
         url: '/ingredients/',
         appendId: false,
+        batchActions: false, 
         reader: {
             type: 'json',
             root: 'data',
             successProperty: 'success'
+        },
+        writer:{
+            type: 'json',
+            writeAllFields:true
+        },
+        afterRequest: function(request, success){
+                notification.msg('Server error!', 'There was a server error. Please report ...');
+                console.log('ERROR:::Product->Ingredient::', request, success)
         }
     }
 

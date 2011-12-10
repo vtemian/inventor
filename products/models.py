@@ -25,10 +25,10 @@ class Product(models.Model):
     name = models.CharField(max_length = 50)
     description = models.TextField()
     category = models.ForeignKey(Category, null=True, related_name = 'products')
-    um = models.ManyToManyField(UM, related_name = '+')
+    um = models.ForeignKey(UM, null=True, related_name = '+')
     bom = models.ForeignKey('Bom', related_name='products', null=True)
     bar_code = models.CharField(max_length = 20)
-    price_endetail = models.DecimalField( max_digits=14, decimal_places=4)
+    price_endetail = models.DecimalField(null=True, max_digits=14, decimal_places=4)
     price_engros = models.DecimalField(null=True, max_digits=14, decimal_places=4)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
@@ -53,8 +53,10 @@ class Product(models.Model):
 
             if category:
                 if isinstance(category, int):
+                    #set the chosen category
                     self.category = Category.objects.get(pk = category)
                 elif unicode.isalnum(category):
+                    #create a new category and set it to this product
                     self.category, created = Category.objects.get_or_create(name = category)
         except Exception, err:
             print '[ err ] Exception Product-saveFromJson @ category: \t',
@@ -63,9 +65,9 @@ class Product(models.Model):
             
         try:
             um = dict.pop('um', None)
-            self.um.clear()
-            for item in um:
-                self.um.add(UM.objects.get(pk=item))
+            if um:
+                if isinstance(um, int):
+                    self.um = UM.objects.get(pk=um)
         except Exception, err:
             print '[ err ] Exception Product-saveFromJson @ um: \t',
             print err
@@ -74,21 +76,19 @@ class Product(models.Model):
         #bom
         try:
             bomId = dict.pop('bom_id', None)
-            bomName = dict.pop('bom', None)
+            dict.pop('bom', None)
             bomScrap_percentage = dict.pop('scrap_percentage', None)
             bomLabour_cost = dict.pop('labour_cost', None)
             if isinstance(bomId, int):
-                #update
+                #update existing Bom
                 bom = Bom.objects.get(pk = bomId)
-                bom.name =  bomName
                 bom.scrap_percentage = bomScrap_percentage
                 bom.labour_cost = bomLabour_cost
                 bom.save()
-                print bom.__dict__
                 self.bom = bom
-            elif bomName != '' or bomScrap_percentage != 0 or bomLabour_cost != 0:
-                #create
-                bom = Bom.objects.create(name = bomName, scrap_percentage = bomScrap_percentage, labour_cost = bomLabour_cost)
+            elif bomScrap_percentage != 0 or bomLabour_cost != 0:
+                #create new Bom
+                bom = Bom.objects.create(scrap_percentage = bomScrap_percentage, labour_cost = bomLabour_cost)
                 print bom.__dict__
                 self.bom = bom
 
@@ -107,7 +107,7 @@ class Product(models.Model):
             print '[ err ] Exception Product-saveFromJson @ rest of keys: \t',
             print err
             raise
-
+        print self.__dict__
         super(Product, self).save()
 
 class Bom(models.Model):
@@ -120,11 +120,11 @@ class Ingredient(models.Model):
     ingredient = models.ForeignKey(Product, related_name='ingredient')
     quantity = models.DecimalField(max_digits=10, null=True, decimal_places=4)
     um = models.ForeignKey(UM,  null=True)
-    loss = models.DecimalField(max_digits=5, null=True, decimal_places=2)
 
     def saveFromJson(self, dict):
         fields = self._meta._fields()
         dict.pop('id')
+        product_id = dict.pop('product')
 
         try:
             for field in fields:
@@ -135,10 +135,14 @@ class Ingredient(models.Model):
                         try:
                             modelInstance = model.objects.get(pk = dict[field.name])
                             setattr(self, field.name, modelInstance)
-                        except Exception:
+                        except Exception: #ObjectDoesNotExist:
                             if model.__name__ == 'Bom':
                                 modelInstance = model.objects.create()
                                 setattr(self, field.name, modelInstance)
+                                if isinstance(product_id, int):
+                                    product = Product.objects.get(pk=product_id)
+                                    product.bom = modelInstance
+                                    product.save()
                             else:
                                 setattr(self, field.name, None )
                         

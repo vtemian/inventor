@@ -33,7 +33,8 @@ Ext.define('INV.model.Product', {
         reader: {
             type: 'json',
             root: 'data',
-            successProperty: 'success'
+            successProperty: 'success',
+            messageProperty: 'msg'
         }
     }
 });
