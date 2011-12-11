@@ -52,7 +52,7 @@ Ext.define('INV.controller.Products', {
         console.log('products Store Load');
         if (store.getCount() > 0) {
            this.getProductList().getView().select(0);
-           console.log('CONTROLLER: products Store Load select 0');
+           //console.log('CONTROLLER: products Store Load select 0');
         }
     },
 
@@ -118,7 +118,6 @@ Ext.define('INV.controller.Products', {
                 buttons: Ext.MessageBox.YESNOCANCEL,
                 icon: Ext.MessageBox.QUESTION,
                 fn: function(btn){
-                    console.log(btn);
                     switch (btn){
                         case 'yes':
                             //save and continue loading
@@ -211,25 +210,30 @@ Ext.define('INV.controller.Products', {
         var me = this,
             store = this.getProductsStore(),
             view = this.getProductList().getView(),
-            lastSelectedId = this.getProductDetail().getProductId();
+            lastSelectedId = this.getProductDetail().getProductId(),
+            data = e.record.data;
 
         // commit the changes right after editing finished
-        e.record.save({
-            scope:this,
-            success: function (ingredient, operation){
-                //reload Products Store to reflect changes
-                store.load({
-                    scope   : this,
-                    callback: function(records, operation, success){
-                        var rowIndex = store.find('id', lastSelectedId);
-                        console.log('LOAD CALLBACK: select lastSelected:',lastSelectedId);
-                        view.select(rowIndex);
-                    }
-                });
-            }
-        });
-        
-        console.log(store);
+        //console.log(data);
+        if (data.ingredient!=0 & data.quantity!=0 & (data.bom!=0 || data.product!=0) != 0){
+            //validate ingredient:
+            console.log(e.record.data);
+            e.record.save({
+                scope:this,
+                success: function (ingredient, operation){
+                    //reload Products Store to reflect changes
+                    store.load({
+                        scope   : this,
+                        callback: function(records, operation, success){
+                            var rowIndex = store.find('id', lastSelectedId);
+                            //console.log('LOAD CALLBACK: select lastSelected:',lastSelectedId);
+                            view.select(rowIndex);
+                        }
+                    });
+                }
+            });
+        }
+        //console.log(store);
 
     }
 });

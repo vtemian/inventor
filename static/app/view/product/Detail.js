@@ -199,14 +199,8 @@ Ext.define('INV.view.product.Detail', {
                                         listeners:{
                                             select: function(combo, record){
                                                 var grid = Ext.getCmp('ingredientsgrid'),
-                                                    record = grid.getSelectionModel().getSelection()[0];
-                                                record.set('um', record[0].data.um);
-//                                                combo.previousNode().setValue(record[0].data.um);
-//                                                console.log(combo.previousNode());
-//                                                console.log(record[0].data.um);
-//                                               umStore.filter( Ext.create('Ext.util.Filter', {filterFn: function(item) {
-//                                                                        return Ext.Array.contains(record[0].data.um, item.get("id"))
-//                                                                    }, root: 'data'}))
+                                                    ingredient = grid.getSelectionModel().getSelection()[0];
+                                                ingredient.set('um', record[0].data.um);
                                             }
                                         }
                                     }
