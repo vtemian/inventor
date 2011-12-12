@@ -365,6 +365,7 @@ Ext.define('INV.view.product.Detail', {
             field.suspendEvents();
         });
         form.reset();
+        this.switchBoundItems(form, false);
         fields.each(function(field) {
             field.resumeEvents();
         });

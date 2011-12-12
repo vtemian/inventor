@@ -26,6 +26,9 @@ Ext.define('INV.controller.Products', {
             'productlist button[action=add]': {
                 click: this.onAddProductClick
             },
+            'productlist button[action=copy]': {
+                click: this.onCopyProductClick
+            },
             'productlist button[action=delete]': {
                 click: this.onDeleteProductClick
             },
@@ -74,6 +77,25 @@ Ext.define('INV.controller.Products', {
             product = INV.model.Product.create();
         }
         this.loadProduct(product);
+    },
+
+    onCopyProductClick: function(button){
+        var store = this.getProductsStore(),
+            grid = button.up('grid'),
+            oldProduct = grid.getSelectionModel().getSelection()[0],
+            detail = this.getProductDetail();
+
+        if (oldProduct){
+
+            product = oldProduct.copy();
+            Ext.data.Model.id(product);
+            console.log(product);
+            product.set('code', '')
+            this.loadProduct(product);
+            detail.switchBoundItems(detail.getForm(),true)
+        } else {
+            Ext.MessageBox.alert('No selection made', 'Please select the record you want to clone.');
+        }
     },
 
     onDeleteProductClick: function(button){
@@ -217,11 +239,8 @@ Ext.define('INV.controller.Products', {
             lastSelectedId = this.getProductDetail().getProductId(),
             data = e.record.data;
 
-        // commit the changes right after editing finished
-        //console.log(data);
+        // commit the changes right after editing finished, if product has valid values
         if (data.ingredient!=0 & data.quantity!=0 & (data.bom!=0 || data.product!=0) != 0){
-            //validate ingredient:
-            console.log(e.record.data);
             e.record.save({
                 scope:this,
                 success: function (ingredient, operation){
@@ -237,7 +256,6 @@ Ext.define('INV.controller.Products', {
                 }
             });
         }
-        //console.log(store);
 
     }
 });
