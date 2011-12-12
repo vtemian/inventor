@@ -154,7 +154,7 @@ Ext.define('INV.controller.Products', {
             store = this.getProductsStore();
 
         product.set(values);
-        if (isNewProduct) {
+        if (isNewProduct){
             store.add(product);
         }
         product.save({success: function(product, operation){
@@ -175,6 +175,7 @@ Ext.define('INV.controller.Products', {
         var grid = button.up('grid'),
             store = grid.store,
             maxRecords = 3,
+            recordCount = store.count(),
             productDetail = this.getProductDetail();
         
         if (this.getProductDetail().getProductId() == ''){
@@ -182,7 +183,7 @@ Ext.define('INV.controller.Products', {
             return;
         }
 
-        if (store.getCount() >= maxRecords) {
+        if (recordCount >= maxRecords) {
             Ext.MessageBox.alert('Max Records', 'You have reached max records.');
             return;
         }
@@ -192,9 +193,12 @@ Ext.define('INV.controller.Products', {
             product : this.getProductDetail().getProductId()
         });
         grid.editingPlugin.cancelEdit();
+        
+        store.insert(recordCount, ingredient);
+        grid.editingPlugin.startEditByPosition({row: recordCount, column: 0});
 
-        store.add(ingredient);
-        grid.editingPlugin.startEdit(store.last(), 0);
+//        store.add(ingredient);
+//        grid.editingPlugin.startEdit(store.last(), 0);
     },
 
     onDeleteIngredientClick: function(view, cell, recordIndex, cellIndex, e){

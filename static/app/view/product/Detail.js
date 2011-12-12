@@ -160,26 +160,8 @@ Ext.define('INV.view.product.Detail', {
                             maxWidth:400,
                             //height:100,
                             columns:[
-                                {dataIndex: 'quantity', width: 40, editor:{type:'numberfield', selectOnFocus: true, hideTrigger:true}},
-                                {dataIndex: 'um', width: 40,
-                                    xtype: 'combocolumn',
-                                        gridId: 'ingredientsgrid',
-                                        editor: {
-                                            xtype: 'combobox',
-                                            readOnly:true,
-                                            forceSelection: true,
-                                            typeAhead: true,//Uncaught TypeError: Cannot call method 'addCls' of null
-                                            typeAheadDelay: 1000,
-                                            triggerAction: 'all',
-                                            selectOnTab: true,
-                                            emptyText:'select',
-                                            store: Ext.create('INV.store.ProductUms'),
-                                            displayField:'abbreviation',
-                                            valueField:'id',
-                                            lazyRender: true
-                                        }
-                                },
-                                {dataIndex: 'ingredient', width: 100 ,
+                                {dataIndex: 'quantity', align: 'center', width: 40, editor:{type:'numberfield', selectOnFocus: true, hideTrigger:true}},
+                                {dataIndex: 'ingredient', width: 160 ,
                                     xtype: 'combocolumn',
                                     gridId: 'ingredientsgrid',
                                     editor: {
@@ -192,15 +174,13 @@ Ext.define('INV.view.product.Detail', {
                                         emptyText:'select',
                                         store: Ext.create('INV.store.ProductsList'),
                                         //queryMode: 'local',
-                                        displayField:'name',
+                                        displayField:'umName',
                                         valueField:'id',
                                         lazyRender: true,
                                         multiSelect: false,
                                         listeners:{
                                             select: function(combo, record){
-                                                var grid = Ext.getCmp('ingredientsgrid'),
-                                                    ingredient = grid.getSelectionModel().getSelection()[0];
-                                                ingredient.set('um', record[0].data.um);
+                                                //check for recursiveness
                                             }
                                         }
                                     }

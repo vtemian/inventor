@@ -8,14 +8,15 @@ Ext.define('INV.model.Product', {
         {name:'price_endetail', type: 'float', mapping:'price_endetail'},
         {name:'price_engros', type: 'float', mapping:'price_engros'},
         {name:'category', type: 'int', mapping: 'category', convert: function(v){return v == 'None'? '': v}},
-        {name:'um', mapping: 'um', convert: function(v){return v == 'None'? '': v}},
+        {name:'um_id', mapping:function(obj){ return Ext.isObject(obj.um) ? obj.um.id : ''}},
+        {name:'umName',mapping:function(obj){ return Ext.isObject(obj.um) ? obj.um.abbreviation + "  " + obj.name : ''}},
         {name:'barCode', type: 'string', mapping:'barCode'},
         {name:'description', type: 'string', mapping:'description'},
         //{name:'modified', type: 'boolean', mapping:'modified'},
         {name:'created_at', type: 'date', mapping:'created_at'},
         {name:'updated_at', type: 'date', mapping:'updated_at'},
         {name:'bom_id', mapping:function(obj){ return Ext.isObject(obj.bom) ? obj.bom.id : ''}},
-        {name:'bom', mapping:function(obj){ return Ext.isObject(obj.bom) ? obj.bom.name : ''}},
+        //{name:'bom', mapping:function(obj){ return Ext.isObject(obj.bom) ? obj.bom.name : ''}},
         {name:'scrap_percentage', type: 'float', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.scrap_percentage : '' }},
         {name:'labour_cost', type: 'float', mapping:function(obj){return Ext.isObject(obj.bom) ? obj.bom.labour_cost : ''}}
 

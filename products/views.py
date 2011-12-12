@@ -127,7 +127,7 @@ def _productDelete(request):
 def productsList(request):
 
     print request.read()
-    return HttpResponse(serializers.serialize('json4ext', Product.objects.all(), fields={'id','name','um'}), mimetype='application/json')
+    return HttpResponse(serializers.serialize('json4ext', Product.objects.all(), fields={'id','name', 'um'}, relations=('um',)), mimetype='application/json')
 
 
 
