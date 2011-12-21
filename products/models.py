@@ -15,9 +15,7 @@ class UM(models.Model):
 
     name = models.CharField(max_length = 20)
     abbreviation = models.CharField(max_length = 5)
-    measures = models.CharField(max_length = 20) #weight, volume, model (Product, InvoiceItem, etc.)
-    conversion_factor = models.DecimalField(null=True, max_digits=10, decimal_places=4)
-    conversion_unit = models.ForeignKey('self', null=True, related_name='+')
+
 
 class Product(models.Model):
 
@@ -68,6 +66,9 @@ class Product(models.Model):
             if um:
                 if isinstance(um, int):
                     self.um = UM.objects.get(pk=um)
+                elif unicode.isalnum(um):
+                    #create a new category and set it to this product
+                    self.um, created = UM.objects.get_or_create(name = um)
         except Exception, err:
             print '[ err ] Exception Product-saveFromJson @ um: \t',
             print err

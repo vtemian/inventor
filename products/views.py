@@ -231,13 +231,9 @@ def _initialdata():
     aa = Category.objects.create(name="doi",
                            description="a doua categorie")
     m = UM.objects.create(name = 'kilogram',
-                        abbreviation = 'kg',
-                        measures = 'wheight')
+                        abbreviation = 'kg')
     n = UM.objects.create(name = 'gram',
-                        abbreviation = 'g',
-                        measures = 'wheight',
-                        conversion_factor = 1000,
-                        conversion_unit = UM.objects.get(pk=1))
+                        abbreviation = 'g')
 
     bom1 = Bom.objects.create(name='bom unu',
                     scrap_percentage = 10,
@@ -253,6 +249,7 @@ def _initialdata():
                            name="bomboane roz",
                            description="11sfqsger111",
                            bar_code=1231231231231233,
+                           um= UM.objects.get(pk=1),
                            category = Category.objects.get(pk=1),
                            bom = Bom.objects.get(pk=1),
                            price_endetail = 1.5,
@@ -261,6 +258,7 @@ def _initialdata():
                            name="alt produs important",
                            description="111gqegrq222",
                            bar_code=1231231231231233,
+                           um= UM.objects.get(pk=2),
                            category = Category.objects.get(pk=2),
                            bom = Bom.objects.get(pk=1),
                            price_endetail = 2.5,
@@ -269,62 +267,52 @@ def _initialdata():
                            name="alt produs important",
                            description="111gqegrq222",
                            bar_code=1231231231231233,
+                           um= UM.objects.get(pk=1),
                            category = Category.objects.get(pk=2),
                            bom = Bom.objects.get(pk=3),
                            price_endetail = 1.9,
                            price_engros = 1.2)
-    b.um=m
-    c.um=n
-    d.um=m
 
     bomd1 = Ingredient.objects.create(
                     bom = bom1,
                     ingredient=b,
                     quantity = 3.5,
-                    um = m,
-                    loss = 10)
+                    um = m)
     bomd2 = Ingredient.objects.create(
                     bom = bom1,
                     ingredient=c,
                     quantity = 5,
-                    um = n,
-                    loss = 5)
+                    um = n)
     bomd3 = Ingredient.objects.create(
                     bom = bom1,
                     ingredient=d,
                     quantity = 50,
-                    um = n,
-                    loss = 5)
+                    um = n)
     bomd4 = Ingredient.objects.create(
                     bom = bom2,
                     ingredient=b,
                     quantity = 11,
-                    um = n,
-                    loss = 5)
+                    um = n)
     bomd5 = Ingredient.objects.create(
                     bom = bom2,
                     ingredient=c,
                     quantity = 15,
-                    um = n,
-                    loss = 5)
+                    um = n)
     bomd3 = Ingredient.objects.create(
                     bom = bom3,
                     ingredient=d,
                     quantity = 50,
-                    um = n,
-                    loss = 5)
+                    um = n)
     bomd4 = Ingredient.objects.create(
                     bom = bom3,
                     ingredient=b,
                     quantity = 11,
-                    um = n,
-                    loss = 5)
+                    um = n)
     bomd5 = Ingredient.objects.create(
                     bom = bom3,
                     ingredient=c,
                     quantity = 15,
-                    um = n,
-                    loss = 5)
+                    um = n)
 
 
 
