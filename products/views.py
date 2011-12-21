@@ -126,7 +126,6 @@ def _productDelete(request):
 
 def productsList(request):
 
-    print request.read()
     return HttpResponse(serializers.serialize('json4ext', Product.objects.all(), fields={'id','name', 'um'}, relations=('um',)), mimetype='application/json')
 
 
@@ -192,37 +191,28 @@ def _umCreate(request):
 def _umRead(request):
 
     response = serializers.serialize('json4ext', UM.objects.all())
-
-    #print response
     return HttpResponse(response)
 
 def _umUpdate(request):
-    
     pass
 
 
 def _umDelete(request):
-    
     pass
 
 def _categoryCreate(request):
-
     pass
 
 def _categoryRead(request):
 
     response = serializers.serialize('json4ext', Category.objects.all())
-
-    #print json.dumps(response, indent=4)
     return HttpResponse(response)
 
 def _categoryUpdate(request):
-
     pass
 
 
 def _categoryDelete(request):
-
     pass
 
 def _initialdata():

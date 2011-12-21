@@ -62,13 +62,13 @@ class Product(models.Model):
             raise
             
         try:
-            um = dict.pop('um', None)
+            um = dict.pop('um_id', None)
             if um:
                 if isinstance(um, int):
                     self.um = UM.objects.get(pk=um)
                 elif unicode.isalnum(um):
                     #create a new category and set it to this product
-                    self.um, created = UM.objects.get_or_create(name = um)
+                    self.um, created = UM.objects.get_or_create(abbreviation = um)
         except Exception, err:
             print '[ err ] Exception Product-saveFromJson @ um: \t',
             print err

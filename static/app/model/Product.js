@@ -8,7 +8,7 @@ Ext.define('INV.model.Product', {
         {name:'price_endetail', type: 'float', mapping:'price_endetail'},
         {name:'price_engros', type: 'float', mapping:'price_engros'},
         {name:'category', type: 'int', mapping: 'category', convert: function(v){return v == 'None'? '': v}},
-        {name:'um_id', mapping:function(obj){ return Ext.isObject(obj.um) ? obj.um.id : ''}},
+        {name:'um_id', mapping:function(obj){ return Ext.isObject(obj.um) ? obj.um.id : obj.um}},
         {name:'umName',mapping:function(obj){ return Ext.isObject(obj.um) ? obj.um.abbreviation + "  " + obj.name : obj.name}},
         {name:'barCode', type: 'string', mapping:'barCode'},
         {name:'description', type: 'string', mapping:'description'},

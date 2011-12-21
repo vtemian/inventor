@@ -66,7 +66,7 @@ Ext.define('INV.view.product.Detail', {
                             },
                             {
                                 xtype:'combo',
-                                name:'um',
+                                name:'um_id',
                                 fieldLabel: 'UM',
                                 labelAlign: 'right',
                                 labelWidth: 50,
