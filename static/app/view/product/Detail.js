@@ -73,7 +73,7 @@ Ext.define('INV.view.product.Detail', {
                                 margin: '0 1 0 0 ',
                                 flex: 0.9,
                                 multiSelect: false,
-                                editable:false,
+                                //editable:false,
                                 store:'ProductUms',
                                 valueField: 'id',
                                 displayField: 'abbreviation',
