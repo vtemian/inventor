@@ -239,6 +239,8 @@ Ext.define('INV.controller.Products', {
             lastSelectedId = this.getProductDetail().getProductId(),
             data = e.record.data;
 
+        console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
+        if (!e.record.phantom && !e.record.dirty) return;
         // commit the changes right after editing finished, if product has valid values
         if (data.ingredient!=0 & data.quantity!=0 & (data.bom!=0 || data.product!=0) != 0){
             e.record.save({

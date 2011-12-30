@@ -19,8 +19,10 @@ Ext.define('INV.store.ProductBomIngredients',{
             writeAllFields:true
         },
         afterRequest: function(request, success){
+            if (!success) {
                 notification.msg('Server error!', 'There was a server error. Please report ...');
                 console.log('ERROR:::Product->Ingredient::', request, success)
+            }
         }
     }
 

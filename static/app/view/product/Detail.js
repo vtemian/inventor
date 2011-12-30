@@ -181,6 +181,7 @@ Ext.define('INV.view.product.Detail', {
                                         listeners:{
                                             select: function(combo, record){
                                                 //check for recursiveness
+                                                //check for already included product
                                             }
                                         }
                                     }
