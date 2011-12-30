@@ -223,14 +223,14 @@ Ext.define('INV.view.customer.Detail', {
     },
 
     onDirtyChange: function (form, dirty, eOpts){
-        var sw = (form.isValid() & dirty) ? true:false;
+        var sw = (form.isValid() && dirty) ? true:false;
         console.log('onDirtyChange ::: FORM Dirty: ', form.isDirty(),'FORM Valid: ' , form.isValid());
         this.switchBoundItems(form, sw);
 
     },
 
     onValidityChange: function(form, valid, eOpts){
-        var sw = (form.isDirty() & valid) ? true:false;
+        var sw = (form.isDirty() && valid) ? true:false;
         console.log('onValidityChange ::: FORM Dirty: ', form.isDirty(),'FORM Valid: ' , valid);
         this.switchBoundItems(form, sw);
     },

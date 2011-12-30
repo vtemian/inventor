@@ -32,23 +32,21 @@ Ext.define('INV.controller.Companies', {
         });
 
         this.getCompaniesStore().on('load', this.onCompaniesStoreLoad, this);
-
     },
 
-    onLaunch: function() {
+    onCompaniesStoreLoad: function(store){
+        var view = this.getCompanyList().getView();
 
-        console.log('companies launch');
-    },
-
-    onCompaniesStoreLoad: function(){
-
-        console.log('companies Store Load');
+        if (store.getCount>0 && view.rendered){view.select(0);}
     },
 
     onCompanySelect: function(selModel, selection) {
-        var record = selection[0];
+        var detail = this.getCompanyDetail();
 
-        this.getCompanyDetail().loadRecord(record);
+        if (!Ext.isEmpty(selection)) this.loadCompany(selection[0]);
+
+        //set focus on the first field from the detail form
+        detail.down('textfield').focus();
     },
 
     onAddCompanyClick: function(button){
@@ -56,11 +54,59 @@ Ext.define('INV.controller.Companies', {
         var store = this.getCompaniesStore(),
             grid = button.up('grid');
 
-        company = Ext.create('INV.model.Company');
-
-        store.add(company);
-        grid.getView().select(company);
+        company = INV.model.Company.create();
+        while (isNaN(company.id)){
+            company = INV.model.Company.create();
+        }
+        this.loadCompany(company);
     },
+
+    loadCompany: function (company){
+        var me = this,
+            detail = me.getCompanyDetail(),
+            grid = me.getCompanyList(),
+            form = detail.getForm(),
+            loadedCompany = form.getRecord(),
+            values = form.getValues(false, true, false);
+
+        //ask confirmation before loading a record if form isDirty
+        if (form.isDirty()){
+            Ext.MessageBox.show({
+                title:'Save Changes?',
+                msg: 'You have unsaved changes. <br />Would you like to save your changes?',
+                buttons: Ext.MessageBox.YESNOCANCEL,
+                icon: Ext.MessageBox.QUESTION,
+                fn: function(btn){
+                    switch (btn){
+                        case 'yes':
+                            //save and continue loading
+                            if (form.isValid()) {
+                                me.saveProduct(loadedCompany, values);
+                                detail.loadRecord(company);
+                            } else {
+                                Ext.MessageBox.show({
+                                    title:'Invalid fields!',
+                                    msg: 'There are invalid fields! <br /> Please correct the invalid inputs and save again',
+                                    buttons: Ext.MessageBox.OK
+                                });
+                            }
+                            break;
+                        case 'no':
+                            //continue loading
+                            detail.loadRecord(company);
+                            break;
+                        case 'cancel':
+                            //stop loading and stay on the modified record
+                            grid.getView().select(loadedCompany, true, true);
+                            break;
+                    }
+                }
+            });
+        } else {
+            detail.loadRecord(company);
+        }
+    },
+
 
     onDeleteCompanyClick: function(button){
 

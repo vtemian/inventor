@@ -31,13 +31,13 @@ Ext.define('INV.controller.Customers', {
             }
         });
 
-        this.getCustomersStore().on('load', this.onCustomersStoreLoad, this);
+        //this.getCustomersStore().on('load', this.onCustomersStoreLoad, this);
 
     },
 
-    onLaunch: function() {console.log('customers launch');},
+    onLaunch: function() {},
 
-    onCustomersStoreLoad: function(){console.log('customers Store Load');},
+    //onCustomersStoreLoad: function(){},
 
     onCustomerSelect: function(selModel, selection) {
         var detail = this.getCustomerDetail();
@@ -88,7 +88,6 @@ Ext.define('INV.controller.Customers', {
                 buttons: Ext.MessageBox.YESNOCANCEL,
                 icon: Ext.MessageBox.QUESTION,
                 fn: function(btn){
-                    console.log(btn);
                     switch (btn){
                         case 'yes':
                            //save and continue loading

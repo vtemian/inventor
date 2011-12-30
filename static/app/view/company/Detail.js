@@ -1,110 +1,321 @@
 Ext.define('INV.view.company.Detail', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.form.Panel',
     alias : 'widget.companydetail',
 
-    layout: 'auto',
     autoShow: true,
-    autoScroll:true,
     border: false,
     bodyPadding: 10,
-
-
-    initComponent: function() {
-        this.items = [{
-                    xtype:'form',
-                    border:false,
-                    items:[{xtype:'fieldset',
-                            title: '<p style="font-size:18px">Company</p>',
-                            style: {border:'none'},
-                            width: 600,
-                            items: [{xtype:'textfield', name:'name', fieldLabel: 'Name'},
-                                     {xtype:'textfield', name:'vat', fieldLabel: 'VAT'},
-                                     {xtype:'textfield', name:'regcom', fieldLabel: 'RegCOM'}
-                            ]
-                        }]
-                    },{
-                        xtype:'fieldset',
-                        title: '<p style="font-size:18px">Address, Contact, Bank</p>',
-                        style: {border:'none'},
-                        border:false,
-                        items: [{
-                                xtype: 'fieldcontainer',
-                                fieldLabel: 'Address',
-                                //padding: 10,
-                                width:600,
-                                items: [{
-                                        xtype:'inlinegrid',
-                                        id: 'address',
-                                        store:'Addresses',
-                                        maxWidth:400,
-                                        //height:100,
-                                        columns:[{dataIndex: 'street', width: 100, editor: 'textfield'},
-                                            {dataIndex: 'city', width: 100, editor: 'textfield'},
-                                            {dataIndex: 'zipcode', width: 80, editor: 'textfield'}
-                                        ]
-                                    }]
-                            },{
-                                xtype: 'fieldcontainer',
-                                fieldLabel: 'Contacts',
-                                //padding: 10,
-                                width:600,
-                                items: [{
-                                        xtype:'inlinegrid',
-                                        id: 'contact',
-                                        store:'Contacts',
-                                        maxWidth:400,
-                                        //height:100,
-                                        columns:[{dataIndex: 'name', width: 60, editor: 'textfield'},
-                                            {dataIndex: 'phoneNumber', width: 70, editor: 'textfield'},
-                                            {dataIndex: 'email', width: 120, editor: 'textfield'}
-                                        ]
-                                    }]
-                            },{
-                                xtype: 'fieldcontainer',
-                                fieldLabel: 'Bank info',
-                                //padding: 10,
-                                width:600,
-                                items: [{
-                                        xtype:'inlinegrid',
-                                        id: 'bank',
-                                        store:'Banks',
-                                        maxWidth:400,
-                                        //height:100,
-                                        columns:[{dataIndex: 'name', width: 100, editor: 'textfield'},
-                                            {dataIndex: 'iban', width: 100, editor: 'textfield'}
-                                        ]
-                                    }]
-                            }]}
-
-
-            ];
-
-        this.dockedItems = {
-                dock:'bottom',
-                xtype:'toolbar',
-                items: [{
-                            text: 'Reset',
-                            action:'reset',
-                            icon:'resources/images/cross.png'
-                        }, {
-                            text: 'Submit',
-                            action:'submit',
-                            icon:'resources/images/save.png',
-                            formBind: true, //only enabled once the form is valid
-                            disabled: true
-                        }]};
-
-        this.callParent(arguments);
+    layout:'column',
+    autoScroll:true,
+    defaults: {
+        layout: 'anchor',
+        defaults: {
+            anchor: '100%'
+        }
     },
 
-    loadRecord: function(record) {
-        this.down('form').loadRecord(record);
-        //this.down('#address').store.loadData(record.companyaddressStore.data.items, false);
-        //this.down('#bank').store.loadData(record.companybankStore.data.items, false);
-        //this.down('#contact').store.loadData(record.companycontactStore.data.items, false);
+    initComponent: function() {
+        var me = this;
+
+        me.items = [{
+            columnWidth:0.5,
+            minWidth:300,
+            border:false,
+            items:[{
+                xtype:'fieldset',
+                title: '<p style="font-size:18px">Company</p>',
+                style: {border:'none'},
+                layout: 'anchor',
+                defaults: {
+                    anchor: '90%'
+                },
+                items: [{xtype:'textfield', name:'name', fieldLabel: 'Name'},
+                    {xtype:'textfield', name:'vat', fieldLabel: 'VAT'},
+                    {xtype:'textfield', name:'regcom', fieldLabel: 'RegCOM'}
+                ]
+            },{
+                xtype:'fieldset',
+                title: '<p style="font-size:18px">Address, Contact, Bank</p>',
+                style: {border:'none'},
+                layout: 'anchor',
+                defaults: {
+                    anchor: '90%'
+                },
+                items: [{
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Address',
+                    //padding: 10,
+                    width:600,
+                    items: [{
+                        xtype:'inlinegrid',
+                        id: 'companyAddressesGrid',
+                        store:'Addresses',
+                        addToolTip:'Add address',
+                        deleteToolTip:'Remove address',
+                        maxWidth:400,
+                        //height:100,
+                        columns:[{dataIndex: 'street', width: 100, editor: 'textfield'},
+                            {dataIndex: 'city', width: 100, editor: 'textfield'},
+                            {dataIndex: 'zipcode', width: 80, editor: 'textfield'}
+                        ]
+                    }]
+                },{
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Contacts',
+                    //padding: 10,
+                    width:600,
+                    items: [{
+                        xtype:'inlinegrid',
+                        id: 'companyContactsGrid',
+                        store:'Contacts',
+                        maxWidth:400,
+                        //height:100,
+                        columns:[{dataIndex: 'name', width: 60, editor: 'textfield'},
+                            {dataIndex: 'phoneNumber', width: 70, editor: 'textfield'},
+                            {dataIndex: 'email', width: 120, editor: 'textfield'}
+                        ]
+                    }]
+                },{
+                    xtype: 'fieldcontainer',
+                    fieldLabel: 'Bank info',
+                    //padding: 10,
+                    width:600,
+                    items: [{
+                        xtype:'inlinegrid',
+                        id: 'companyBanksGrid',
+                        store:'Banks',
+                        maxWidth:400,
+                        //height:100,
+                        columns:[{dataIndex: 'name', width: 100, editor: 'textfield'},
+                            {dataIndex: 'iban', width: 100, editor: 'textfield'}
+                        ]
+                    }]
+                }]
+            }]
+
+        },{
+            columnWidth:0.5,
+            border:false,
+            items:[{
+                xtype:'fieldset',
+                title: '<p style="font-size:18px">Status</p>',
+                layout: 'anchor',
+                defaults: {
+                    anchor: '90%',
+                    disabled:true
+                },
+                items:[
+                    {xtype:'combo', name:'version', fieldLabel: 'Versiune',
+                        disabled: false,
+                        emptyText:'ultima',
+                        displayField: 'name',
+                        valueField: 'abbr',
+                        store: Ext.create('Ext.data.Store', {
+                            fields: ['abbr', 'name'],
+                            data : [
+                                {"abbr":1, "name":"ver 1, 13.09.11 16:05 - Alin"},
+                                {"abbr":2, "name":"ver 2, 22.10.11 10:33 - Vlad"},
+                                {"abbr":2, "name":"ver 3, 06.11.11 14:45 - Caius"}
+                            ]
+                        })},
+                    {xtype:'textfield', name:'created_at', fieldLabel: 'Created', anchor:'75%'},
+                    {xtype:'textfield', name:'updated_at', fieldLabel: 'Updated', anchor:'75%'},
+                    {xtype:'textfield', name:'status', fieldLabel: 'Status', anchor:'75%'}
+
+                ]
+            }]
+        }];
+
+        this.dockedItems = {
+            dock:'bottom',
+            xtype:'toolbar',
+            items: [{
+                text: 'Cancel',
+                action:'reset',
+                icon:'resources/images/cancel.png',
+                handler: function() {
+                    me.reset()
+                }
+
+            }, {
+                text: 'Submit',
+                action:'submit',
+                icon:'resources/images/save.png',
+                formBind: true, //only enabled once the form is valid
+                disabled: true,
+//                                    onDisable: function(){console.log('disabled')},
+//                                    onEnable: function(){console.log('enabled')}
+            },{
+                xtype: 'component',
+                id: 'formErrorStateCompany',
+                baseCls: 'form-error-state',
+                flex: 1,
+                validText: 'Form is valid',
+                invalidText: 'Form has errors',
+                tipTpl: Ext.create('Ext.XTemplate', '<ul><tpl for="."><li><span class="field-name">{name}</span>: <span class="error">{error}</span></li></tpl></ul>'),
+
+                getTip: function() {
+                    var tip = this.tip;
+                    if (!tip) {
+                        tip = this.tip = Ext.widget('tooltip', {
+                            target: this.el,
+                            title: 'Error Details:',
+                            autoHide: false,
+                            anchor: 'bottom',
+                            mouseOffset: [-11, -2],
+                            closable: true,
+                            constrainPosition: false,
+                            cls: 'errors-tip'
+                        });
+                        tip.show();
+                    }
+                    return tip;
+                },
+
+                setErrors: function(errors) {
+                    var me = this,
+                        baseCls = me.baseCls,
+                        tip = me.getTip();
+
+                    errors = Ext.Array.from(errors);
+
+                    // Update CSS class and tooltip content
+                    if (errors.length) {
+                        me.addCls(baseCls + '-invalid');
+                        me.removeCls(baseCls + '-valid');
+                        me.update(me.invalidText);
+                        tip.setDisabled(false);
+                        tip.update(me.tipTpl.apply(errors));
+                    } else {
+                        me.addCls(baseCls + '-valid');
+                        me.removeCls(baseCls + '-invalid');
+                        me.update(me.validText);
+                        tip.setDisabled(true);
+                        tip.hide();
+                    }
+                }
+            }]};
+
+        me.on('dirtychange', me.onDirtyChange);
+        me.on('validitychange', me.onValidityChange);
+
+        me.on('fieldvaliditychange', me.updateErrorState);
+        me.on('fielderrorchange', me.updateErrorState);
+
+        me.callParent(arguments);
+
+        var fields = me.getForm().getFields();
+        if (fields) fields.each(function (field){
+                me.mon(field, 'change', me.onFieldChange, me);
+            }
+        )
     },
 
     getCompanyId: function() {
         return this.down('form').getRecord().data['id'];
+    },
+
+    onFieldChange: function(field, newValue, oldValue, eOpts) {
+        var me = this,
+            form = me.getForm();
+        me.onDirtyChange(form,form.isDirty(),eOpts)
+    },
+
+    onDirtyChange: function (form, dirty, eOpts){
+        var sw = (form.isValid() & dirty) ? true:false;
+        this.switchBoundItems(form, sw);
+
+    },
+
+    onValidityChange: function(form, valid, eOpts){
+        var sw = (form.isDirty() & valid) ? true:false;
+        this.switchBoundItems(form, sw);
+    },
+
+    switchBoundItems: function (form, sw){
+        var boundItems = form.getBoundItems();
+
+        if (boundItems) {
+            boundItems.each(function(cmp) {
+                //console.log('valid & dirty: ',sw,' disabled: ', cmp.disabled, 'value:', cmp.disabled === sw);
+                if (cmp.disabled === sw) {
+                    cmp.setDisabled(!sw);
+                    //console.log('boundItems switch',cmp);
+                }
+            });
+        }
+    },
+
+    loadRecord: function(record) {
+        var me = this,
+            form = me.getForm(),
+            fields = form.getFields();
+//            addressesGrid = me.down('#companyAddressesGrid'),
+//            banksGrid = me.down('#companyBanksGrid'),
+//            contactsGrid = me.down('#companyContactsGrid');
+
+        // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
+        fields.each(function(field) {
+            field.suspendEvents();
+        });
+
+        form.loadRecord(record);
+        if (!record.phantom){
+            record.associations.each(function(assoc){
+                cmp = Ext.getCmp(assoc.gridId);
+                cmp.store.loadData(record.getAssociatedData()[assoc.name], false);
+            });
+        };
+//        addressesGrid.store.removeAll();
+//        banksGrid.store.removeAll();
+//        contactsGrid.store.removeAll();
+//
+//        try{
+//            if (!record.phantom)
+//                if (Ext.isDefined(record.raw.Addresses) && record.raw.Addresses != null)
+//                    if (Ext.typeOf(record.raw.Addresses) == 'array' )
+//                        addressesGrid.store.loadData(record.raw.Addresses, false);
+//        }
+//        catch(err) {console.log('Error loading Produc Bom Igredients - '+err)}
+
+        fields.each(function(field) {
+            field.resumeEvents();
+        });
+        me.down('[formBind]').disable();
+    },
+
+    reset: function(){
+        var me = this,
+            form = me.getForm(),
+            fields = form.getFields();
+
+        form.clearInvalid();
+        // temporarily suspend events on form fields before reseting the form to prevent the fields' change events from firing
+        fields.each(function(field) {
+            field.suspendEvents();
+        });
+        form.reset();
+        this.switchBoundItems(form, false);
+        fields.each(function(field) {
+            field.resumeEvents();
+        });
+    },
+
+    updateErrorState: function() {
+        var me = this,
+            errorCmp, fields, errors;
+
+        if (me.hasBeenDirty || me.getForm().isDirty()) { //prevents showing global error when form first loads
+            errorCmp = me.down('#formErrorStateCompany');
+            fields = me.getForm().getFields();
+            errors = [];
+            fields.each(function(field) {
+                Ext.Array.forEach(field.getErrors(), function(error) {
+                    errors.push({name: field.getFieldLabel(), error: error});
+                });
+            });
+            errorCmp.setErrors(errors);
+            me.hasBeenDirty = true;
+        }
     }
 });

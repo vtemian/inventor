@@ -42,21 +42,17 @@ Ext.define('INV.controller.Products', {
                 click: this.onDeleteIngredientClick
             },
             'productdetail inlinegrid': {
-                edit: this.editInlineGrid
+                edit: this.editIngredient
             }
         });
 
         this.getProductsStore().on('load', this.onProductsStoreLoad, this);
     },
 
-    onLaunch: function() {console.log('products launch');},
-
     onProductsStoreLoad: function(store){
-        console.log('products Store Load');
-        if (store.getCount() > 0) {
-           this.getProductList().getView().select(0);
-           //console.log('CONTROLLER: products Store Load select 0');
-        }
+        var view = this.getProductList().getView();
+
+        if (store.getCount() > 0 && view.rendered) {view.select(0);}
     },
 
     onProductSelect: function(selModel, selection) {
@@ -232,7 +228,7 @@ Ext.define('INV.controller.Products', {
         view.store.sync();
     },
 
-    editInlineGrid: function(editor, e) {
+    editIngredient: function(editor, e) {
         var me = this,
             store = this.getProductsStore(),
             view = this.getProductList().getView(),
@@ -242,7 +238,7 @@ Ext.define('INV.controller.Products', {
         console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
         if (!e.record.phantom && !e.record.dirty) return;
         // commit the changes right after editing finished, if product has valid values
-        if (data.ingredient!=0 & data.quantity!=0 & (data.bom!=0 || data.product!=0) != 0){
+        if (data.ingredient!=0 && data.quantity!=0 && (data.bom!=0 || data.product!=0) != 0){
             e.record.save({
                 scope:this,
                 success: function (ingredient, operation){

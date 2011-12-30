@@ -16,7 +16,7 @@ Ext.define('INV.view.Viewport', {
                 align: 'stretch'
             },
             items: [{xtype:'tabpanel',
-                    activeTab:2,
+                    activeTab:0,
                     items:[{
                         xtype: 'companymain',
                         title:'Furnizori',
@@ -32,10 +32,6 @@ Ext.define('INV.view.Viewport', {
                         },{
                         xtype: 'panel',
                         title:'Iesiri',
-                        layout:'fit'
-                        },{
-                        xtype: 'customermain',
-                        title:'Clienti',
                         layout:'fit'
                         }
                     ]}

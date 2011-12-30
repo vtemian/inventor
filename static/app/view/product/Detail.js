@@ -343,7 +343,7 @@ Ext.define('INV.view.product.Detail', {
         ingredientsGrid.store.removeAll();
         try{
             if (!record.phantom)
-                if (Ext.isDefined(record.raw.bom) & record.raw.bom != null)
+                if (Ext.isDefined(record.raw.bom) && record.raw.bom != null)
                     if (Ext.typeOf(record.raw.bom.ingredients) == 'array' )
                         ingredientsGrid.store.loadData(record.raw.bom.ingredients, false);
         }
