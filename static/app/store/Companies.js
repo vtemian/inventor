@@ -2,8 +2,9 @@ Ext.define('INV.store.Companies', {
     extend: 'Ext.data.Store',
     model: 'INV.model.Company',
     autoLoad: true,
-    autoSync:true,
+    //autoSync:true,
 
+    pageSize:15,
     remoteSort: true,
     sorters: [
         {
@@ -14,6 +15,7 @@ Ext.define('INV.store.Companies', {
     proxy: {
         type: 'rest',
         url: '/companies/',
+        appendId: false,
         reader: {
             type: 'json',
             root: 'data',

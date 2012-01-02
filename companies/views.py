@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -9,38 +10,89 @@ from companies.models import *
 from inventor.helpers import dictFromModel
 
 
-
+@csrf_exempt
 def handler(request):
     
-    handlers = {'POST'  : _create,
-                'GET'   : _read,
-                'PUT'   : _update,
-                'DELETE': _delete,}
+    handlers = {'POST'  : _companyCreate,
+                'GET'   : _companyRead,
+                'PUT'   : _companyUpdate,
+                'DELETE': _companyDelete,}
     return handlers[request.method].__call__(request)
 
-def _read(request):
-    
-    response = serializers.serialize('json4ext', Company.objects.all(), relations={'Addresses','Contacts', 'Banks'})
+@csrf_exempt
+def _companyCreate(request):
+
+    response = {}
+    try:
+        postData = json.loads(request.read())
+        #postData.pop('id')
+        company = Company.objects.create()
+        company.saveFromJson(postData)
+
+        company = Company.objects.filter(pk=company.pk)
+
+        response = serializers.serialize('json4ext', company, relations={'Addresses','Contacts', 'Banks'} )
+
+
+    except Exception, err:
+        print '[ err ] Exception at companyCreate: \t',
+        print err
+
+        response['data'] = []
+        response['msg'] =  '%s' % err
+        response['success'] = False
+        response = simplejson.dumps(response, use_decimal=True)
+
+
+    return HttpResponse(response, mimetype="application/json")
+
+def _companyRead(request):
+
+    direction = {"ASC": '', "DESC": "-"}
+    start = int(request.GET.get("start"))
+    limit = int(request.GET.get("limit"))
+    sort  = json.loads(request.GET.get("sort"))
+    sort.reverse()
+
+    for field in sort:
+        companies = Company.objects.all().order_by(direction[field['direction']] + field['property'])
+    total = companies.count()
+    companies = companies[start:start+limit]
+
+    response = serializers.serialize('json4ext', companies, relations={'Addresses','Contacts', 'Banks'} )
+    response = response[:len(response)-1] + ',"total":%s}' % total
 
     #_initialdata()
 
-    #print json.dumps(response, indent=4)
-    return HttpResponse(response)
-    
+    return HttpResponse(response, mimetype="application/json")
+@csrf_exempt
+def _companyUpdate(request):
+    try:
+        comp = json.loads(request.read())
+        company = Company.objects.get(pk=comp['id'])
+        company.saveFromJson(comp)
 
-def _create(request):
-    
-    print request.method
+    except Exception, err:
+        print '[ err ] Exception @ _companyUpdate: \t',
+        print err
 
+    company = Company.objects.filter(pk=company.pk)
+    return HttpResponse(serializers.serialize('json4ext', company, relations={'Addresses','Contacts', 'Banks'} ), mimetype="application/json")
 
-def _delete(request):
-    
-    print request.method
+def _companyDelete(request):
 
+    response = {}
+    response['data'] = []
+    company = json.loads(request.read())
+    try:
+        company = Company.objects.get(pk = company['id']);
+        company.delete()
+        response['success'] = True
+    except ObjectDoesNotExist:
+        response['msg'] =  'Company not found!'
+        response['success'] = False
 
-def _update(request):
-    
-    print request.method
+    return HttpResponse(simplejson.dumps(response), mimetype='application/json')
 
 def _initialdata():
     a = Company.objects.create(name="1st Company",

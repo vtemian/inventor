@@ -1,8 +1,8 @@
 Ext.define('INV.store.Customers', {
     extend: 'Ext.data.Store',
     model: 'INV.model.Customer',
-    autoLoad: true,
-    autoSync:true,
+    //autoLoad: true,
+    //autoSync:true,
 
     remoteSort: true,
     sorters: [

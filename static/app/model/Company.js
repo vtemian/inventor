@@ -1,5 +1,6 @@
 Ext.define('INV.model.Company', {
     extend: 'Ext.data.Model',
+    idgen: 'uuid',
     fields: [
         {name:'id', type:'int', mapping: 'id'},
         {name:'name', type: 'string', mapping:'name'},
@@ -13,5 +14,15 @@ Ext.define('INV.model.Company', {
         {type:'hasMany', model:'INV.model.Bank', associationKey:'Banks', name:'banks', gridId:'companyBanksGrid'},
         {type:'hasMany', model:'INV.model.Contact', associationKey:'Contacts', name:'contacts', gridId:'companyContactsGrid'}
     ],
-    idgen: 'uuid'
+    proxy: {
+        type: 'rest',
+        url: '/companies/',
+        appendId: false,
+        reader: {
+            type: 'json',
+            root: 'data',
+            successProperty: 'success',
+            totalProperty:  'total'
+        }
+    }
 });

@@ -36,7 +36,8 @@ Ext.define('INV.view.company.Main', {
                          layout: 'border',
                          items: [{
                                     xtype: 'companydetail',
-                                    region:'center'
+                                    region:'center',
+                                    trackResetOnLoad:true
                                 },{
                                     region: 'south',
                                     minheight: 100,

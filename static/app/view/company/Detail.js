@@ -240,7 +240,7 @@ Ext.define('INV.view.company.Detail', {
                 //console.log('valid & dirty: ',sw,' disabled: ', cmp.disabled, 'value:', cmp.disabled === sw);
                 if (cmp.disabled === sw) {
                     cmp.setDisabled(!sw);
-                    //console.log('boundItems switch',cmp);
+                    //console.log('boundItems switched',cmp);
                 }
             });
         }
@@ -250,9 +250,9 @@ Ext.define('INV.view.company.Detail', {
         var me = this,
             form = me.getForm(),
             fields = form.getFields();
-//            addressesGrid = me.down('#companyAddressesGrid'),
-//            banksGrid = me.down('#companyBanksGrid'),
-//            contactsGrid = me.down('#companyContactsGrid');
+            addressesGrid = me.down('#companyAddressesGrid'),
+            banksGrid = me.down('#companyBanksGrid'),
+            contactsGrid = me.down('#companyContactsGrid');
 
         // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
         fields.each(function(field) {
@@ -260,23 +260,16 @@ Ext.define('INV.view.company.Detail', {
         });
 
         form.loadRecord(record);
+
+        addressesGrid.store.removeAll();
+        banksGrid.store.removeAll();
+        contactsGrid.store.removeAll();
         if (!record.phantom){
             record.associations.each(function(assoc){
                 cmp = Ext.getCmp(assoc.gridId);
                 cmp.store.loadData(record.getAssociatedData()[assoc.name], false);
             });
         };
-//        addressesGrid.store.removeAll();
-//        banksGrid.store.removeAll();
-//        contactsGrid.store.removeAll();
-//
-//        try{
-//            if (!record.phantom)
-//                if (Ext.isDefined(record.raw.Addresses) && record.raw.Addresses != null)
-//                    if (Ext.typeOf(record.raw.Addresses) == 'array' )
-//                        addressesGrid.store.loadData(record.raw.Addresses, false);
-//        }
-//        catch(err) {console.log('Error loading Produc Bom Igredients - '+err)}
 
         fields.each(function(field) {
             field.resumeEvents();

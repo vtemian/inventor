@@ -27,8 +27,11 @@ Ext.define('INV.controller.Companies', {
                 click: this.onAddCompanyClick
             },
             'companylist button[action=delete]': {
-                click: this.onAddCompanyClick
-            }
+                click: this.onDeleteCompanyClick
+            },
+            'companydetail button[action=submit]':{
+                click: this.onDetailFormSubmitClick
+            },
         });
 
         this.getCompaniesStore().on('load', this.onCompaniesStoreLoad, this);
@@ -81,7 +84,7 @@ Ext.define('INV.controller.Companies', {
                         case 'yes':
                             //save and continue loading
                             if (form.isValid()) {
-                                me.saveProduct(loadedCompany, values);
+                                me.saveCompany(loadedCompany, values);
                                 detail.loadRecord(company);
                             } else {
                                 Ext.MessageBox.show({
@@ -107,9 +110,51 @@ Ext.define('INV.controller.Companies', {
         }
     },
 
+    saveCompany: function(company,values){
+        var me = this,
+            isNewCompany = company.phantom,
+            store = this.getCompaniesStore();
+
+        company.set(values);
+        if (isNewCompany){
+            store.add(company);
+        }
+        company.save({success: function(company, operation){
+            //reload associated stores, etc
+            notification.msg('company saved', 'The company is saved, yupie! ');
+            },
+            failure: function(company, operation){
+                store.remove(company);
+                notification.msg('company save error!', 'There was a server error. ');
+                console.log('ERROR:::company->savecompany::',operation.getError())
+            }
+        });
+    },
 
     onDeleteCompanyClick: function(button){
+        var store = this.getCompaniesStore(),
+            grid = button.up('grid'),
+            company = grid.getSelectionModel().getSelection()[0];
 
+        store.remove(company);
+        store.sync({success: function(batch, options){
+            console.log('record deleted');
+
+            grid.getView().select(0);
+        }},this);
         console.log('fire event for Delete Company');
+    },
+
+    onDetailFormSubmitClick: function(button){
+        var form = button.up('form').getForm(),
+            company = form.getRecord(),
+            values = form.getValues(false, true, false),
+            grid = this.getCompanyList();
+
+        // the form should be dirty & valid if we are here
+        button.disable();
+        this.saveCompany(company, values);
+        grid.getView().select(company, true, true);
+        this.getCompanyDetail().loadRecord(company);
     }
 });
