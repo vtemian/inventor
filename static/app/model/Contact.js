@@ -4,6 +4,7 @@ Ext.define('INV.model.Contact', {
         {name:'id', type:'int'},
         {name:'name', type: 'string'},
         {name:'phoneNumber', type: 'string'},
-        {name:'email', type: 'email'}
+        {name:'email', type: 'email'},
+        {name:'company', type:'int'}
     ]
 });

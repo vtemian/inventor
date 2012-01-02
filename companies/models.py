@@ -46,12 +46,41 @@ class Company(models.Model):
         with reversion.revision:
             super(Company, self).delete(using)
 
-class Address(models.Model):
+class AssocData(models.Model):
+
+    class Meta:
+        abstract = True
+
+    def saveFromJson(self, dict):
+        fields = self._meta._fields()
+        dict.pop('id')
+
+        try:
+            for field in fields:
+                if field.name in dict:
+                    if isinstance(field, models.ForeignKey):
+                        #print 'FK: %s '% field.related.parent_model.__name__
+                        model = field.related.parent_model
+                        try:
+                            modelInstance = model.objects.get(pk = dict[field.name])
+                            setattr(self, field.name, modelInstance)
+                        except Exception: #ObjectDoesNotExist:
+                            setattr(self, field.name, None )
+                    else:
+                        setattr(self, field.name, dict[field.name])
+        except Exception, err:
+            print '[ err ] Exception Company Address-saveFromJson: \t',
+            print err
+            raise
+
+        super(AssocData, self).save()
+
+class Address(AssocData):
     
     street = models.CharField(max_length = 50)
     city = models.CharField(max_length = 50)
     zipcode = models.CharField(max_length = 50)
-    company = models.ForeignKey(Company, related_name="Addresses")
+    company = models.ForeignKey(Company, null = True, related_name="Addresses")
     
 class Contact(models.Model):
     

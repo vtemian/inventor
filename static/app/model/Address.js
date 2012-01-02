@@ -4,6 +4,16 @@ Ext.define('INV.model.Address', {
         {name:'id', type:'int'},
         {name:'street', type: 'string'},
         {name:'city', type: 'string'},
-        {name:'zipcode', type: 'string'}
-    ]
+        {name:'zipcode', type: 'string'},
+        {name:'company', type:'int'}
+    ],
+    proxy: {
+        type: 'rest',
+        url: '/addresses/',
+        reader: {
+            type: 'json',
+            root: "data",
+            successProperty: "success"
+        }
+    }
 });

@@ -1,11 +1,11 @@
 Ext.define('INV.store.Addresses', {
     extend: 'Ext.data.Store',
     model: 'INV.model.Address',
-    autoSync:true,
+    //autoSync:true,
 
     proxy: {
         type: 'rest',
-        url: '/address/',
+        url: '/addresses/',
         reader: {
             type: 'json',
             root: "data",

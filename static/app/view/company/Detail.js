@@ -199,7 +199,7 @@ Ext.define('INV.view.company.Detail', {
     },
 
     getCompanyId: function() {
-        return this.down('form').getRecord().data['id'];
+        return this.getRecord().data['id'];
     },
 
     onFieldChange: function(field, newValue, oldValue, eOpts) {

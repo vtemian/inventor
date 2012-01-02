@@ -181,6 +181,9 @@ Ext.define('INV.controller.Products', {
             me.getProductsListStore().load();
             },
             failure: function(product, operation){
+                if (isNewProduct){
+                    store.remove(product);
+                }
                 notification.msg('Product save error!', 'There was a server error. ');
                 console.log('ERROR:::Product->saveProduct::',operation.getError())
             }
@@ -196,7 +199,7 @@ Ext.define('INV.controller.Products', {
             recordCount = store.count(),
             productDetail = this.getProductDetail();
         
-        if (this.getProductDetail().getProductId() == ''){
+        if (productDetail.getProductId() == ''){
             Ext.MessageBox.alert('BIG NONO', 'Save product before adding ingredients');
             return;
         }
@@ -207,8 +210,8 @@ Ext.define('INV.controller.Products', {
         }
 
         ingredient = INV.model.ProductBomIngredient.create({
-            bom : this.getProductDetail().getProductBomId(),
-            product : this.getProductDetail().getProductId()
+            bom : productDetail.getProductBomId(),
+            product : productDetail.getProductId()
         });
         grid.editingPlugin.cancelEdit();
         

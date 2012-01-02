@@ -32,6 +32,15 @@ Ext.define('INV.controller.Companies', {
             'companydetail button[action=submit]':{
                 click: this.onDetailFormSubmitClick
             },
+            'companydetail inlinegrid button[action=add]': {
+                click: this.onAddAssociatedClick
+            },
+            'companydetail inlinegrid actioncolumn':{
+                click: this.onDeleteAssociatedClick
+            },
+            'companydetail inlinegrid': {
+                edit: this.editAssociatedData
+            }
         });
 
         this.getCompaniesStore().on('load', this.onCompaniesStoreLoad, this);
@@ -124,7 +133,9 @@ Ext.define('INV.controller.Companies', {
             notification.msg('company saved', 'The company is saved, yupie! ');
             },
             failure: function(company, operation){
-                store.remove(company);
+                if (isNewCompany){
+                    store.remove(company);
+                }
                 notification.msg('company save error!', 'There was a server error. ');
                 console.log('ERROR:::company->savecompany::',operation.getError())
             }
@@ -156,5 +167,71 @@ Ext.define('INV.controller.Companies', {
         this.saveCompany(company, values);
         grid.getView().select(company, true, true);
         this.getCompanyDetail().loadRecord(company);
+    },
+
+    onAddAssociatedClick: function(button){
+
+        var grid = button.up('grid'),
+            store = grid.store,
+            maxRecords = 3,
+            recordCount = store.count(),
+            companyDetail = this.getCompanyDetail(),
+            companyId = companyDetail.getCompanyId();
+
+        if (companyId == ''){
+            Ext.MessageBox.alert('BIG NONO', 'Save company before adding associated information');
+            return;
+        }
+
+        if (recordCount >= maxRecords) {
+            Ext.MessageBox.alert('Max Records', 'You have reached max records.');
+            return;
+        }
+
+        record = store.model.create({
+            company: companyId
+        });
+
+        grid.editingPlugin.cancelEdit();
+
+        store.insert(recordCount, record);
+        grid.editingPlugin.startEditByPosition({row: recordCount, column: 0});
+    },
+
+    onDeleteAssociatedClick: function(view, cell, recordIndex, cellIndex, e){
+        view.editingPlugin.cancelEdit();
+        //view.store.getAt(recordIndex).data.id = 0; //trigger error
+        //notification.msg('Remove', 'the record ' + view.store.getAt(recordIndex).data.name + ' was deleted!');
+        view.store.removeAt(recordIndex);
+        view.store.sync();
+    },
+
+    editAssociatedData: function(editor, e) {
+        var me = this,
+            //store = this.getProductsStore(),
+            //view = this.getProductList().getView(),
+            //lastSelectedId = this.getProductDetail().getProductId(),
+            data = e.record.data;
+
+        console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
+        if (!e.record.phantom && !e.record.dirty) return;
+        // commit the changes right after editing finished, if product has valid values
+        if (data.street!=''){
+            e.record.save({
+                scope:this,
+                success: function (ingredient, operation){
+                    //reload Associated Store to reflect changes
+//                    store.load({
+//                        scope   : this,
+//                        callback: function(records, operation, success){
+//                            var rowIndex = store.find('id', lastSelectedId);
+//                            //console.log('LOAD CALLBACK: select lastSelected:',lastSelectedId);
+//                            view.select(rowIndex);
+//                        }
+//                    });
+                }
+            });
+        }
+
     }
 });
