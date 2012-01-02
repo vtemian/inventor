@@ -15,6 +15,8 @@ class Company(models.Model):
         dict.pop('id')
         dict.pop('updated_at')
         dict.pop('created_at')
+        print fields
+        print dict
 
         try:
             for field in fields:

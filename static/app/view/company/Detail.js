@@ -31,7 +31,7 @@ Ext.define('INV.view.company.Detail', {
                 },
                 items: [{xtype:'textfield', name:'name', fieldLabel: 'Name'},
                     {xtype:'textfield', name:'vat', fieldLabel: 'VAT'},
-                    {xtype:'textfield', name:'regcom', fieldLabel: 'RegCOM'}
+                    {xtype:'textfield', name:'regCom', fieldLabel: 'RegCOM'}
                 ]
             },{
                 xtype:'fieldset',
@@ -105,19 +105,6 @@ Ext.define('INV.view.company.Detail', {
                     disabled:true
                 },
                 items:[
-                    {xtype:'combo', name:'version', fieldLabel: 'Versiune',
-                        disabled: false,
-                        emptyText:'ultima',
-                        displayField: 'name',
-                        valueField: 'abbr',
-                        store: Ext.create('Ext.data.Store', {
-                            fields: ['abbr', 'name'],
-                            data : [
-                                {"abbr":1, "name":"ver 1, 13.09.11 16:05 - Alin"},
-                                {"abbr":2, "name":"ver 2, 22.10.11 10:33 - Vlad"},
-                                {"abbr":2, "name":"ver 3, 06.11.11 14:45 - Caius"}
-                            ]
-                        })},
                     {xtype:'textfield', name:'created_at', fieldLabel: 'Created', anchor:'75%'},
                     {xtype:'textfield', name:'updated_at', fieldLabel: 'Updated', anchor:'75%'},
                     {xtype:'textfield', name:'status', fieldLabel: 'Status', anchor:'75%'}
