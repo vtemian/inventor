@@ -30,7 +30,7 @@ Ext.define('INV.view.company.Detail', {
                 defaults: {
                     anchor: '90%'
                 },
-                items: [{xtype:'textfield', name:'name', fieldLabel: 'Name'},
+                items: [{xtype:'textfield', name:'name', fieldLabel: 'Name', selectOnFocus:true},
                     {xtype:'textfield', name:'vat', fieldLabel: 'VAT'},
                     {xtype:'textfield', name:'regCom', fieldLabel: 'RegCOM'}
                 ]
@@ -264,6 +264,7 @@ Ext.define('INV.view.company.Detail', {
         fields.each(function(field) {
             field.resumeEvents();
         });
+        me.down('textfield').focus();
         me.down('[formBind]').disable();
     },
 

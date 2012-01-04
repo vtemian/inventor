@@ -59,9 +59,6 @@ Ext.define('INV.controller.Products', {
         var detail = this.getProductDetail();
 
         if (!Ext.isEmpty(selection)) this.loadProduct(selection[0]);
-
-        //set focus on the first field from the detail form
-        detail.down('textfield').focus();
     },
 
     onAddProductClick: function(button){

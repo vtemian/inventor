@@ -56,9 +56,6 @@ Ext.define('INV.controller.Companies', {
         var detail = this.getCompanyDetail();
 
         if (!Ext.isEmpty(selection)) this.loadCompany(selection[0]);
-
-        //set focus on the first field from the detail form
-        detail.down('textfield').focus();
     },
 
     onAddCompanyClick: function(button){

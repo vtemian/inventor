@@ -32,7 +32,7 @@ Ext.define('INV.view.product.Detail', {
                     anchor: '90%'
                 },
                 items: [
-                    {xtype:'textfield', name:'code', fieldLabel: 'Code', maxLength: 10},
+                    {xtype:'textfield', name:'code', fieldLabel: 'Code', maxLength: 10, selectOnFocus:true},
                     {xtype:'textfield', name:'name', fieldLabel: 'Name', minLength: 3, maxLength: 50},
                     {xtype:'fieldcontainer', layout:'hbox',
                         items: [{
@@ -352,6 +352,7 @@ Ext.define('INV.view.product.Detail', {
         fields.each(function(field) {
             field.resumeEvents();
         });
+        me.down('textfield').focus();
         me.down('[formBind]').disable();
     },
 
