@@ -6,11 +6,7 @@ Ext.define('INV.view.company.List' ,{
 
     layout: 'fit',
     autoShow: true,
-    width: 350,
-
     sortableColumns: true,
-
-
 
     initComponent: function() {
 
@@ -28,7 +24,7 @@ Ext.define('INV.view.company.List' ,{
         },{
             xtype: 'toolbar',
             dock: 'top',
- items: [{
+            items: [{
 
                         text:'Search',
                         xtype:'textfield',

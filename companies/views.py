@@ -123,13 +123,11 @@ def _addressCreate(request):
     response = {}
     try:
         postData = json.loads(request.read())
-        address = Address.objects.create()
+        address = Address.objects.create(company_id = postData['company'])
         address.saveFromJson(postData)
 
         address = Address.objects.filter(pk=address.pk)
-
         response = serializers.serialize('json4ext', address)
-
 
     except Exception, err:
         print '[ err ] Exception at addressCreate: \t',
@@ -140,22 +138,28 @@ def _addressCreate(request):
         response['success'] = False
         response = simplejson.dumps(response, use_decimal=True)
 
-
     return HttpResponse(response, mimetype="application/json")
 
 def _addressRead(request):
     pass
+
 @csrf_exempt
 def _addressUpdate(request):
-    pass
+
+    putData = json.loads(request.read())
+    address = Address.objects.get(pk = putData['id'])
+    address.saveFromJson(putData)
+
+    address = Address.objects.filter(pk = address.pk)
+    return HttpResponse(serializers.serialize('json4ext', address), mimetype='application/json')
+
 def _addressDelete(request):
 
     response = {}
     response['data'] = []
-    address = json.loads(request.read())
+    deleteData = json.loads(request.read())
     try:
-        address = Address.objects.get(pk=address['id'])
-        address.delete()
+        Address.objects.get(pk=deleteData['id']).delete()
         response['success'] = True
     except Exception, err:
         print err.message
@@ -166,25 +170,102 @@ def _addressDelete(request):
 
 @csrf_exempt
 def _bankCreate(request):
-    pass
+    response = {}
+    try:
+        postData = json.loads(request.read())
+        bank = BankAccount.objects.create(company_id = postData['company'])
+        bank.saveFromJson(postData)
+
+        bank = BankAccount.objects.filter(pk=bank.pk)
+        response = serializers.serialize('json4ext', bank)
+
+    except Exception, err:
+        print '[ err ] Exception at bankCreate: \t',
+        print err
+
+        response['data'] = []
+        response['msg'] =  '%s' % err
+        response['success'] = False
+        response = simplejson.dumps(response, use_decimal=True)
+
+    return HttpResponse(response, mimetype="application/json")
+
 def _bankRead(request):
-    pass
-@csrf_exempt
-def _bankUpdate(request):
-    pass
-def _bankDelete(request):
     pass
 
 @csrf_exempt
+def _bankUpdate(request):
+
+    putData = json.loads(request.read())
+    bank = BankAccount.objects.get(pk = putData['id'])
+    bank.saveFromJson(putData)
+
+    bank = BankAccount.objects.filter(pk = bank.pk)
+    return HttpResponse(serializers.serialize('json4ext', bank), mimetype='application/json')
+
+def _bankDelete(request):
+
+    response = {}
+    response['data'] = []
+    deleteData = json.loads(request.read())
+    try:
+        BankAccount.objects.get(pk=deleteData['id']).delete()
+        response['success'] = True
+    except Exception, err:
+        print err.message
+        response['msg'] =  'bank not found'
+        response['success'] = False
+
+    return HttpResponse(simplejson.dumps(response), mimetype='application/json')
+
+@csrf_exempt
 def _contactCreate(request):
-    pass
+    response = {}
+    try:
+        postData = json.loads(request.read())
+        print postData
+        contact = Contact.objects.create(company_id = postData['company'])
+        contact.saveFromJson(postData)
+
+        contact = Contact.objects.filter(pk=contact.pk)
+        response = serializers.serialize('json4ext', contact)
+
+    except Exception, err:
+        print '[ err ] Exception at contactCreate: \t',
+        print err
+
+        response['data'] = []
+        response['msg'] =  '%s' % err
+        response['success'] = False
+        response = simplejson.dumps(response, use_decimal=True)
+
+    return HttpResponse(response, mimetype="application/json")
+
 def _contactRead(request):
     pass
 @csrf_exempt
 def _contactUpdate(request):
-    pass
+
+    putData = json.loads(request.read())
+    contact = Contact.objects.get(pk = putData['id'])
+    contact.saveFromJson(putData)
+
+    contact = Contact.objects.filter(pk = contact.pk)
+    return HttpResponse(serializers.serialize('json4ext', contact), mimetype='application/json')
 def _contactDelete(request):
-    pass
+
+    response = {}
+    response['data'] = []
+    deleteData = json.loads(request.read())
+    try:
+        Contact.objects.get(pk=deleteData['id']).delete()
+        response['success'] = True
+    except Exception, err:
+        print err.message
+        response['msg'] =  'Contact not found'
+        response['success'] = False
+
+    return HttpResponse(simplejson.dumps(response), mimetype='application/json')
 
 
 def _initialdata():

@@ -173,6 +173,7 @@ Ext.define('INV.controller.Companies', {
 
         var grid = button.up('grid'),
             store = grid.store,
+            modelName = store.model.modelName.split('.')[2],
             maxRecords = 3,
             recordCount = store.count(),
             companyDetail = this.getCompanyDetail(),
@@ -187,10 +188,22 @@ Ext.define('INV.controller.Companies', {
             Ext.MessageBox.alert('Max Records', 'You have reached max records.');
             return;
         }
-
-        record = store.model.create({
-            company: companyId
-        });
+        data = {};
+        switch (modelName)
+        {
+            case 'Address':
+                data = {company: companyId, street:'street, nr', city:'city,state', zipcode:'zipcode'};
+                break;
+            case 'Bank':
+                data = {company: companyId, name:'bank name', iban:'iban account'};
+                break;
+            case 'Contact':
+                data = {company: companyId, name:'contact name', phoneNumber:'phone nr', email:'email'};
+                break;
+            default:
+                data = {company: companyId};
+        }
+        record = store.model.create(data);
 
         grid.editingPlugin.cancelEdit();
 

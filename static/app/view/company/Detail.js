@@ -13,6 +13,7 @@ Ext.define('INV.view.company.Detail', {
             anchor: '100%'
         }
     },
+    submitEmptyText: false,
 
     initComponent: function() {
         var me = this;
@@ -54,9 +55,9 @@ Ext.define('INV.view.company.Detail', {
                         deleteToolTip:'Remove address',
                         maxWidth:400,
                         //height:100,
-                        columns:[{dataIndex: 'street', width: 100, editor: 'textfield'},
-                            {dataIndex: 'city', width: 100, editor: 'textfield'},
-                            {dataIndex: 'zipcode', width: 80, editor: 'textfield'}
+                        columns:[{dataIndex: 'street', width: 115, emptyText:'strada, nr', editor: 'textfield'},
+                            {dataIndex: 'city', width: 100, emptyText:'oras', editor: 'textfield'},
+                            {dataIndex: 'zipcode', width: 80, emptyText:'cod postal', editor: 'textfield'}
                         ]
                     }]
                 },{
@@ -68,11 +69,12 @@ Ext.define('INV.view.company.Detail', {
                         xtype:'inlinegrid',
                         id: 'companyContactsGrid',
                         store:'Contacts',
+                        addToolTip:'Add contact',
                         maxWidth:400,
                         //height:100,
-                        columns:[{dataIndex: 'name', width: 60, editor: 'textfield'},
-                            {dataIndex: 'phoneNumber', width: 70, editor: 'textfield'},
-                            {dataIndex: 'email', width: 120, editor: 'textfield'}
+                        columns:[{dataIndex: 'name', width: 80, emptyText:'nume', editor: 'textfield'},
+                            {dataIndex: 'phoneNumber', width: 95, emptyText:'nr telefon', editor: 'textfield'},
+                            {dataIndex: 'email', width: 120, emptyText:'exemplu@email.com', editor: 'textfield', vtype: 'email'}
                         ]
                     }]
                 },{
@@ -84,10 +86,11 @@ Ext.define('INV.view.company.Detail', {
                         xtype:'inlinegrid',
                         id: 'companyBanksGrid',
                         store:'Banks',
+                        addToolTip:'Add bank account',
                         maxWidth:400,
                         //height:100,
                         columns:[{dataIndex: 'name', width: 100, editor: 'textfield'},
-                            {dataIndex: 'iban', width: 100, editor: 'textfield'}
+                            {dataIndex: 'iban', width: 190, editor: 'textfield'}
                         ]
                     }]
                 }]

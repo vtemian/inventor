@@ -80,22 +80,20 @@ class Address(AssocData):
     street = models.CharField(max_length = 50)
     city = models.CharField(max_length = 50)
     zipcode = models.CharField(max_length = 50)
-    company = models.ForeignKey(Company, null = True, related_name="Addresses")
-    
-class Contact(models.Model):
-    
-    name = models.CharField(max_length = 50)
-    phoneNumber = models.CharField(max_length = 50)
-    email = models.EmailField()
-    company = models.ForeignKey(Company, related_name="Contacts")
-    
+    company = models.ForeignKey(Company, related_name="Addresses")
 
-class BankAccount(models.Model):
+class BankAccount(AssocData):
     
     name = models.CharField(max_length = 50)
     iban = models.CharField(max_length = 50)
     company = models.ForeignKey(Company, related_name="Banks")
 
+class Contact(AssocData):
+
+    name = models.CharField(max_length = 50)
+    phoneNumber = models.CharField(max_length = 50)
+    email = models.EmailField()
+    company = models.ForeignKey(Company, related_name="Contacts")
 
 if not reversion.is_registered(Company):
     reversion.register(Company)

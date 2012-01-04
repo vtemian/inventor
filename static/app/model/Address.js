@@ -10,6 +10,7 @@ Ext.define('INV.model.Address', {
     proxy: {
         type: 'rest',
         url: '/addresses/',
+        appendId: false,
         reader: {
             type: 'json',
             root: "data",
