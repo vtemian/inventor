@@ -3,9 +3,11 @@ Ext.define('INV.controller.Companies', {
 
     stores: ['Companies', 'Addresses', 'Banks', 'Contacts'],
 
-    models: ['Company', 'Address', 'Bank', 'Contact'],
+    models: ['Company', 'OpenApiCompany', 'Address', 'Bank', 'Contact'],
 
     views: ['company.Main','company.List','company.Detail','ux.InlineGrid'],
+
+    requires: ['INV.view.ux.ParameterProxy'],
 
     refs: [
         {
@@ -28,6 +30,9 @@ Ext.define('INV.controller.Companies', {
             },
             'companylist button[action=delete]': {
                 click: this.onDeleteCompanyClick
+            },
+            'companydetail textfield[name=vat]':{
+                blur: this.onVATChange
             },
             'companydetail button[action=submit]':{
                 click: this.onDetailFormSubmitClick
@@ -151,6 +156,31 @@ Ext.define('INV.controller.Companies', {
             grid.getView().select(0);
         }},this);
         console.log('fire event for Delete Company');
+    },
+
+    onVATChange:function(field, event, eOpts){
+        var me = this,
+            company = INV.model.OpenApiCompany.create(),
+            companyStore = Ext.create('Ext.data.Store', {
+                model: 'INV.model.OpenApiCompany'
+            }),
+            mask = new Ext.LoadMask(field, {store:companyStore});
+
+        mask.show();
+        companyStore.load({
+            cif:field.value,
+            scope   : me,
+            callback: function(records, operation, success) {
+                console.log(records, operation, success);
+                //mask.destroy();
+                if (Ext.isDefined(records)) me.loadOpenApiCompany(records[0]);
+            }
+        });
+
+    },
+
+    loadOpenApiCompany:function(company){
+        console.log(company)
     },
 
     onDetailFormSubmitClick: function(button){

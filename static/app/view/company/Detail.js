@@ -30,8 +30,8 @@ Ext.define('INV.view.company.Detail', {
                 defaults: {
                     anchor: '90%'
                 },
-                items: [{xtype:'textfield', name:'name', fieldLabel: 'Name', selectOnFocus:true},
-                    {xtype:'textfield', name:'vat', fieldLabel: 'VAT'},
+                items: [{xtype:'textfield', name:'vat', fieldLabel: 'VAT', selectOnFocus:true},
+                    {xtype:'textfield', name:'name', fieldLabel: 'Name'},
                     {xtype:'textfield', name:'regCom', fieldLabel: 'RegCOM'}
                 ]
             },{
@@ -132,9 +132,12 @@ Ext.define('INV.view.company.Detail', {
                 action:'submit',
                 icon:'resources/images/save.png',
                 formBind: true, //only enabled once the form is valid
-                disabled: true,
+                disabled: true
 //                                    onDisable: function(){console.log('disabled')},
 //                                    onEnable: function(){console.log('enabled')}
+            }, {
+                text: 'GET',
+                action:'get'
             },{
                 xtype: 'component',
                 id: 'formErrorStateCompany',
@@ -264,7 +267,7 @@ Ext.define('INV.view.company.Detail', {
         fields.each(function(field) {
             field.resumeEvents();
         });
-        me.down('textfield').focus();
+        //me.down('textfield').focus();//onBlur of CIF field a request to OpenApi is made to fetch company data
         me.down('[formBind]').disable();
     },
 
