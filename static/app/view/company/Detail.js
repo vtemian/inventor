@@ -30,7 +30,7 @@ Ext.define('INV.view.company.Detail', {
                 defaults: {
                     anchor: '90%'
                 },
-                items: [{xtype:'textfield', name:'cif', fieldLabel: 'Cif', selectOnFocus:true, remoteValid:true,
+                items: [{xtype:'textfield', name:'cif', fieldLabel: 'Cif', selectOnFocus:true, remoteValid:true, maskRe:/\d/,
                             validator:function(v){
                                 console.log('validator:',this.remoteValid);
                                 return this.remoteValid}},
@@ -274,11 +274,12 @@ Ext.define('INV.view.company.Detail', {
             contactsGrid = me.down('#companyContactsGrid');
 
         if (form.getRecord().phantom){
-            console.log('fill form');
+            form.reset();
+            form.findField('cif').setValue(company.get('cif'));
             form.findField('name').setValue(company.get('name'));
             form.findField('regCom').setValue(company.get('registration_id'));
             addressesGrid.store.add([{street:company.get('address'),city:company.get('city'), zip:company.get('zip')}]);
-            contactsGrid.store.add([{phone:company.get('phone')}]);
+            if (!Ext.isEmpty(company.get('phone'))) contactsGrid.store.add([{phone:company.get('phone')}]);
         }
     },
 

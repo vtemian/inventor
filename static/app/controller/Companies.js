@@ -187,7 +187,6 @@ Ext.define('INV.controller.Companies', {
                 //query OpenApi to check if the CIF is valid
                 this.queryOpenApi(field);
             }
-            console.log('onBlur');
 
             task = new Ext.util.DelayedTask(function(){
                 field.validate();
@@ -238,12 +237,7 @@ Ext.define('INV.controller.Companies', {
         this.saveCompany(company, values);
 
         grid.getView().select(company, true, true);
-
-        task = new Ext.util.DelayedTask(function(){
-            detail.loadRecord(company);
-            console.log(company);
-        }, this);
-        task.delay(3000);
+        detail.loadRecord(company);
     },
 
     onAddAssociatedClick: function(button){
