@@ -40,7 +40,7 @@ Ext.define('INV.view.company.Main', {
                                     trackResetOnLoad:true
                                 },{
                                     region: 'south',
-                                    minheight: 100,
+                                    minheight: 150,
                                     bodyPadding:10,
                                     items: [
                                         {xtype:'textfield', name:'code', fieldLabel: 'Code'},

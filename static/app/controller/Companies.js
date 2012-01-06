@@ -31,8 +31,8 @@ Ext.define('INV.controller.Companies', {
             'companylist button[action=delete]': {
                 click: this.onDeleteCompanyClick
             },
-            'companydetail textfield[name=vat]':{
-                blur: this.onVATChange
+            'companydetail textfield[name=cif]':{
+                blur: this.onCifChange
             },
             'companydetail button[action=submit]':{
                 click: this.onDetailFormSubmitClick
@@ -158,13 +158,38 @@ Ext.define('INV.controller.Companies', {
         console.log('fire event for Delete Company');
     },
 
-    onVATChange:function(field, event, eOpts){
+    onCifChange:function(field, event, eOpts){
+
+        if (field.isDirty()){
+            var store = this.getCompaniesStore(),
+                idExisting = store.findExact('cif',field.value);
+
+            //check if CIF is unique in our records
+            if (idExisting > -1){
+                field.remoteValid = 'Cif is not unique, it already exists'
+            }
+            else  {
+                //query OpenApi to check if the CIF is valid
+                this.queryOpenApi(field);
+            }
+            console.log('onBlur');
+
+            task = new Ext.util.DelayedTask(function(){
+                field.validate();
+            }, this);
+            task.delay(3000);
+        }
+
+    },
+    queryOpenApi:function(field){
         var me = this,
-            company = INV.model.OpenApiCompany.create(),
             companyStore = Ext.create('Ext.data.Store', {
                 model: 'INV.model.OpenApiCompany'
             }),
             mask = new Ext.LoadMask(field, {store:companyStore});
+
+//        companyStore.loadData([{"name":"CUBUS ARTS SRL","cif":"13548146","address":"BLD. MIHAI VITEAZU Nr. 7,Ap. 18","city":"SIBIU","created_at":"2011-03-16T12:54:36+00:00","zip":"550350","updated_at":"2011-11-13T21:15:43+00:00","registration_id":"J32/508/2000","authorization_number":"","phone":"0269232192","fax":"","vat":"1","state":"Sibiu"}]);
+//        me.loadOpenApiCompany(companyStore.getAt(0));
 
         mask.show();
         companyStore.load({
@@ -173,14 +198,16 @@ Ext.define('INV.controller.Companies', {
             callback: function(records, operation, success) {
                 console.log(records, operation, success);
                 //mask.destroy();
-                if (Ext.isDefined(records)) me.loadOpenApiCompany(records[0]);
+                if (Ext.isDefined(records)){
+                    field.clearInvalid();
+                    field.remoteValid = true;
+                    me.getCompanyDetail().loadOpenApiCompany(records[0]);
+                }
+                else
+                    field.remoteValid = 'CIF invalid';
             }
         });
 
-    },
-
-    loadOpenApiCompany:function(company){
-        console.log(company)
     },
 
     onDetailFormSubmitClick: function(button){
@@ -248,15 +275,12 @@ Ext.define('INV.controller.Companies', {
 
     editAssociatedData: function(editor, e) {
         var me = this,
-            //store = this.getProductsStore(),
-            //view = this.getProductList().getView(),
-            //lastSelectedId = this.getProductDetail().getProductId(),
             data = e.record.data;
 
         console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
         if (!e.record.phantom && !e.record.dirty) return;
         // commit the changes right after editing finished, if product has valid values
-        if (data.street!=''){
+        //if (data.street!=''){
             e.record.save({
                 scope:this,
                 success: function (ingredient, operation){
@@ -271,7 +295,7 @@ Ext.define('INV.controller.Companies', {
 //                    });
                 }
             });
-        }
+        //}
 
     }
 });

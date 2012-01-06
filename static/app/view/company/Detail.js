@@ -30,7 +30,10 @@ Ext.define('INV.view.company.Detail', {
                 defaults: {
                     anchor: '90%'
                 },
-                items: [{xtype:'textfield', name:'vat', fieldLabel: 'VAT', selectOnFocus:true},
+                items: [{xtype:'textfield', name:'cif', fieldLabel: 'Cif', selectOnFocus:true, remoteValid:true,
+                            validator:function(v){
+                                console.log('validator:',this.remoteValid);
+                                return this.remoteValid}},
                     {xtype:'textfield', name:'name', fieldLabel: 'Name'},
                     {xtype:'textfield', name:'regCom', fieldLabel: 'RegCOM'}
                 ]
@@ -55,9 +58,9 @@ Ext.define('INV.view.company.Detail', {
                         deleteToolTip:'Remove address',
                         maxWidth:400,
                         //height:100,
-                        columns:[{dataIndex: 'street', width: 115, emptyText:'strada, nr', editor: 'textfield'},
-                            {dataIndex: 'city', width: 100, emptyText:'oras', editor: 'textfield'},
-                            {dataIndex: 'zipcode', width: 80, emptyText:'cod postal', editor: 'textfield'}
+                        columns:[{dataIndex: 'street', width: 115, editor: 'textfield'},
+                            {dataIndex: 'city', width: 100, editor: 'textfield'},
+                            {dataIndex: 'zip', width: 80, editor: 'textfield'}
                         ]
                     }]
                 },{
@@ -72,9 +75,9 @@ Ext.define('INV.view.company.Detail', {
                         addToolTip:'Add contact',
                         maxWidth:400,
                         //height:100,
-                        columns:[{dataIndex: 'name', width: 80, emptyText:'nume', editor: 'textfield'},
-                            {dataIndex: 'phoneNumber', width: 95, emptyText:'nr telefon', editor: 'textfield'},
-                            {dataIndex: 'email', width: 120, emptyText:'exemplu@email.com', editor: 'textfield', vtype: 'email'}
+                        columns:[{dataIndex: 'name', width: 80, editor: 'textfield'},
+                            {dataIndex: 'phone', width: 95, editor: 'textfield'},
+                            {dataIndex: 'email', width: 120, editor: 'textfield', vtype: 'email'}
                         ]
                     }]
                 },{
@@ -135,9 +138,6 @@ Ext.define('INV.view.company.Detail', {
                 disabled: true
 //                                    onDisable: function(){console.log('disabled')},
 //                                    onEnable: function(){console.log('enabled')}
-            }, {
-                text: 'GET',
-                action:'get'
             },{
                 xtype: 'component',
                 id: 'formErrorStateCompany',
@@ -250,7 +250,9 @@ Ext.define('INV.view.company.Detail', {
         // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
         fields.each(function(field) {
             field.suspendEvents();
+            if (field.name = 'cif') field.remoteValid = true;
         });
+        form.clearInvalid();
 
         form.loadRecord(record);
 
@@ -269,6 +271,21 @@ Ext.define('INV.view.company.Detail', {
         });
         //me.down('textfield').focus();//onBlur of CIF field a request to OpenApi is made to fetch company data
         me.down('[formBind]').disable();
+    },
+
+    loadOpenApiCompany:function(company){
+        var me = this,
+            form = me.form,
+            addressesGrid = me.down('#companyAddressesGrid'),
+            contactsGrid = me.down('#companyContactsGrid');
+
+        if (form.getRecord().phantom){
+            console.log('fill form');
+            form.findField('name').setValue(company.get('name'));
+            form.findField('regCom').setValue(company.get('registration_id'));
+            addressesGrid.store.loadData([{street:company.get('address'),city:company.get('city'), zip:company.get('zip')}]);
+            contactsGrid.store.loadData([{phone:company.get('phone')}]);
+        }
     },
 
     reset: function(){

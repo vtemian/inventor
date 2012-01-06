@@ -3,7 +3,7 @@ Ext.define('INV.model.Contact', {
     fields: [
         {name:'id', type:'int'},
         {name:'name', type: 'string'},
-        {name:'phoneNumber', type: 'string'},
+        {name:'phone', type: 'string'},
         {name:'email', type: 'email'},
         {name:'company', type:'int'}
     ],

@@ -4,7 +4,7 @@ Ext.define('INV.model.Company', {
     fields: [
         {name:'id', type:'int', mapping: 'id'},
         {name:'name', type: 'string', mapping:'name'},
-        {name:'vat', type: 'string', mapping:'vat'},
+        {name:'cif', type: 'string', mapping:'cif'},
         {name:'regCom', type: 'string', mapping:'regCom'},
         {name:'created_at', type: 'date', mapping:'created_at'},
         {name:'updated_at', type: 'date', mapping:'updated_at'}

@@ -5,7 +5,7 @@ import reversion
 class Company(models.Model):
 
     name = models.CharField(max_length = 50)
-    vat = models.CharField(max_length = 50, unique = True)
+    cif = models.CharField(max_length = 50, unique = True)
     regCom = models.CharField(max_length = 50)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
@@ -79,19 +79,19 @@ class Address(AssocData):
     
     street = models.CharField(max_length = 50)
     city = models.CharField(max_length = 50)
-    zipcode = models.CharField(max_length = 50)
+    zip = models.CharField(max_length = 50)
     company = models.ForeignKey(Company, related_name="Addresses")
 
 class BankAccount(AssocData):
     
     name = models.CharField(max_length = 50)
     iban = models.CharField(max_length = 50)
-    company = models.ForeignKey(Company, related_name="Banks")
+    company = models.ForeignKey(Company, related_name="BankAccounts")
 
 class Contact(AssocData):
 
     name = models.CharField(max_length = 50)
-    phoneNumber = models.CharField(max_length = 50)
+    phone = models.CharField(max_length = 50)
     email = models.EmailField()
     company = models.ForeignKey(Company, related_name="Contacts")
 
