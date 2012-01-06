@@ -18,6 +18,7 @@ Ext.define('INV.model.OpenApiCompany', {
     ],
     proxy: {
         type: 'parameterproxy',
+        //url: 'http://bogusbogus.ro/api/companies/{cif}.json',
         url: 'http://openapi.ro/api/companies/{cif}.json',
         pageParam: undefined,
         timeout:3000,

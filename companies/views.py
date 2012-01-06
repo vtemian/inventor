@@ -83,7 +83,7 @@ def _companyRead(request):
     total = companies.count()
     companies = companies[start:start+limit]
 
-    response = serializers.serialize('json4ext', companies, relations={'Addresses','Contacts', 'Banks'} )
+    response = serializers.serialize('json4ext', companies, relations={'Addresses','Contacts', 'BankAccounts'} )
     response = response[:len(response)-1] + ',"total":%s}' % total
 
     #_initialdata()
@@ -127,7 +127,8 @@ def _addressCreate(request):
         address.saveFromJson(postData)
 
         address = Address.objects.filter(pk=address.pk)
-        response = serializers.serialize('json4ext', address)
+
+        response = serializers.serialize('json4ext', address, encoding="utf-8")
 
     except Exception, err:
         print '[ err ] Exception at addressCreate: \t',
@@ -223,7 +224,6 @@ def _contactCreate(request):
     response = {}
     try:
         postData = json.loads(request.read())
-        print postData
         contact = Contact.objects.create(company_id = postData['company'])
         contact.saveFromJson(postData)
 

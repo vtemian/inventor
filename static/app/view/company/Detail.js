@@ -250,21 +250,15 @@ Ext.define('INV.view.company.Detail', {
         // temporarily suspend events on form fields before loading record to prevent the fields' change events from firing
         fields.each(function(field) {
             field.suspendEvents();
-            if (field.name = 'cif') field.remoteValid = true;
+            if (field.name == 'cif') field.remoteValid = true;
         });
         form.clearInvalid();
 
         form.loadRecord(record);
 
-        addressesGrid.store.removeAll();
-        banksGrid.store.removeAll();
-        contactsGrid.store.removeAll();
-        if (!record.phantom){
-            record.associations.each(function(assoc){
-                cmp = Ext.getCmp(assoc.gridId);
-                cmp.store.loadData(record.getAssociatedData()[assoc.name], false);
-            });
-        };
+        addressesGrid.bindStore(record.addresses());
+        banksGrid.bindStore(record.banks());
+        contactsGrid.bindStore(record.contacts());
 
         fields.each(function(field) {
             field.resumeEvents();
@@ -283,8 +277,8 @@ Ext.define('INV.view.company.Detail', {
             console.log('fill form');
             form.findField('name').setValue(company.get('name'));
             form.findField('regCom').setValue(company.get('registration_id'));
-            addressesGrid.store.loadData([{street:company.get('address'),city:company.get('city'), zip:company.get('zip')}]);
-            contactsGrid.store.loadData([{phone:company.get('phone')}]);
+            addressesGrid.store.add([{street:company.get('address'),city:company.get('city'), zip:company.get('zip')}]);
+            contactsGrid.store.add([{phone:company.get('phone')}]);
         }
     },
 

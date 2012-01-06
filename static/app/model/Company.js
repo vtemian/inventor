@@ -11,7 +11,7 @@ Ext.define('INV.model.Company', {
     ],
     associations:[
         {type:'hasMany', model:'INV.model.Address', associationKey:'Addresses', name:'addresses', gridId:'companyAddressesGrid'},
-        {type:'hasMany', model:'INV.model.Bank', associationKey:'Banks', name:'banks', gridId:'companyBanksGrid'},
+        {type:'hasMany', model:'INV.model.Bank', associationKey:'BankAccounts', name:'banks', gridId:'companyBanksGrid'},
         {type:'hasMany', model:'INV.model.Contact', associationKey:'Contacts', name:'contacts', gridId:'companyContactsGrid'}
     ],
     proxy: {

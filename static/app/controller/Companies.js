@@ -124,13 +124,27 @@ Ext.define('INV.controller.Companies', {
     saveCompany: function(company,values){
         var me = this,
             isNewCompany = company.phantom,
-            store = this.getCompaniesStore();
+            store = this.getCompaniesStore(),
+            detail = this.getCompanyDetail(),
+            addressesStore = detail.down('#companyAddressesGrid').store,
+            banksStore = detail.down('#companyBanksGrid').store,
+            contactsStore = detail.down('#companyContactsGrid').store;
 
         company.set(values);
+
         if (isNewCompany){
             store.add(company);
         }
-        company.save({success: function(company, operation){
+        company.save({scope:this, success: function(company, operation){
+            if (isNewCompany){
+                addressesStore.each(function(record){record.set('company', company.get('id'))});
+                banksStore.each(function(record){record.set('company', company.get('id'))});
+                contactsStore.each(function(record){record.set('company', company.get('id'))});
+
+                addressesStore.sync();
+                banksStore.sync();
+                contactsStore.sync();
+            }
             //reload associated stores, etc
             notification.msg('company saved', 'The company is saved, yupie! ');
             },
@@ -166,7 +180,8 @@ Ext.define('INV.controller.Companies', {
 
             //check if CIF is unique in our records
             if (idExisting > -1){
-                field.remoteValid = 'Cif is not unique, it already exists'
+                //field.remoteValid = 'Cif is not unique, it already exists'
+                field.markInvalid('Cif is not unique, it already exists');
             }
             else  {
                 //query OpenApi to check if the CIF is valid
@@ -204,7 +219,8 @@ Ext.define('INV.controller.Companies', {
                     me.getCompanyDetail().loadOpenApiCompany(records[0]);
                 }
                 else
-                    field.remoteValid = 'CIF invalid';
+                    //field.remoteValid = 'CIF invalid';
+                    field.markInvalid('CIF invalid');
             }
         });
 
@@ -214,13 +230,20 @@ Ext.define('INV.controller.Companies', {
         var form = button.up('form').getForm(),
             company = form.getRecord(),
             values = form.getValues(false, true, false),
+            detail = this.getCompanyDetail(),
             grid = this.getCompanyList();
 
         // the form should be dirty & valid if we are here
         button.disable();
         this.saveCompany(company, values);
+
         grid.getView().select(company, true, true);
-        this.getCompanyDetail().loadRecord(company);
+
+        task = new Ext.util.DelayedTask(function(){
+            detail.loadRecord(company);
+            console.log(company);
+        }, this);
+        task.delay(3000);
     },
 
     onAddAssociatedClick: function(button){
@@ -281,10 +304,10 @@ Ext.define('INV.controller.Companies', {
         if (!e.record.phantom && !e.record.dirty) return;
         // commit the changes right after editing finished, if product has valid values
         //if (data.street!=''){
-            e.record.save({
-                scope:this,
-                success: function (ingredient, operation){
-                    //reload Associated Store to reflect changes
+        e.record.save({
+            scope:this,
+            success: function (ingredient, operation){
+                //reload Associated Store to reflect changes
 //                    store.load({
 //                        scope   : this,
 //                        callback: function(records, operation, success){
@@ -293,8 +316,8 @@ Ext.define('INV.controller.Companies', {
 //                            view.select(rowIndex);
 //                        }
 //                    });
-                }
-            });
+            }
+        });
         //}
 
     }
