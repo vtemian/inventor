@@ -291,8 +291,6 @@ Ext.define('INV.controller.Companies', {
     },
 
     editAssociatedData: function(editor, e) {
-        var me = this,
-            data = e.record.data;
 
         console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
         if (!e.record.phantom && !e.record.dirty) return;
@@ -300,17 +298,7 @@ Ext.define('INV.controller.Companies', {
         //if (data.street!=''){
         e.record.save({
             scope:this,
-            success: function (ingredient, operation){
-                //reload Associated Store to reflect changes
-//                    store.load({
-//                        scope   : this,
-//                        callback: function(records, operation, success){
-//                            var rowIndex = store.find('id', lastSelectedId);
-//                            //console.log('LOAD CALLBACK: select lastSelected:',lastSelectedId);
-//                            view.select(rowIndex);
-//                        }
-//                    });
-            }
+            success: function (assoc, operation){}
         });
         //}
 

@@ -46,7 +46,7 @@ Ext.define('INV.view.ux.ComboColumn', {
 				);
 				return value;
 			}
-	 
+
 			return getValue(value);
 		};
 	}

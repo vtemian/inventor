@@ -2,7 +2,7 @@ Ext.define('INV.view.product.Detail', {
     extend: 'Ext.form.Panel',
     alias : 'widget.productdetail',
 
-    requires: ['INV.view.ux.ComboColumn'],
+    requires: ['INV.view.ux.ComboColumn', 'INV.plugin.comboExtraFilter'],
 
     autoShow: true,
     border: false,
@@ -166,22 +166,41 @@ Ext.define('INV.view.product.Detail', {
                                     gridId: 'ingredientsgrid',
                                     editor: {
                                         xtype: 'combobox',
+                                        plugins:'comboExtraFilter',
                                         forceSelection: true,
                                         typeAhead: true,//Uncaught TypeError: Cannot call method 'addCls' of null
                                         typeAheadDelay: 1000,
                                         triggerAction: 'all',
+                                        selectOnFocus:true,
                                         selectOnTab: true,
                                         emptyText:'select',
                                         store: Ext.create('INV.store.ProductsList'),
-                                        //queryMode: 'local',
+                                        queryMode: 'local',
                                         displayField:'umName',
                                         valueField:'id',
                                         lazyRender: true,
                                         multiSelect: false,
+                                        lastQuery : '',
                                         listeners:{
                                             select: function(combo, record){
-                                                //check for recursiveness
-                                                //check for already included product
+                                                //here the filter could contain ids of ingredients already in the grid
+                                                //we clear the filters so the displayValue still get found in the store
+                                                combo.store.clearFilter();
+                                            },
+                                            beforequery:function(qe){
+                                                var combo = qe.combo,
+                                                    comboStore = combo.store,
+                                                    grid = combo.up('editor').editingPlugin.grid,
+                                                    gridStore = grid.store,
+                                                    product = grid.up('form').getRecord(),
+                                                    ids = new Array();
+
+                                                if (product) ids.push(product.get('id'));
+                                                gridStore.each(function(record){
+                                                    ids.push(record.get('ingredient'));
+                                                });
+
+                                                qe.ids = ids;
                                             }
                                         }
                                     }
@@ -276,8 +295,7 @@ Ext.define('INV.view.product.Detail', {
         if (fields) fields.each(function (field){
                 me.mon(field, 'change', me.onFieldChange, me);
             }
-        )
-
+        );
     },
 
     getProductId: function() {
@@ -340,18 +358,15 @@ Ext.define('INV.view.product.Detail', {
         });
 
         form.loadRecord(record);
-        ingredientsGrid.store.removeAll();
-        try{
-            if (!record.phantom)
-                if (Ext.isDefined(record.raw.bom) && record.raw.bom != null)
-                    if (Ext.typeOf(record.raw.bom.ingredients) == 'array' )
-                        ingredientsGrid.store.loadData(record.raw.bom.ingredients, false);
-        }
-        catch(err) {console.log('Error loading Produc Bom Igredients - '+err)}
-        
+        if (record.phantom || record.getBom()==undefined)
+            ingredientsGrid.store.removeAll()
+        else
+            ingredientsGrid.bindStore(record.getBom().ingredients());
+
         fields.each(function(field) {
             field.resumeEvents();
         });
+
         me.down('textfield').focus();
         me.down('[formBind]').disable();
     },

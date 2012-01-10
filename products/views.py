@@ -161,6 +161,7 @@ def _ingredientUpdate(request):
 
     ingred = json.loads(request.read())
     ingredient = Ingredient.objects.get(pk = ingred['id'])
+    ingred.pop('bom')
     ingredient.saveFromJson(ingred)
 
     ingredient = Ingredient.objects.filter(pk = ingredient.pk)

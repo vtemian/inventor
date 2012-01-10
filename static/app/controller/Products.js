@@ -56,7 +56,6 @@ Ext.define('INV.controller.Products', {
     },
 
     onProductSelect: function(selModel, selection) {
-        var detail = this.getProductDetail();
 
         if (!Ext.isEmpty(selection)) this.loadProduct(selection[0]);
     },
@@ -215,8 +214,6 @@ Ext.define('INV.controller.Products', {
         store.insert(recordCount, ingredient);
         grid.editingPlugin.startEditByPosition({row: recordCount, column: 0});
 
-//        store.add(ingredient);
-//        grid.editingPlugin.startEdit(store.last(), 0);
     },
 
     onDeleteIngredientClick: function(view, cell, recordIndex, cellIndex, e){
@@ -229,31 +226,10 @@ Ext.define('INV.controller.Products', {
     },
 
     editIngredient: function(editor, e) {
-        var me = this,
-            store = this.getProductsStore(),
-            view = this.getProductList().getView(),
-            lastSelectedId = this.getProductDetail().getProductId(),
-            data = e.record.data;
 
-        console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
+        //console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
         if (!e.record.phantom && !e.record.dirty) return;
         // commit the changes right after editing finished, if product has valid values
-        if (data.ingredient!=0 && data.quantity!=0 && (data.bom!=0 || data.product!=0) != 0){
-            e.record.save({
-                scope:this,
-                success: function (ingredient, operation){
-                    //reload Products Store to reflect changes
-                    store.load({
-                        scope   : this,
-                        callback: function(records, operation, success){
-                            var rowIndex = store.find('id', lastSelectedId);
-                            //console.log('LOAD CALLBACK: select lastSelected:',lastSelectedId);
-                            view.select(rowIndex);
-                        }
-                    });
-                }
-            });
-        }
-
+        e.record.save();
     }
 });

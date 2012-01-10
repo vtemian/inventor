@@ -9,7 +9,7 @@ Ext.define('INV.model.ProductBomIngredient',{
         {name:'um', type:'int', mapping:'um'}
     ],
     associations:[
-        {type:'belongsTo', model:'INV.model.ProductBom', associationKey:'bom', name:'bom'}
+        {type:'belongsTo', model:'INV.model.ProductBom', associationKey:'bom', name:'bom', getterName:'getBom'}
     ],
     proxy: {
         type: 'rest',

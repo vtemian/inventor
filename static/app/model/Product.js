@@ -24,7 +24,7 @@ Ext.define('INV.model.Product', {
     ],
     associations:[
         {type:'belongsTo', model:'INV.model.ProductCategory', associationKey:'category', name:'category'},
-        {type:'belongsTo', model:'INV.model.ProductBom', associationKey:'bom', name:'bom'},
+        {type:'belongsTo', model:'INV.model.ProductBom', associationKey:'bom', name:'bom', getterName:'getBom'},
         {type:'belongsTo', model:'INV.model.ProductUm', associatedKey:'um', name:'um'}
     ],
     proxy: {
