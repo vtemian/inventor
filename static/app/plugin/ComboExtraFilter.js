@@ -21,12 +21,12 @@ Ext.define('INV.plugin.comboExtraFilter', {
             gridStore = grid.store,
             product = grid.up('form').getRecord(),
             ids = [];
-        console.log(ids.length);
+
         if (product) ids.push(product.get('id'));
         gridStore.each(function(record){
             ids.push(record.get('ingredient'));
         });
-        console.log(ids);
+
         comboStore.filterBy(function (record) {
             var id = record.get('id'),
                 pop = Ext.Array.contains(ids, id);
@@ -35,6 +35,7 @@ Ext.define('INV.plugin.comboExtraFilter', {
     },
 
     comboOverrides:{
+        //override doQuery so it will filter the combo for some ids added in _onExpand code above
         doQuery: function(queryString, forceAll, rawQuery) {
             queryString = queryString || '';
 
@@ -76,7 +77,6 @@ Ext.define('INV.plugin.comboExtraFilter', {
                         } else {
                             // Clear filter, but supress event so that the BoundList is not immediately updated.
                             store.clearFilter(true);
-                            console.log(ids);
                             store.filter(me.displayField, queryString);
                             store.filterBy(function (record) {
                                 var id = record.get('id'),

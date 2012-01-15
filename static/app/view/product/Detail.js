@@ -2,7 +2,7 @@ Ext.define('INV.view.product.Detail', {
     extend: 'Ext.form.Panel',
     alias : 'widget.productdetail',
 
-    requires: ['INV.view.ux.ComboColumn', 'INV.plugin.comboExtraFilter'],
+    requires: ['INV.plugin.comboExtraFilter'],
 
     autoShow: true,
     border: false,
