@@ -20,8 +20,8 @@ Ext.define('INV.plugin.comboExtraFilter', {
             grid = picker.up('editor').editingPlugin.grid,
             gridStore = grid.store,
             product = grid.up('form').getRecord(),
-            ids = new Array();
-        console.log(ids);
+            ids = [];
+        console.log(ids.length);
         if (product) ids.push(product.get('id'));
         gridStore.each(function(record){
             ids.push(record.get('ingredient'));

@@ -8,10 +8,6 @@ Ext.define('INV.store.Products', {
     remoteSort: true,
     sorters: [
         {
-            property : 'name',
-            direction: 'DESC'
-        },
-        {
             property : 'code',
             direction: 'ASC'
         }

@@ -216,7 +216,7 @@ Ext.define('INV.controller.Products', {
 
     },
 
-    onDeleteIngredientClick: function(view, cell, recordIndex, cellIndex, e){
+    onDeleteIngredientClick: function(view, cell, recordIndex){
 
         view.editingPlugin.cancelEdit();
         //view.store.getAt(recordIndex).data.id = 0; //trigger error
@@ -225,11 +225,16 @@ Ext.define('INV.controller.Products', {
         view.store.sync();
     },
 
-    editIngredient: function(editor, e) {
+    editIngredient: function(editor, e){
+        var ingredient = e.record,
+            data = ingredient.data;
 
         //console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
-        if (!e.record.phantom && !e.record.dirty) return;
+        if (!ingredient.phantom && !ingredient.dirty) return;
         // commit the changes right after editing finished, if product has valid values
-        e.record.save();
+        if (data.ingredient!=0 && data.quantity!=0 && (data.bom!=0 || data.product!=0) != 0)
+            ingredient.save();
+        else
+            notification.msg('ingredient not  saved', 'The ingredient or value is invalid and will not be saved!');
     }
 });

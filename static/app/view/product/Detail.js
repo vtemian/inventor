@@ -162,25 +162,22 @@ Ext.define('INV.view.product.Detail', {
                             columns:[
                                 {dataIndex: 'quantity', align: 'center', width: 40, editor:{type:'numberfield', selectOnFocus: true, hideTrigger:true}},
                                 {dataIndex: 'ingredient', width: 160 ,
-                                    xtype: 'combocolumn',
-                                    gridId: 'ingredientsgrid',
                                     editor: {
                                         xtype: 'combobox',
                                         plugins:'comboExtraFilter',
+                                        store: 'ProductsList',
+                                        queryMode:'local',
+                                        displayField:'umName',
+                                        valueField:'id',
+                                        lastQuery : '',
                                         forceSelection: true,
                                         typeAhead: true,//Uncaught TypeError: Cannot call method 'addCls' of null
                                         typeAheadDelay: 1000,
                                         triggerAction: 'all',
                                         selectOnFocus:true,
                                         selectOnTab: true,
-                                        emptyText:'select',
-                                        store: Ext.create('INV.store.ProductsList'),
-                                        queryMode: 'local',
-                                        displayField:'umName',
-                                        valueField:'id',
-                                        lazyRender: true,
                                         multiSelect: false,
-                                        lastQuery : '',
+                                        emptyText:'select',
                                         listeners:{
                                             select: function(combo, record){
                                                 //here the filter could contain ids of ingredients already in the grid
@@ -203,7 +200,14 @@ Ext.define('INV.view.product.Detail', {
                                                 qe.ids = ids;
                                             }
                                         }
-                                    }
+                                    },
+                                    renderer: function(value) {
+                                        var store = Ext.StoreMgr.get("ProductsList"),
+                                            idx = store.find('id',value),
+                                            rec = store.getAt(idx);
+
+                                            return rec? rec.get('umName'): ''
+                                        }
                                 }
                             ]}
                         ]}
