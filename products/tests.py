@@ -14,7 +14,6 @@ class ProductsTest(TestCase):
         data = {"code": 1000}
         
         prod = Product.objects.create(**data)
-        self.assertEqual(prod.id, 3)
         self.assertEqual(prod.code, 1000)
         self.assertTrue(Product.objects.all().count(), 3)
         Product.objects.get(pk = 3).delete()

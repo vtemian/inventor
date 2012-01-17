@@ -180,8 +180,8 @@ Ext.define('INV.view.product.Detail', {
                                         emptyText:'select',
                                         listeners:{
                                             select: function(combo, record){
-                                                //here the filter could contain ids of ingredients already in the grid
-                                                //we clear the filters so the displayValue still get found in the store
+                                                //here the filter should contain ids of ingredients already in the grid
+                                                //we clear the filters so the displayValue still gets found in the store
                                                 combo.store.clearFilter();
                                             },
                                             beforequery:function(qe){

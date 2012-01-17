@@ -21,16 +21,16 @@
 #msg-div {
     position:absolute;
     left:35%;
-    top:10px;
+    top:0px;
     width:300px;
     z-index:20000;
 }
 #msg-div .msg {
-    border-radius: 8px;
-    -moz-border-radius: 8px;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
     background: #F6F6F6;
-    border: 2px solid #ccc;
-    margin-top: 2px;
+    border: 1px solid #ccc;
+    margin-top: -5px;
     padding: 10px 15px;
     color: #555;
 }

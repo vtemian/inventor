@@ -5,8 +5,7 @@ Ext.define('INV.model.ProductBomIngredient',{
         {name:'bom', type:'int', mapping:'bom_id'},
         {name:'product', type:'int', mapping:'product_id', persist: true},
         {name:'ingredient', type:'int', mapping:'ingredient'},
-        {name:'quantity', type:'float', mapping:'quantity'},
-        {name:'um', type:'int', mapping:'um'}
+        {name:'quantity', type:'float', mapping:'quantity'}
     ],
     associations:[
         {type:'belongsTo', model:'INV.model.ProductBom', associationKey:'bom', name:'bom', getterName:'getBom'}

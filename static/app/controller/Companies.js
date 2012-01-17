@@ -68,9 +68,9 @@ Ext.define('INV.controller.Companies', {
         var store = this.getCompaniesStore(),
             grid = button.up('grid');
 
-        company = INV.model.Company.create();
+        company = Ext.create('INV.model.Company');
         while (isNaN(company.id)){
-            company = INV.model.Company.create();
+            company =  Ext.create('INV.model.Company');
         }
         this.loadCompany(company);
     },
@@ -146,13 +146,13 @@ Ext.define('INV.controller.Companies', {
                 contactsStore.sync();
             }
             //reload associated stores, etc
-            notification.msg('company saved', 'The company is saved, yupie! ');
+            notification.msg('', 'The company is saved, yupie! ');
             },
             failure: function(company, operation){
                 if (isNewCompany){
                     store.remove(company);
                 }
-                notification.msg('company save error!', 'There was a server error. ');
+                notification.msg('', 'Server error!');
                 console.log('ERROR:::company->savecompany::',operation.getError())
             }
         });
@@ -166,8 +166,10 @@ Ext.define('INV.controller.Companies', {
         store.remove(company);
         store.sync({success: function(batch, options){
             console.log('record deleted');
-
+            notification.msg('','The company was deleted.');
             grid.getView().select(0);
+        },failure: function(batch, options){
+            notification.msg('','Server error!');
         }},this);
         console.log('fire event for Delete Company');
     },
@@ -284,8 +286,6 @@ Ext.define('INV.controller.Companies', {
 
     onDeleteAssociatedClick: function(view, cell, recordIndex, cellIndex, e){
         view.editingPlugin.cancelEdit();
-        //view.store.getAt(recordIndex).data.id = 0; //trigger error
-        //notification.msg('Remove', 'the record ' + view.store.getAt(recordIndex).data.name + ' was deleted!');
         view.store.removeAt(recordIndex);
         view.store.sync();
     },

@@ -24,7 +24,7 @@ class Product(models.Model):
     description = models.TextField()
     category = models.ForeignKey(Category, null=True, related_name = 'products')
     um = models.ForeignKey(UM, null=True, related_name = '+')
-    bom = models.ForeignKey('Bom', related_name='products', null=True)
+    bom = models.ForeignKey('Bom', related_name='products', null=True, unique=True)
     bar_code = models.CharField(max_length = 20)
     price_endetail = models.DecimalField(null=True, max_digits=14, decimal_places=4)
     price_engros = models.DecimalField(null=True, max_digits=14, decimal_places=4)
@@ -120,7 +120,6 @@ class Ingredient(models.Model):
     bom = models.ForeignKey(Bom, related_name='ingredients')
     ingredient = models.ForeignKey(Product, related_name='ingredient')
     quantity = models.DecimalField(max_digits=10, null=True, decimal_places=4)
-    um = models.ForeignKey(UM,  null=True)
 
     def saveFromJson(self, dict):
         fields = self._meta._fields()

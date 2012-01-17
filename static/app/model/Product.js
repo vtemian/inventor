@@ -10,7 +10,7 @@ Ext.define('INV.model.Product', {
         {name:'category', type: 'int', mapping: 'category', convert: function(v){return v == 'None'? '': v}},
         {name:'um_id', mapping:function(obj){ return Ext.isObject(obj.um) ? obj.um.id : obj.um}},
         {name:'umName',mapping:function(obj){ return Ext.isObject(obj.um) ? obj.um.abbreviation + "  " + obj.name : obj.name}},
-        {name:'barCode', type: 'string', mapping:'barCode'},
+        {name:'barCode', type: 'string', mapping:'bar_code'},
         {name:'description', type: 'string', mapping:'description'},
         //{name:'modified', type: 'boolean', mapping:'modified'},
         {name:'created_at', type: 'date', mapping:'created_at'},

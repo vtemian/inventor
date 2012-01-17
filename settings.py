@@ -81,7 +81,12 @@ INSTALLED_APPS = (
     'inventor.products',
     'inventor.companies',
     'wadofstuff',
+    'dilla'
 )
+
+DICTIONARY = "C:/Python27/lib/words.txt"
+DILLA_USE_LOREM_IPSUM = False # set to True ignores dictionary
+DILLA_APPS = ['companies', 'products']
 
 LOGGING = {
     'version': 1,
@@ -101,6 +106,6 @@ LOGGING = {
     }
 }
 SERIALIZATION_MODULES = {
-    'json': 'wadofstuff.django.serializers.json',
+    #'json': 'wadofstuff.django.serializers.json',
     'json4ext': 'wadofstuff.django.serializers.json4ext'
 }
