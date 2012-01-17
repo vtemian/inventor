@@ -33,7 +33,14 @@ Ext.define('INV.view.company.Detail', {
                 items: [{xtype:'textfield', name:'cif', fieldLabel: 'Cif', selectOnFocus:true, remoteValid:true, maskRe:/\d/,
                             validator:function(v){
                                 console.log('validator:',this.remoteValid);
-                                return this.remoteValid}},
+                                return this.remoteValid},
+                            listeners: {
+                                specialkey:function(field,e){
+                                    if (e.getKey() == e.ENTER) {
+                                        field.nextSibling().focus()
+                                    }
+                            }}
+                    },
                     {xtype:'textfield', name:'name', fieldLabel: 'Name'},
                     {xtype:'textfield', name:'regCom', fieldLabel: 'RegCOM'}
                 ]
@@ -58,9 +65,9 @@ Ext.define('INV.view.company.Detail', {
                         deleteToolTip:'Remove address',
                         maxWidth:400,
                         //height:100,
-                        columns:[{dataIndex: 'street', width: 115, editor: 'textfield'},
-                            {dataIndex: 'city', width: 100, editor: 'textfield'},
-                            {dataIndex: 'zip', width: 80, editor: 'textfield'}
+                        columns:[{dataIndex: 'street', width: 115, editor:{type:'textfield', selectOnFocus: true}},
+                            {dataIndex: 'city', width: 100, editor:{type:'textfield', selectOnFocus: true}},
+                            {dataIndex: 'zip', width: 80, editor:{type:'textfield', selectOnFocus: true}}
                         ]
                     }]
                 },{
@@ -75,9 +82,9 @@ Ext.define('INV.view.company.Detail', {
                         addToolTip:'Add contact',
                         maxWidth:400,
                         //height:100,
-                        columns:[{dataIndex: 'name', width: 80, editor: 'textfield'},
-                            {dataIndex: 'phone', width: 95, editor: 'textfield'},
-                            {dataIndex: 'email', width: 120, editor: 'textfield', vtype: 'email'}
+                        columns:[{dataIndex: 'name', width: 80, editor:{type:'textfield', selectOnFocus: true}},
+                            {dataIndex: 'phone', width: 95, editor:{type:'textfield', selectOnFocus: true}},
+                            {dataIndex: 'email', width: 120, editor:{type:'textfield', selectOnFocus: true}, vtype: 'email'}
                         ]
                     }]
                 },{
@@ -92,8 +99,8 @@ Ext.define('INV.view.company.Detail', {
                         addToolTip:'Add bank account',
                         maxWidth:400,
                         //height:100,
-                        columns:[{dataIndex: 'name', width: 100, editor: 'textfield'},
-                            {dataIndex: 'iban', width: 190, editor: 'textfield'}
+                        columns:[{dataIndex: 'name', width: 100, editor:{type:'textfield', selectOnFocus: true}},
+                            {dataIndex: 'iban', width: 190, editor:{type:'textfield', selectOnFocus: true}}
                         ]
                     }]
                 }]
@@ -274,7 +281,7 @@ Ext.define('INV.view.company.Detail', {
             contactsGrid = me.down('#companyContactsGrid');
 
         if (form.getRecord().phantom){
-            form.reset();
+            me.reset();
             form.findField('cif').setValue(company.get('cif'));
             form.findField('name').setValue(company.get('name'));
             form.findField('regCom').setValue(company.get('registration_id'));
@@ -286,7 +293,10 @@ Ext.define('INV.view.company.Detail', {
     reset: function(){
         var me = this,
             form = me.getForm(),
-            fields = form.getFields();
+            fields = form.getFields(),
+            addressesGrid = me.down('#companyAddressesGrid'),
+            banksGrid = me.down('#companyBanksGrid'),
+            contactsGrid = me.down('#companyContactsGrid');
 
         form.clearInvalid();
         // temporarily suspend events on form fields before reseting the form to prevent the fields' change events from firing
@@ -294,6 +304,9 @@ Ext.define('INV.view.company.Detail', {
             field.suspendEvents();
         });
         form.reset();
+        addressesGrid.getStore().rejectChanges();
+        banksGrid.getStore().rejectChanges();
+        contactsGrid.getStore().rejectChanges();
         this.switchBoundItems(form, false);
         fields.each(function(field) {
             field.resumeEvents();

@@ -135,18 +135,19 @@ Ext.define('INV.controller.Companies', {
         if (isNewCompany){
             store.add(company);
         }
-        company.save({scope:this, success: function(company, operation){
-            if (isNewCompany){
-                addressesStore.each(function(record){record.set('company', company.get('id'))});
-                banksStore.each(function(record){record.set('company', company.get('id'))});
-                contactsStore.each(function(record){record.set('company', company.get('id'))});
+        company.save({scope:this,
+            success: function(company, operation){
+                if (isNewCompany){
+                    addressesStore.each(function(record){record.set('company', company.get('id'))});
+                    banksStore.each(function(record){record.set('company', company.get('id'))});
+                    contactsStore.each(function(record){record.set('company', company.get('id'))});
 
-                addressesStore.sync();
-                banksStore.sync();
-                contactsStore.sync();
-            }
-            //reload associated stores, etc
-            notification.msg('', 'The company is saved, yupie! ');
+                    addressesStore.sync();
+                    banksStore.sync();
+                    contactsStore.sync();
+                }
+
+                notification.msg('', 'The company, '+ company.get('name') +',is saved, yupie! ');
             },
             failure: function(company, operation){
                 if (isNewCompany){
@@ -164,17 +165,17 @@ Ext.define('INV.controller.Companies', {
             company = grid.getSelectionModel().getSelection()[0];
 
         store.remove(company);
-        store.sync({success: function(batch, options){
-            console.log('record deleted');
+        store.sync({success: function(){
             notification.msg('','The company was deleted.');
             grid.getView().select(0);
-        },failure: function(batch, options){
+        },failure: function(){
             notification.msg('','Server error!');
         }},this);
-        console.log('fire event for Delete Company');
     },
 
     onCifChange:function(field, event, eOpts){
+
+        field.remoteValid = true;
 
         if (field.isDirty()){
             var store = this.getCompaniesStore(),
@@ -182,8 +183,8 @@ Ext.define('INV.controller.Companies', {
 
             //check if CIF is unique in our records
             if (idExisting > -1){
-                //field.remoteValid = 'Cif is not unique, it already exists'
-                field.markInvalid('Cif is not unique, it already exists');
+                field.remoteValid = 'Cif is not unique, it already exists'
+                //field.markInvalid('Cif is not unique, it already exists');
             }
             else  {
                 //query OpenApi to check if the CIF is valid
@@ -204,12 +205,9 @@ Ext.define('INV.controller.Companies', {
             }),
             mask = new Ext.LoadMask(field, {store:companyStore});
 
-//        companyStore.loadData([{"name":"CUBUS ARTS SRL","cif":"13548146","address":"BLD. MIHAI VITEAZU Nr. 7,Ap. 18","city":"SIBIU","created_at":"2011-03-16T12:54:36+00:00","zip":"550350","updated_at":"2011-11-13T21:15:43+00:00","registration_id":"J32/508/2000","authorization_number":"","phone":"0269232192","fax":"","vat":"1","state":"Sibiu"}]);
-//        me.loadOpenApiCompany(companyStore.getAt(0));
-
         mask.show();
         companyStore.load({
-            cif:field.value,
+            cif: Ext.String.trim(field.value),
             scope   : me,
             callback: function(records, operation, success) {
                 console.log(records, operation, success);
@@ -219,9 +217,13 @@ Ext.define('INV.controller.Companies', {
                     field.remoteValid = true;
                     me.getCompanyDetail().loadOpenApiCompany(records[0]);
                 }
-                else
-                    //field.remoteValid = 'CIF invalid';
+                else if (success){
+                    notification.msg('','The supplied CIF was not found as valid');
                     field.markInvalid('CIF invalid');
+                }
+                else
+                    notification.msg('','OpenApi response fail!');
+
             }
         });
 
@@ -287,20 +289,30 @@ Ext.define('INV.controller.Companies', {
     onDeleteAssociatedClick: function(view, cell, recordIndex, cellIndex, e){
         view.editingPlugin.cancelEdit();
         view.store.removeAt(recordIndex);
-        view.store.sync();
+        view.store.sync({
+            success: function(batch, options){
+                console.log(batch, options)
+                notification.msg('','The '+batch.proxy.model.modelName.split('.')[2]+' was deleted.');
+            },
+            failure: function(){
+                notification.msg('','Server error!');
+        }},this);
     },
 
     editAssociatedData: function(editor, e) {
 
         console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
         if (!e.record.phantom && !e.record.dirty) return;
-        // commit the changes right after editing finished, if product has valid values
-        //if (data.street!=''){
+
         e.record.save({
             scope:this,
-            success: function (assoc, operation){}
+            success: function (batch){
+                notification.msg('','The '+batch.modelName.split('.')[2]+' was saved.');
+            },
+            failure: function (){
+                notification.msg('','Server error!');
+            }
         });
-        //}
 
     }
 });

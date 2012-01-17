@@ -39,7 +39,7 @@ Ext.define('INV.view.product.Detail', {
                             xtype: 'numberfield',
                             hideTrigger: true,
                             name: 'price_endetail',
-                            fieldLabel: 'Price',
+                            fieldLabel: 'Sale Price',
                             flex: 1
                         },{
                             xtype: 'numberfield',
@@ -233,9 +233,7 @@ Ext.define('INV.view.product.Detail', {
                                     action:'submit',
                                     icon:'resources/images/save.png',
                                     formBind: true, //only enabled once the form is valid
-                                    disabled: true,
-//                                    onDisable: function(){console.log('disabled')},
-//                                    onEnable: function(){console.log('enabled')}
+                                    disabled: true
                                 },{
                                     xtype: 'component',
                                     id: 'formErrorStateProduct',

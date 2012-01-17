@@ -51,7 +51,7 @@ Ext.define('INV.view.product.Main', {
                                         title:'Stocuri detaliate',
                                         xtype:'panel'
                                     },{
-                                        title:'Grafice'
+                                        title:'Grafic preturi de achizitie'
                                     },{
                                         title:'Altceva'
 

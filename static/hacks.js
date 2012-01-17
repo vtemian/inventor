@@ -67,3 +67,36 @@ createGetter: function() {
     };
 }
 });
+
+Ext.override(Ext.data.Store,{
+    /**
+     * IMPLEMENTED IN 4.1 BETA & not in 4.1 dev preview
+     * {@link Ext.data.Model#reject Reject} outstanding changes on all {@link #getModifiedRecords modified records}
+     * and re-insert any records that were removed locally. Any phantom records will be removed.
+     */
+    rejectChanges : function() {
+        var me = this,
+            recs = [].concat(me.getNewRecords(), me.getUpdatedRecords()),
+            len = recs.length,
+            i = 0;
+
+        for (; i < len; i++) {
+            recs[i].reject();
+            if (recs[i].phantom) {
+                me.remove(recs[i]);
+            }
+        }
+
+        recs = me.removed;
+        len = recs.length;
+
+        for (i = 0; i < len; i++) {
+            me.insert(0, recs[i]);
+            recs[i].reject();
+        }
+
+        // Since removals are cached in a simple array we can simply reset it here.
+        // Adds and updates are managed in the data MixedCollection and should already be current.
+        me.removed.length = 0;
+    }
+});
