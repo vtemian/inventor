@@ -61,12 +61,16 @@ Ext.define('INV.controller.Products', {
     },
 
     onAddProductClick: function(button){
+        var store = this.getProductsStore(),
+            grid = button.up('grid');
 
         product = INV.model.Product.create();
         while (isNaN(product.id)) {
             product = INV.model.Product.create();
         }
-        this.loadProduct(product);
+        store.add(product);
+        grid.getView().select(product);
+        //this.loadProduct(product);
     },
 
     onCopyProductClick: function(button){
@@ -81,10 +85,12 @@ Ext.define('INV.controller.Products', {
             Ext.data.Model.id(product);
             console.log(product);
             product.set('code', '');
-            this.loadProduct(product);
+            store.add(product);
+            grid.getView().select(product);
+            //this.loadProduct(product);
             detail.switchBoundItems(detail.getForm(),true)
         } else {
-            Ext.MessageBox.alert('No selection made', 'Please select the record you want to clone.');
+            notification.msg('No selection made', 'Please select the record you want to copy!');
         }
     },
 
@@ -156,6 +162,10 @@ Ext.define('INV.controller.Products', {
                 }
             });
         } else {
+            //just a new empty record, remove it
+            if (!Ext.isEmpty(loadedProduct) && loadedProduct.phantom) {
+                grid.store.remove(loadedProduct)
+            }
             detail.loadRecord(product);
         }
     },
@@ -167,7 +177,7 @@ Ext.define('INV.controller.Products', {
 
         product.set(values);
         if (isNewProduct){
-            store.add(product);
+            //store.add(product);
         }
         product.save({success: function(product, operation){
             //reload categories if a string/new catefory was submmited
