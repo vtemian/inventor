@@ -28,6 +28,9 @@ Ext.define('INV.controller.Companies', {
             'companylist button[action=add]': {
                 click: this.onAddCompanyClick
             },
+            'companylist button[action=copy]': {
+                click: this.onCopyCompanyClick
+            },
             'companylist button[action=delete]': {
                 click: this.onDeleteCompanyClick
             },
@@ -72,7 +75,43 @@ Ext.define('INV.controller.Companies', {
         while (isNaN(company.id)){
             company =  Ext.create('INV.model.Company');
         }
-        this.loadCompany(company);
+        store.add(company);
+        grid.getView().select(company);
+        //this.loadCompany(company);
+    },
+
+    onCopyCompanyClick: function(button){
+        var store = this.getCompaniesStore(),
+            grid = button.up('grid'),
+            oldCompany = grid.getSelectionModel().getSelection()[0],
+            detail = this.getCompanyDetail();
+
+        if (oldCompany){
+
+            company = oldCompany.copy();
+            Ext.data.Model.id(company);
+            company.set('code', '');
+            store.add(company);
+            grid.getView().select(company);
+            //this.loadCompany(company);
+            detail.switchBoundItems(detail.getForm(),true)
+        } else {
+            notification.msg('No selection made', 'Please select the record you want to copy!');
+        }
+    },
+
+    onDeleteCompanyClick: function(button){
+        var store = this.getCompaniesStore(),
+            grid = button.up('grid'),
+            company = grid.getSelectionModel().getSelection()[0];
+
+        store.remove(company);
+        store.sync({success: function(){
+            notification.msg('','The company was deleted.');
+            grid.getView().select(0);
+        },failure: function(){
+            notification.msg('','Server error!');
+        }},this);
     },
 
     loadCompany: function (company){
@@ -117,6 +156,10 @@ Ext.define('INV.controller.Companies', {
                 }
             });
         } else {
+            //just a new empty record, remove it
+            if (!Ext.isEmpty(loadedCompany) && loadedCompany.phantom) {
+                grid.store.remove(loadedCompany)
+            }
             detail.loadRecord(company);
         }
     },
@@ -133,7 +176,7 @@ Ext.define('INV.controller.Companies', {
         company.set(values);
 
         if (isNewCompany){
-            store.add(company);
+            //store.add(company);
         }
         company.save({scope:this,
             success: function(company, operation){
@@ -152,25 +195,12 @@ Ext.define('INV.controller.Companies', {
             failure: function(company, operation){
                 if (isNewCompany){
                     store.remove(company);
+                    detail.getView().select(0);
                 }
                 notification.msg('', 'Server error!');
                 console.log('ERROR:::company->savecompany::',operation.getError())
             }
         });
-    },
-
-    onDeleteCompanyClick: function(button){
-        var store = this.getCompaniesStore(),
-            grid = button.up('grid'),
-            company = grid.getSelectionModel().getSelection()[0];
-
-        store.remove(company);
-        store.sync({success: function(){
-            notification.msg('','The company was deleted.');
-            grid.getView().select(0);
-        },failure: function(){
-            notification.msg('','Server error!');
-        }},this);
     },
 
     onCifChange:function(field, event, eOpts){
@@ -251,12 +281,18 @@ Ext.define('INV.controller.Companies', {
             modelName = store.model.modelName.split('.')[2],
             maxRecords = 3,
             recordCount = store.count(),
-            companyDetail = this.getCompanyDetail(),
-            companyId = companyDetail.getCompanyId();
+            detail = this.getCompanyDetail(),
+            form = detail.getForm(),
+            companyId = detail.getCompanyId();
 
         if (companyId == ''){
-            Ext.MessageBox.alert('BIG NONO', 'Save company before adding associated information');
-            return;
+            if (form.isValid()){
+                this.saveCompany(form.getRecord(),form.getValues(false, true, false));
+                detail.loadRecord(form.getRecord());
+
+            }
+            //Ext.MessageBox.alert('BIG NONO', 'Save company before adding associated information');
+            //return;
         }
 
         if (recordCount >= maxRecords) {

@@ -360,6 +360,7 @@ Ext.define('INV.view.product.Detail', {
         fields.each(function(field) {
             field.suspendEvents();
         });
+        me.updateErrorState();
 
         form.loadRecord(record);
         if (record.phantom || record.getBom()==undefined)

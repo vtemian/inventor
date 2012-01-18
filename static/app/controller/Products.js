@@ -83,7 +83,6 @@ Ext.define('INV.controller.Products', {
 
             product = oldProduct.copy();
             Ext.data.Model.id(product);
-            console.log(product);
             product.set('code', '');
             store.add(product);
             grid.getView().select(product);
@@ -173,22 +172,32 @@ Ext.define('INV.controller.Products', {
     saveProduct: function(product,values){
         var me = this,
             isNewProduct = product.phantom,
-            store = this.getProductsStore();
+            store = this.getProductsStore(),
+            detail = this.getProductDetail(),
+            ingredientsStore = detail.down('#ingredientsgrid').store;
 
         product.set(values);
         if (isNewProduct){
             //store.add(product);
         }
-        product.save({success: function(product, operation){
-            //reload categories if a string/new catefory was submmited
-            if (Ext.isString(values.category)) me.getProductCategoriesStore().load();
-            me.getProductsListStore().load();
+        product.save({
+            success: function(product, operation){
+                if (isNewProduct){
+                    ingredientsStore.each(function(record){record.set('product', product.get('id'))});
+                    ingredientsStore.sync();
+                }
+                //reload categories if a string/new catefory was submmited
+                if (Ext.isString(values.category)) me.getProductCategoriesStore().load();
+                me.getProductsListStore().load();
+
+                notification.msg('', 'The product, '+ product.get('name') +',is saved, yupie! ');
             },
             failure: function(product, operation){
                 if (isNewProduct){
                     store.remove(product);
+                    detail.getView().select(0);
                 }
-                notification.msg('Product save error!', 'There was a server error. ');
+                notification.msg('', 'Server error. ');
                 console.log('ERROR:::Product->saveProduct::',operation.getError())
             }
         });
@@ -201,11 +210,17 @@ Ext.define('INV.controller.Products', {
             store = grid.store,
             maxRecords = 3,
             recordCount = store.count(),
-            productDetail = this.getProductDetail();
+            detail = this.getProductDetail(),
+            form = detail.getForm();
         
         if (productDetail.getProductId() == ''){
-            Ext.MessageBox.alert('BIG NONO', 'Save product before adding ingredients');
-            return;
+            if (form.isValid()){
+                this.saveProduct(form.getRecord(),form.getValues(false, true, false));
+                detail.loadRecord(form.getRecord());
+
+            }
+//            Ext.MessageBox.alert('BIG NONO', 'Save product before adding ingredients');
+//            return;
         }
 
         if (recordCount >= maxRecords) {
@@ -214,8 +229,8 @@ Ext.define('INV.controller.Products', {
         }
 
         ingredient = INV.model.ProductBomIngredient.create({
-            bom : productDetail.getProductBomId(),
-            product : productDetail.getProductId()
+            bom : detail.getProductBomId(),
+            product : detail.getProductId()
         });
         grid.editingPlugin.cancelEdit();
         

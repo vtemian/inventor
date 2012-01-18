@@ -211,7 +211,11 @@ Ext.define('INV.view.company.Detail', {
     },
 
     getCompanyId: function() {
-        return this.getRecord().data['id'];
+        var record = this.getRecord();
+        if (record.phantom){
+            return ''
+        }
+        return record.data['id'];
     },
 
     onFieldChange: function(field, newValue, oldValue, eOpts) {
@@ -258,7 +262,8 @@ Ext.define('INV.view.company.Detail', {
             field.suspendEvents();
             if (field.name == 'cif') field.remoteValid = true;
         });
-        form.clearInvalid();
+        //form.clearInvalid();
+        me.updateErrorState();
 
         form.loadRecord(record);
 
@@ -269,7 +274,7 @@ Ext.define('INV.view.company.Detail', {
         fields.each(function(field) {
             field.resumeEvents();
         });
-        //me.down('textfield').focus();//onBlur of CIF field a request to OpenApi is made to fetch company data
+        me.down('textfield').focus();//onBlur of CIF field a request to OpenApi is made to fetch company data
         me.down('[formBind]').disable();
     },
 
