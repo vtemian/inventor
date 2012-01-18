@@ -1,7 +1,7 @@
 Ext.define('INV.store.ProductCategories', {
     extend: 'Ext.data.Store',
     model: 'INV.model.ProductCategory',
-    autoSync:true,
+    //autoSync:true,
     autoLoad:true,
     proxy: {
         type: 'rest',

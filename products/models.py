@@ -14,7 +14,7 @@ class Category(models.Model):
 class UM(models.Model):
 
     name = models.CharField(max_length = 20)
-    abbreviation = models.CharField(max_length = 5)
+    abbreviation = models.CharField(max_length = 6)
 
 
 class Product(models.Model):
@@ -62,7 +62,7 @@ class Product(models.Model):
             raise
             
         try:
-            um = dict.pop('um_id', None)
+            um = dict.pop('um', None)
             if um:
                 if isinstance(um, int):
                     self.um = UM.objects.get(pk=um)
@@ -158,4 +158,7 @@ class Ingredient(models.Model):
     
 if not reversion.is_registered(Product):
     reversion.register(Product)
+    reversion.register(Category)
     reversion.register(UM)
+    reversion.register(Bom)
+    reversion.register(Ingredient)

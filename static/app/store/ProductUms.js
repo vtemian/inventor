@@ -1,7 +1,7 @@
 Ext.define('INV.store.ProductUms', {
     extend: 'Ext.data.Store',
     model: 'INV.model.ProductUm',
-    autoSync:true,
+    //autoSync:true,
     autoLoad:true,
 
     proxy: {

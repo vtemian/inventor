@@ -103,7 +103,7 @@ Ext.define('INV.controller.Products', {
             scope:this,
             success: function(batch, options){
                 grid.getView().select(0);
-                notification.msg('','The company was deleted.', 'success');
+                notification.msg('','The product was deleted.', 'success');
             },
             failure: function(){
                 notification.msg('','Server error!', 'fail');
@@ -176,6 +176,8 @@ Ext.define('INV.controller.Products', {
     saveProduct: function(product,values){
         var me = this,
             isNewProduct = product.phantom,
+            cat = product.get('category'),
+            um = product.get('um'),
             store = this.getProductsStore(),
             detail = this.getProductDetail(),
             ingredientsStore = detail.down('#ingredientsgrid').store;
@@ -183,7 +185,12 @@ Ext.define('INV.controller.Products', {
         product.set(values);
         if (isNewProduct){
             //store.add(product);
-        }
+        };
+        if (!Ext.isNumber(cat))
+            me.getProductCategoriesStore().add(cat)
+        if (!Ext.isNumber(um))
+            me.getProductUmsStore().add(um)
+
         product.save({
             success: function(product, operation){
                 if (isNewProduct){
@@ -194,12 +201,12 @@ Ext.define('INV.controller.Products', {
                 if (Ext.isString(values.category)) me.getProductCategoriesStore().load();
                 me.getProductsListStore().load();
 
-                notification.msg('', 'The product, '+ product.get('name') +',is saved, yupie! ', 'success');
+                notification.msg('', 'The product, '+ product.get('name') +',is saved! Yupie! ', 'success');
             },
             failure: function(product, operation){
                 if (isNewProduct){
                     store.remove(product);
-                    detail.getView().select(0);
+                    me.getProductList().getView().select(0);
                 }
                 notification.msg('', 'Server error. ', 'fail');
                 console.log('ERROR:::Product->saveProduct::',operation.getError())
