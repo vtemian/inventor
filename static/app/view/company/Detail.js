@@ -135,16 +135,15 @@ Ext.define('INV.view.company.Detail', {
                 icon:'resources/images/cancel.png',
                 handler: function() {
                     me.reset()
-                }
-
+                },
+                tooltip:'Cancel changes'
             }, {
                 text: 'Submit',
                 action:'submit',
                 icon:'resources/images/save.png',
                 formBind: true, //only enabled once the form is valid
-                disabled: true
-//                                    onDisable: function(){console.log('disabled')},
-//                                    onEnable: function(){console.log('enabled')}
+                disabled: true,
+                tooltip:'Save changes'
             },{
                 xtype: 'component',
                 id: 'formErrorStateCompany',

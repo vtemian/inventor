@@ -36,16 +36,19 @@ Ext.define('INV.view.product.List' ,{
                 },{xtype:'tbfill'},{
                         text:'Add',
                         icon:'resources/images/add.png',
+                        tooltip:'Add new product',
                         action: "add",
                         scope: this
                 },{
                         text:'Copy',
                         icon:'resources/images/copy.png',
+                        tooltip:'Copy selected product',
                         action: "copy",
                         scope: this
                 },{
                         text:'Delete',
                         icon:'resources/images/delete.png',
+                        tooltip:'Delete selected product',
                         action: 'delete',
                         scope: this
                 }]

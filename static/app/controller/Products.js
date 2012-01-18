@@ -61,8 +61,6 @@ Ext.define('INV.controller.Products', {
     },
 
     onAddProductClick: function(button){
-        var store = this.getProductsStore(),
-            grid = button.up('grid');
 
         product = INV.model.Product.create();
         while (isNaN(product.id)) {
@@ -82,7 +80,7 @@ Ext.define('INV.controller.Products', {
             product = oldProduct.copy();
             Ext.data.Model.id(product);
             console.log(product);
-            product.set('code', '')
+            product.set('code', '');
             this.loadProduct(product);
             detail.switchBoundItems(detail.getForm(),true)
         } else {

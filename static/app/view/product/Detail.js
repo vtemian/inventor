@@ -227,13 +227,15 @@ Ext.define('INV.view.product.Detail', {
                                     icon:'resources/images/cancel.png',
                                     handler: function() {
                                         me.reset()
-                                    }
+                                    },
+                                    tooltip:'Cancel changes'
                                 }, {
                                     text: 'Submit',
                                     action:'submit',
                                     icon:'resources/images/save.png',
                                     formBind: true, //only enabled once the form is valid
-                                    disabled: true
+                                    disabled: true,
+                                    tooltip:'Save changes'
                                 },{
                                     xtype: 'component',
                                     id: 'formErrorStateProduct',

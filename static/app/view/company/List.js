@@ -34,16 +34,19 @@ Ext.define('INV.view.company.List' ,{
                 },{xtype:'tbfill'},{
                     text:"Add",
                     icon:'resources/images/add.png',
+                    tooltip: 'Add new company',
                     action: "add",
                     scope: this
                 },{
-                        text:'Copy',
-                        icon:'resources/images/copy.png',
-                        action: "copy",
-                        scope: this
+                    text:'Copy',
+                    icon:'resources/images/copy.png',
+                    tooltip:'Copy selected company',
+                    action: "copy",
+                    scope: this
                 },{
                     text:"Delete",
                     icon:'resources/images/delete.png',
+                    tooltip:'Delete selected company',
                     action: "delete",
                     scope: this
                 }]
