@@ -89,7 +89,7 @@ Ext.define('INV.controller.Products', {
             //this.loadProduct(product);
             detail.switchBoundItems(detail.getForm(),true)
         } else {
-            notification.msg('No selection made', 'Please select the record you want to copy!');
+            notification.msg('No selection made', 'Please select the record you want to copy!','info');
         }
     },
 
@@ -99,11 +99,15 @@ Ext.define('INV.controller.Products', {
             product = grid.getSelectionModel().getSelection()[0];
         
         store.remove(product);
-        store.sync({success: function(batch, options){
-            console.log('record deleted');
-
-            grid.getView().select(0);
-        }},this);
+        store.sync({
+            scope:this,
+            success: function(batch, options){
+                grid.getView().select(0);
+                notification.msg('','The company was deleted.', 'success');
+            },
+            failure: function(){
+                notification.msg('','Server error!', 'fail');
+        }});
     },
 
     onDetailFormSubmitClick: function(button){
@@ -190,14 +194,14 @@ Ext.define('INV.controller.Products', {
                 if (Ext.isString(values.category)) me.getProductCategoriesStore().load();
                 me.getProductsListStore().load();
 
-                notification.msg('', 'The product, '+ product.get('name') +',is saved, yupie! ');
+                notification.msg('', 'The product, '+ product.get('name') +',is saved, yupie! ', 'success');
             },
             failure: function(product, operation){
                 if (isNewProduct){
                     store.remove(product);
                     detail.getView().select(0);
                 }
-                notification.msg('', 'Server error. ');
+                notification.msg('', 'Server error. ', 'fail');
                 console.log('ERROR:::Product->saveProduct::',operation.getError())
             }
         });
@@ -243,9 +247,16 @@ Ext.define('INV.controller.Products', {
 
         view.editingPlugin.cancelEdit();
         //view.store.getAt(recordIndex).data.id = 0; //trigger error
-        //notification.msg('Remove', 'the record ' + view.store.getAt(recordIndex).data.name + ' was deleted!');
         view.store.removeAt(recordIndex);
-        view.store.sync();
+        view.store.sync({
+            scope:this,
+            success: function(batch, options){
+                console.log(batch, options)
+                notification.msg('','The '+batch.proxy.model.modelName.split('.')[2]+' was deleted.', 'success');
+            },
+            failure: function(){
+                notification.msg('','Server error!', 'fail');
+            }});
     },
 
     editIngredient: function(editor, e){
@@ -256,7 +267,15 @@ Ext.define('INV.controller.Products', {
         if (!ingredient.phantom && !ingredient.dirty) return;
         // commit the changes right after editing finished, if product has valid values
         if (data.ingredient!=0 && data.quantity!=0 && (data.bom!=0 || data.product!=0) != 0)
-            ingredient.save();
+            ingredient.save({
+                scope:this,
+                success: function (batch){
+                    notification.msg('','The '+batch.modelName.split('.')[2]+' was saved.', 'success');
+                },
+                failure: function (){
+                    notification.msg('','Server error!', 'fail');
+                }
+            });
         else
             notification.msg('ingredient not  saved', 'The ingredient or value is invalid and will not be saved!');
     }

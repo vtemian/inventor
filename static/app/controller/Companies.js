@@ -95,9 +95,9 @@ Ext.define('INV.controller.Companies', {
             grid.getView().select(company);
             //this.loadCompany(company);
             detail.switchBoundItems(detail.getForm(),true)
-        } else {
-            notification.msg('No selection made', 'Please select the record you want to copy!');
-        }
+        } else
+            notification.msg('No selection made', 'Please select the record you want to copy!','info');
+
     },
 
     onDeleteCompanyClick: function(button){
@@ -105,13 +105,17 @@ Ext.define('INV.controller.Companies', {
             grid = button.up('grid'),
             company = grid.getSelectionModel().getSelection()[0];
 
-        store.remove(company);
-        store.sync({success: function(){
-            notification.msg('','The company was deleted.');
-            grid.getView().select(0);
-        },failure: function(){
-            notification.msg('','Server error!');
-        }},this);
+        if (company){
+            store.remove(company);
+            store.sync({success: function(){
+                grid.getView().select(0);
+                notification.msg('','The company was deleted.', 'success');
+            },failure: function(){
+                notification.msg('','Server error!', 'fail');
+            }},this);
+        }
+        else
+            notification.msg('No selection made', 'Please select the record you want to delete!','info');
     },
 
     loadCompany: function (company){
@@ -190,14 +194,14 @@ Ext.define('INV.controller.Companies', {
                     contactsStore.sync();
                 }
 
-                notification.msg('', 'The company, '+ company.get('name') +',is saved, yupie! ');
+                notification.msg('', 'The company, '+ company.get('name') +',is saved, yupie! ', 'success');
             },
             failure: function(company, operation){
                 if (isNewCompany){
                     store.remove(company);
-                    detail.getView().select(0);
+                    this.getCompanyList().getView().select(0);
                 }
-                notification.msg('', 'Server error!');
+                notification.msg('', 'Server error!', 'fail');
                 console.log('ERROR:::company->savecompany::',operation.getError())
             }
         });
@@ -248,11 +252,11 @@ Ext.define('INV.controller.Companies', {
                     me.getCompanyDetail().loadOpenApiCompany(records[0]);
                 }
                 else if (success){
-                    notification.msg('','The supplied CIF was not found as valid');
+                    notification.msg('','The supplied CIF was not found as valid', 'success');
                     field.markInvalid('CIF invalid');
                 }
                 else
-                    notification.msg('','OpenApi response fail!');
+                    notification.msg('','OpenApi response fail!', 'fail');
 
             }
         });
@@ -326,13 +330,14 @@ Ext.define('INV.controller.Companies', {
         view.editingPlugin.cancelEdit();
         view.store.removeAt(recordIndex);
         view.store.sync({
+            scope:this,
             success: function(batch, options){
                 console.log(batch, options)
-                notification.msg('','The '+batch.proxy.model.modelName.split('.')[2]+' was deleted.');
+                notification.msg('','The '+batch.proxy.model.modelName.split('.')[2]+' was deleted.', 'success');
             },
             failure: function(){
-                notification.msg('','Server error!');
-        }},this);
+                notification.msg('','Server error!', 'fail');
+        }});
     },
 
     editAssociatedData: function(editor, e) {
@@ -343,10 +348,10 @@ Ext.define('INV.controller.Companies', {
         e.record.save({
             scope:this,
             success: function (batch){
-                notification.msg('','The '+batch.modelName.split('.')[2]+' was saved.');
+                notification.msg('','The '+batch.modelName.split('.')[2]+' was saved.', 'success');
             },
             failure: function (){
-                notification.msg('','Server error!');
+                notification.msg('','Server error!', 'fail');
             }
         });
 
