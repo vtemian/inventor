@@ -201,11 +201,12 @@ Ext.define('INV.view.product.Detail', {
                                         }
                                     },
                                     renderer: function(value) {
-                                        var store = Ext.StoreMgr.get("ProductsList"),
-                                            idx = store.find('id',value),
-                                            rec = store.getAt(idx);
+                                        var store = Ext.StoreMgr.get("ProductsList");
 
-                                            return rec? rec.get('umName'): ''
+                                        store.clearFilter();
+                                        rec = store.getAt(store.find('id',value));
+
+                                        return rec ? rec.get('umName') : 'select'
                                         }
                                 }
                             ]}
@@ -363,7 +364,7 @@ Ext.define('INV.view.product.Detail', {
 
         form.loadRecord(record);
         if (record.phantom || record.getBom()==undefined)
-            ingredientsGrid.store.removeAll()
+            ingredientsGrid.reconfigure(Ext.StoreManager.lookup('ProductBomIngredients'));
         else
             ingredientsGrid.bindStore(record.getBom().ingredients());
 

@@ -77,12 +77,18 @@ Ext.define('INV.plugin.comboExtraFilter', {
                         } else {
                             // Clear filter, but supress event so that the BoundList is not immediately updated.
                             store.clearFilter(true);
-                            store.filter(me.displayField, queryString);
-                            store.filterBy(function (record) {
-                                var id = record.get('id'),
-                                    pop = Ext.Array.contains(ids, id);
-                                return !pop
-                            });
+                            store.filter([{property: me.displayField, value: queryString},
+                                        {filterFn: function (record) {
+                                            var id = record.get('id'),
+                                                pop = Ext.Array.contains(ids, id);
+                                            return !pop
+                                        }}
+                                ]);
+//                            store.filterBy(function (record) {
+//                                var id = record.get('id'),
+//                                    pop = Ext.Array.contains(ids, id);
+//                                return !pop
+//                            });
 
                         }
                     } else {

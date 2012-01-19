@@ -176,8 +176,8 @@ Ext.define('INV.controller.Products', {
     saveProduct: function(product,values){
         var me = this,
             isNewProduct = product.phantom,
-            cat = product.get('category'),
-            um = product.get('um'),
+            cat = values['category'],
+            um = values['um'],
             store = this.getProductsStore(),
             detail = this.getProductDetail(),
             ingredientsStore = detail.down('#ingredientsgrid').store;
@@ -186,9 +186,9 @@ Ext.define('INV.controller.Products', {
         if (isNewProduct){
             //store.add(product);
         };
-        if (!Ext.isNumber(cat))
+        if (!Ext.isEmpty(cat) && !Ext.isNumber(cat))
             me.getProductCategoriesStore().add(cat)
-        if (!Ext.isNumber(um))
+        if (!Ext.isEmpty(um) && !Ext.isNumber(um))
             me.getProductUmsStore().add(um)
 
         product.save({
@@ -224,7 +224,7 @@ Ext.define('INV.controller.Products', {
             detail = this.getProductDetail(),
             form = detail.getForm();
         
-        if (productDetail.getProductId() == ''){
+        if (detail.getProductId() == ''){
             if (form.isValid()){
                 this.saveProduct(form.getRecord(),form.getValues(false, true, false));
                 detail.loadRecord(form.getRecord());
@@ -270,7 +270,7 @@ Ext.define('INV.controller.Products', {
         var ingredient = e.record,
             data = ingredient.data;
 
-        //console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
+        console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
         if (!ingredient.phantom && !ingredient.dirty) return;
         // commit the changes right after editing finished, if product has valid values
         if (data.ingredient!=0 && data.quantity!=0 && (data.bom!=0 || data.product!=0) != 0)
@@ -283,7 +283,7 @@ Ext.define('INV.controller.Products', {
                     notification.msg('','Server error!', 'fail');
                 }
             });
-        else
-            notification.msg('ingredient not  saved', 'The ingredient or value is invalid and will not be saved!');
+//        else
+//            notification.msg('ingredient not  saved', 'The ingredient or value is invalid and will not be saved!');
     }
 });
