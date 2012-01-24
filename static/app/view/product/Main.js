@@ -53,6 +53,8 @@ Ext.define('INV.view.product.Main', {
                                     },{
                                         title:'Grafic preturi de achizitie'
                                     },{
+                                        title:'Liste de pret'
+                                    },{
                                         title:'Altceva'
 
                                     }

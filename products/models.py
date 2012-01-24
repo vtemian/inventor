@@ -5,6 +5,7 @@ from inventor.products.manager import ProductManager
 
 
 import reversion
+from softdelete.models import SoftDeleteObject
 
 class Category(models.Model):
 
@@ -17,7 +18,7 @@ class UM(models.Model):
     abbreviation = models.CharField(max_length = 6)
 
 
-class Product(models.Model):
+class Product(SoftDeleteObject):
 
     code = models.CharField(max_length = 10)
     name = models.CharField(max_length = 50)
@@ -33,6 +34,11 @@ class Product(models.Model):
 
 
     def delete(self, using=None):
+
+        if self.bom:
+            print self.bom.__dict__
+            self.bom.delete()
+
         # save last state as a revision
         with reversion.revision:
             self.save()
@@ -90,7 +96,6 @@ class Product(models.Model):
             elif bomScrap_percentage != 0 or bomLabour_cost != 0:
                 #create new Bom
                 bom = Bom.objects.create(scrap_percentage = bomScrap_percentage, labour_cost = bomLabour_cost)
-                print bom.__dict__
                 self.bom = bom
 
 
@@ -108,15 +113,14 @@ class Product(models.Model):
             print '[ err ] Exception Product-saveFromJson @ rest of keys: \t',
             print err
             raise
-        print self.__dict__
         super(Product, self).save()
 
-class Bom(models.Model):
+class Bom(SoftDeleteObject):
     name = models.CharField(max_length=50)
     scrap_percentage = models.DecimalField(null=True,max_digits=5, decimal_places=2)
     labour_cost = models.DecimalField(null=True,max_digits=10, decimal_places=4)
 
-class Ingredient(models.Model):
+class Ingredient(SoftDeleteObject):
     bom = models.ForeignKey(Bom, related_name='ingredients')
     ingredient = models.ForeignKey(Product, related_name='ingredient')
     quantity = models.DecimalField(max_digits=10, null=True, decimal_places=4)
@@ -137,12 +141,15 @@ class Ingredient(models.Model):
                             setattr(self, field.name, modelInstance)
                         except Exception: #ObjectDoesNotExist:
                             if model.__name__ == 'Bom':
-                                modelInstance = model.objects.create()
-                                setattr(self, field.name, modelInstance)
-                                if isinstance(product_id, int):
+                                if isinstance(product_id, int) and product_id > 0:
                                     product = Product.objects.get(pk=product_id)
-                                    product.bom = modelInstance
-                                    product.save()
+                                    if not product.bom:
+                                        modelInstance = model.objects.create()
+                                        setattr(self, field.name, modelInstance)
+                                        product.bom = modelInstance
+                                        product.save()
+                                    else:
+                                        setattr(self, field.name, product.bom)
                             else:
                                 setattr(self, field.name, None )
                         

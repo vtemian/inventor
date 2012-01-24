@@ -4,7 +4,7 @@ Ext.define('INV.store.Products', {
     autoLoad: true,
     //autoSync:true,
 
-    pageSize:15,
+    pageSize:25,
     remoteSort: true,
     sorters: [
         {

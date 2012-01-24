@@ -81,7 +81,7 @@ INSTALLED_APPS = (
     'inventor.products',
     'inventor.companies',
     'wadofstuff',
-    'dilla'
+    'softdelete'
 )
 
 DICTIONARY = "C:/Python27/lib/words.txt"

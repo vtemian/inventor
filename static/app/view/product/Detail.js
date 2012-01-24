@@ -182,6 +182,8 @@ Ext.define('INV.view.product.Detail', {
                                                 //here the filter should contain ids of ingredients already in the grid
                                                 //we clear the filters so the displayValue still gets found in the store
                                                 combo.store.clearFilter();
+                                                //if the ingredient is the first one and bom is new and not loaded before there is no bom_id and no product_id on the ingredient records
+                                                combo.up('editor').editingPlugin.activeRecord.set('product', me.getProductId());
                                             },
                                             beforequery:function(qe){
                                                 var combo = qe.combo,
@@ -315,7 +317,7 @@ Ext.define('INV.view.product.Detail', {
         if (record.phantom){
             return ''
         }
-        return record.data['bom_id'];
+        return record.data['bom'];
     },
 
     onFieldChange: function(field, newValue, oldValue, eOpts) {
@@ -363,6 +365,7 @@ Ext.define('INV.view.product.Detail', {
         me.updateErrorState();
 
         form.loadRecord(record);
+        ass = record.getAssociatedData();
         if (record.phantom || record.getBom()==undefined)
             ingredientsGrid.reconfigure(Ext.StoreManager.lookup('ProductBomIngredients'));
         else
