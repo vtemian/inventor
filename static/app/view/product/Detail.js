@@ -72,6 +72,8 @@ Ext.define('INV.view.product.Detail', {
                                 labelWidth: 50,
                                 margin: '0 1 0 0 ',
                                 flex: 0.9,
+                                enforceMaxLength:true,
+                                maxLength:6,
                                 multiSelect: false,
                                 store:'ProductUms',
                                 valueField: 'id',
@@ -144,7 +146,7 @@ Ext.define('INV.view.product.Detail', {
                     anchor: '90%'
                 },
                 items:[
-                    {xtype:'numberfield', hideTrigger: true, name:'scrap_percentage', fieldLabel: 'Scrap', anchor:'75%'},
+                    {xtype:'numberfield', hideTrigger: true, name:'scrap_percentage', fieldLabel: 'Scrap', anchor:'75%',maxValue:'99.99'},
                     {xtype:'numberfield', hideTrigger: true, name:'labour_cost', fieldLabel: 'Labor', anchor:'75%'},
                     {    xtype: 'fieldcontainer',
                         fieldLabel: 'Ingredients',
@@ -153,7 +155,7 @@ Ext.define('INV.view.product.Detail', {
                         items:[{
                             xtype:'inlinegrid',
                             id: 'ingredientsgrid',
-                            store:'ProductBomIngredients',
+                            store:'ProductIngredients',
                             addToolTip:'Add ingredient',
                             deleteToolTip:'Delete ingredient',
                             maxWidth:400,
@@ -183,7 +185,7 @@ Ext.define('INV.view.product.Detail', {
                                                 //we clear the filters so the displayValue still gets found in the store
                                                 combo.store.clearFilter();
                                                 //if the ingredient is the first one and bom is new and not loaded before there is no bom_id and no product_id on the ingredient records
-                                                combo.up('editor').editingPlugin.activeRecord.set('product', me.getProductId());
+                                                combo.up('editor').editingPlugin.activeRecord.set('bom', me.getProductId());
                                             },
                                             beforequery:function(qe){
                                                 var combo = qe.combo,
@@ -208,7 +210,7 @@ Ext.define('INV.view.product.Detail', {
                                         store.clearFilter();
                                         rec = store.getAt(store.find('id',value));
 
-                                        return rec ? rec.get('umName') : 'select'
+                                        return rec ? rec.get('name') : 'select'
                                         }
                                 }
                             ]}
@@ -365,11 +367,8 @@ Ext.define('INV.view.product.Detail', {
         me.updateErrorState();
 
         form.loadRecord(record);
-        ass = record.getAssociatedData();
-        if (record.phantom || record.getBom()==undefined)
-            ingredientsGrid.reconfigure(Ext.StoreManager.lookup('ProductBomIngredients'));
-        else
-            ingredientsGrid.bindStore(record.getBom().ingredients());
+
+        ingredientsGrid.bindStore(record.ingredients());
 
         fields.each(function(field) {
             field.resumeEvents();

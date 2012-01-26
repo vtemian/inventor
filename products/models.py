@@ -25,19 +25,17 @@ class Product(SoftDeleteObject):
     description = models.TextField()
     category = models.ForeignKey(Category, null=True, related_name = 'products')
     um = models.ForeignKey(UM, null=True, related_name = '+')
-    bom = models.ForeignKey('Bom', related_name='products', null=True, unique=True)
     bar_code = models.CharField(max_length = 20)
     price_endetail = models.DecimalField(null=True, max_digits=14, decimal_places=4)
     price_engros = models.DecimalField(null=True, max_digits=14, decimal_places=4)
+    scrap_percentage = models.DecimalField(null=True,max_digits=5, decimal_places=2)
+    labour_cost = models.DecimalField(null=True,max_digits=10, decimal_places=4)
+
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
 
 
     def delete(self, using=None):
-
-        if self.bom:
-            print self.bom.__dict__
-            self.bom.delete()
 
         # save last state as a revision
         with reversion.revision:
@@ -84,19 +82,18 @@ class Product(SoftDeleteObject):
         try:
             bomId = dict.pop('bom_id', None)
             dict.pop('bom', None)
-            bomScrap_percentage = dict.pop('scrap_percentage', None)
-            bomLabour_cost = dict.pop('labour_cost', None)
-            if isinstance(bomId, int):
+
+#            if isinstance(bomId, int):
                 #update existing Bom
-                bom = Bom.objects.get(pk = bomId)
-                bom.scrap_percentage = bomScrap_percentage
-                bom.labour_cost = bomLabour_cost
-                bom.save()
-                self.bom = bom
-            elif bomScrap_percentage != 0 or bomLabour_cost != 0:
-                #create new Bom
-                bom = Bom.objects.create(scrap_percentage = bomScrap_percentage, labour_cost = bomLabour_cost)
-                self.bom = bom
+#                bom = Bom.objects.get(pk = bomId)
+#                bom.scrap_percentage = bomScrap_percentage
+#                bom.labour_cost = bomLabour_cost
+#                bom.save()
+#                self.bom = bom
+#            elif bomScrap_percentage != 0 or bomLabour_cost != 0:
+#                #create new Bom
+#                bom = Bom.objects.create(scrap_percentage = bomScrap_percentage, labour_cost = bomLabour_cost)
+#                self.bom = bom
 
 
         except Exception, err:
@@ -115,20 +112,15 @@ class Product(SoftDeleteObject):
             raise
         super(Product, self).save()
 
-class Bom(SoftDeleteObject):
-    name = models.CharField(max_length=50)
-    scrap_percentage = models.DecimalField(null=True,max_digits=5, decimal_places=2)
-    labour_cost = models.DecimalField(null=True,max_digits=10, decimal_places=4)
 
 class Ingredient(SoftDeleteObject):
-    bom = models.ForeignKey(Bom, related_name='ingredients')
-    ingredient = models.ForeignKey(Product, related_name='ingredient')
+    bom = models.ForeignKey(Product, related_name='ingredients')
+    ingredient = models.ForeignKey(Product, related_name='boms')
     quantity = models.DecimalField(max_digits=10, null=True, decimal_places=4)
 
     def saveFromJson(self, dict):
         fields = self._meta._fields()
         dict.pop('id')
-        product_id = dict.pop('product')
 
         try:
             for field in fields:
@@ -140,18 +132,7 @@ class Ingredient(SoftDeleteObject):
                             modelInstance = model.objects.get(pk = dict[field.name])
                             setattr(self, field.name, modelInstance)
                         except Exception: #ObjectDoesNotExist:
-                            if model.__name__ == 'Bom':
-                                if isinstance(product_id, int) and product_id > 0:
-                                    product = Product.objects.get(pk=product_id)
-                                    if not product.bom:
-                                        modelInstance = model.objects.create()
-                                        setattr(self, field.name, modelInstance)
-                                        product.bom = modelInstance
-                                        product.save()
-                                    else:
-                                        setattr(self, field.name, product.bom)
-                            else:
-                                setattr(self, field.name, None )
+                            setattr(self, field.name, None )
                         
                     else:
                         setattr(self, field.name, dict[field.name])
@@ -167,5 +148,4 @@ if not reversion.is_registered(Product):
     reversion.register(Product)
     reversion.register(Category)
     reversion.register(UM)
-    reversion.register(Bom)
     reversion.register(Ingredient)

@@ -1,6 +1,6 @@
-Ext.define('INV.store.ProductBomIngredients',{
+Ext.define('INV.store.ProductIngredients',{
     extend: 'Ext.data.Store',
-    model: 'INV.model.ProductBomIngredient',
+    model: 'INV.model.ProductIngredient',
 
     //autoSync: true,
 

@@ -1,9 +1,9 @@
 Ext.define('INV.controller.Products', {
     extend: 'Ext.app.Controller',
 
-    stores: ['Products', 'ProductsList', 'ProductCategories', 'ProductUms', 'ProductBomIngredients'],
+    stores: ['Products', 'ProductsList', 'ProductCategories', 'ProductUms', 'ProductIngredients'],
 
-    models: ['Product', 'ProductCategory', 'ProductUm' , 'ProductBom', 'ProductBomIngredient'],
+    models: ['Product', 'ProductCategory', 'ProductUm' , 'ProductIngredient'],
 
     views: ['product.Main','product.List','product.Detail','ux.InlineGrid'],
 
@@ -62,12 +62,13 @@ Ext.define('INV.controller.Products', {
 
     onAddProductClick: function(button){
         var store = this.getProductsStore(),
-            grid = button.up('grid');
+            grid = button.up('grid'),
+            product = new INV.model.Product();
 
-        product = INV.model.Product.create();
         while (isNaN(product.id)) {
             product = INV.model.Product.create();
         }
+
         store.add(product);
         grid.getView().select(product);
         //this.loadProduct(product);
@@ -178,34 +179,36 @@ Ext.define('INV.controller.Products', {
             isNewProduct = product.phantom,
             cat = values['category'],
             um = values['um'],
-            store = this.getProductsStore(),
             detail = this.getProductDetail(),
-            ingredientsStore = detail.down('#ingredientsgrid').store;
+            productStore = this.getProductsStore(),
+            ingredientsStore = detail.down('#ingredientsgrid').store,
+            categoriesStore = me.getProductCategoriesStore(),
+            umsStore = me.getProductUmsStore(),
+            productListStore = me.getProductsListStore();
 
         product.set(values);
         if (isNewProduct){
             //store.add(product);
         };
-        if (!Ext.isEmpty(cat) && !Ext.isNumber(cat))
-            me.getProductCategoriesStore().add(cat)
-        if (!Ext.isEmpty(um) && !Ext.isNumber(um))
-            me.getProductUmsStore().add(um)
+        if (!Ext.isEmpty(cat) && !Ext.isNumber(cat)){
+            categoriesStore.filters.clear();
+            categoriesStore.insert(0,new INV.model.ProductCategory({name:cat}));
+        }
+        if (!Ext.isEmpty(um) && !Ext.isNumber(um)){
+            umsStore.filters.clear();
+            umsStore.insert(0, new INV.model.ProductUm({abbreviation:um}));
+        }
 
         product.save({
             success: function(product, operation){
-                if (isNewProduct){
-                    ingredientsStore.each(function(record){record.set('product', product.get('id'))});
-                    ingredientsStore.sync();
-                }
-                //reload categories if a string/new catefory was submmited
-                if (Ext.isString(values.category)) me.getProductCategoriesStore().load();
-                me.getProductsListStore().load();
 
+                productListStore.load();
                 notification.msg('', 'The product, '+ product.get('name') +',is saved! Yupie! ', 'success');
             },
             failure: function(product, operation){
+
                 if (isNewProduct){
-                    store.remove(product);
+                    productStore.remove(product);
                     me.getProductList().getView().select(0);
                 }
                 notification.msg('', 'Server error. ', 'fail');
@@ -222,29 +225,25 @@ Ext.define('INV.controller.Products', {
             maxRecords = 3,
             recordCount = store.count(),
             detail = this.getProductDetail(),
-            form = detail.getForm();
+            form = detail.getForm(),
+            record = form.getRecord();
         
         if (detail.getProductId() == ''){
             if (form.isValid()){
-                this.saveProduct(form.getRecord(),form.getValues(false, true, false));
-                detail.loadRecord(form.getRecord());
-
-            }
-//            Ext.MessageBox.alert('BIG NONO', 'Save product before adding ingredients');
-//            return;
-        }
+                this.saveProduct(record, form.getValues(false, true, false));
+                detail.loadRecord(record);
+        }}
 
         if (recordCount >= maxRecords) {
             Ext.MessageBox.alert('Max Records', 'You have reached max records.');
             return;
         }
 
-        ingredient = INV.model.ProductBomIngredient.create({
-            bom : detail.getProductBomId(),
-            product : detail.getProductId()
+        ingredient = INV.model.ProductIngredient.create({
+            bom : detail.getProductId()
         });
+
         grid.editingPlugin.cancelEdit();
-        
         store.insert(recordCount, ingredient);
         grid.editingPlugin.startEditByPosition({row: recordCount, column: 0});
 
@@ -258,7 +257,6 @@ Ext.define('INV.controller.Products', {
         view.store.sync({
             scope:this,
             success: function(batch, options){
-                console.log(batch, options)
                 notification.msg('','The '+batch.proxy.model.modelName.split('.')[2]+' was deleted.', 'success');
             },
             failure: function(){
@@ -272,8 +270,9 @@ Ext.define('INV.controller.Products', {
 
         console.log(e.record.phantom || e.record.dirty, e.record.phantom, e.record.dirty);
         if (!ingredient.phantom && !ingredient.dirty) return;
+
         // commit the changes right after editing finished, if product has valid values
-        if (data.ingredient!=0 && data.quantity!=0 && (data.bom!=0 || data.product!=0) != 0)
+        if (data.ingredient!=0 && data.quantity!=0 && data.bom!=0 )
             ingredient.save({
                 scope:this,
                 success: function (batch){
@@ -283,7 +282,5 @@ Ext.define('INV.controller.Products', {
                     notification.msg('','Server error!', 'fail');
                 }
             });
-//        else
-//            notification.msg('ingredient not  saved', 'The ingredient or value is invalid and will not be saved!');
     }
 });

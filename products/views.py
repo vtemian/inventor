@@ -58,7 +58,7 @@ def _productCreate(request):
 
         product = Product.objects.filter(pk=product.pk)
 
-        response = serializers.serialize('json4ext', product, relations={'bom':{'relations':('ingredients',)}} )
+        response = serializers.serialize('json4ext', product, relations=('ingredients') )
 
     
     except Exception, err:
@@ -87,7 +87,7 @@ def _productRead(request):
     total = products.count()
     products = products[start:start+limit]
     
-    response = serializers.serialize('json4ext', products, relations={'bom':{'relations':('ingredients',)}} )
+    response = serializers.serialize('json4ext', products, relations=('ingredients') )
     response = response[:len(response)-1] + ',"total":%s}' % total
 
     #_initialdata()
@@ -107,7 +107,7 @@ def _productUpdate(request):
         print err
 
     product = Product.objects.filter(pk=product.pk)
-    return HttpResponse(serializers.serialize('json4ext', product, relations={'bom':{'relations':('ingredients',)}} ), mimetype="application/json")
+    return HttpResponse(serializers.serialize('json4ext', product, relations=('ingredients') ), mimetype="application/json")
 
 def _productDelete(request):
 
@@ -161,7 +161,6 @@ def _ingredientUpdate(request):
 
     ingred = json.loads(request.read())
     ingredient = Ingredient.objects.get(pk = ingred['id'])
-    ingred.pop('bom')
     ingredient.saveFromJson(ingred)
 
     ingredient = Ingredient.objects.filter(pk = ingredient.pk)

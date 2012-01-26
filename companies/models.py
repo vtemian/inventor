@@ -1,5 +1,4 @@
 from django.db import models
-from inventor.companies.manager import CompanyManager
 import reversion
 
 class Company(models.Model):
