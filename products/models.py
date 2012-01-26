@@ -3,7 +3,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from inventor.products.manager import ProductManager
 
-
 import reversion
 from softdelete.models import SoftDeleteObject
 
@@ -115,7 +114,7 @@ class Product(SoftDeleteObject):
 
 class Ingredient(SoftDeleteObject):
     bom = models.ForeignKey(Product, related_name='ingredients')
-    ingredient = models.ForeignKey(Product, related_name='boms')
+    ingredient = models.ForeignKey(Product, related_name='boms', on_delete=models.DO_NOTHING)
     quantity = models.DecimalField(max_digits=10, null=True, decimal_places=4)
 
     def saveFromJson(self, dict):

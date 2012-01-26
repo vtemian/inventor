@@ -168,7 +168,7 @@ Ext.define('INV.view.product.Detail', {
                                         plugins:'comboExtraFilter',
                                         store: 'ProductsList',
                                         queryMode:'local',
-                                        displayField:'umName',
+                                        displayField:'name',
                                         valueField:'id',
                                         lastQuery : '',
                                         forceSelection: true,
